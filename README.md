@@ -1,6 +1,10 @@
 # CBSE Physics Practicals Companion (Class 11)
 
-A modern, interactive laboratory companion and virtual manual designed for CBSE Class 11 Physics students and educators. It enables students to record real experimental observations, automatically compute derived columns with proper significant figures and least-count error propagation, generate linear regression best-fit graphs, inspect step-by-step arithmetic proofs, study examiner viva voce questions, and print submission-ready standard CBSE practical record pages.
+A modern, interactive laboratory companion and virtual manual designed for CBSE Class 11 Physics students and educators. It enables students to record real experimental observations, automatically calculate results, generate step-by-step derivations, and produce a ready-to-copy practical record in CBSE format.
+
+## 🌐 Live Demo
+
+Visit the deployed app here: https://digitallab2record.vercel.app/
 
 ---
 
