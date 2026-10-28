@@ -1,0 +1,6 @@
+{
+  "name": "CBSE Physics Practicals Companion",
+  "description": "Interactive laboratory companion for Class 11 CBSE Physics practicals with live observations, automated least-count error propagation, linear regression graphs, calculation proofs, viva voce bank, and printable record pages.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
