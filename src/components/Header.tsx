@@ -19,7 +19,6 @@ interface HeaderProps {
   onTabChange: (tab: TabId) => void;
   onResetData: () => void;
   onPrint: () => void;
-  activeExperimentTitle: string;
   hasGraph: boolean;
   isDark: boolean;
   onToggleTheme: () => void;
@@ -38,7 +37,6 @@ export const Header: React.FC<HeaderProps> = ({
   onTabChange,
   onResetData,
   onPrint,
-  activeExperimentTitle,
   hasGraph,
   isDark,
   onToggleTheme,
@@ -55,14 +53,14 @@ export const Header: React.FC<HeaderProps> = ({
             <div className="min-w-0">
               <div className="flex items-baseline space-x-2">
                 <span className="font-serif font-bold text-stone-900 dark:text-stone-100 tracking-tight text-base sm:text-lg lg:text-xl whitespace-nowrap">
-                  CBSE Physics
+                  DigitalLab2Record
                 </span>
                 <span className="hidden sm:inline-block text-[10px] font-mono tracking-widest uppercase font-semibold px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20">
                   Lab Report XI
                 </span>
               </div>
-              <p className="text-[11px] sm:text-xs text-stone-500 dark:text-stone-400 truncate max-w-[42vw] sm:max-w-xs md:max-w-sm font-sans">
-                {activeExperimentTitle}
+              <p className="text-[10px] sm:text-[11px] tracking-wide text-stone-500 dark:text-stone-400 truncate max-w-[52vw] sm:max-w-none font-sans">
+                CBSE Physics Practicals Companion
               </p>
             </div>
           </div>

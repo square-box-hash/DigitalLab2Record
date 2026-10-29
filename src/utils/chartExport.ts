@@ -120,7 +120,7 @@ export async function exportChartPng(
   // Footer
   ctx.fillStyle = '#94a3b8';
   ctx.font = `10px ${FONT_STACK}`;
-  ctx.fillText('CBSE Physics Practicals Companion — Class XI', padX, legendY + 24);
+  ctx.fillText('DigitalLab2Record · CBSE Physics Practicals Companion · Class XI', padX, legendY + 24);
 
   const blob = await new Promise<Blob | null>((resolve) =>
     canvas.toBlob(resolve, 'image/png')
