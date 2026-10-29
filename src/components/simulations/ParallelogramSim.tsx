@@ -38,11 +38,11 @@ export const ParallelogramSim: React.FC<ParallelogramSimProps> = ({
     <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm p-5 sm:p-6 space-y-6 transition-colors">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800 gap-2">
         <div>
-          <div className="flex items-center space-x-2.5">
+          <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1">
             <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white tracking-tight">
               Interactive Gravesand’s Apparatus (Vector Addition)
             </h3>
-            <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">
+            <span className="shrink-0 whitespace-nowrap text-[11px] sm:text-xs font-semibold px-2.5 py-1 rounded-full bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">
               R = √(P² + Q² + 2PQ cos θ)
             </span>
           </div>

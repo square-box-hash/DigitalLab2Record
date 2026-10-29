@@ -103,3 +103,11 @@ All experiment definitions are driven by the `ExperimentConfig` interface in `sr
 1. Open `src/data/experiments.ts`.
 2. Add a new object to the `EXPERIMENTS` array defining the `aim`, `apparatus`, `theory`, `formula`, `constants`, `columns`, `initialRows`, `calculateRow`, `calculateResult`, and `vivaQuestions`.
 3. The table, calculation engine, record printer, and graph views will automatically render your new experiment dynamically.
+
+---
+
+## 👤 Author
+
+Built and maintained by **[@square-box-hash](https://github.com/square-box-hash)**.
+
+Repository: [github.com/square-box-hash/DigitalLab2Record](https://github.com/square-box-hash/DigitalLab2Record)

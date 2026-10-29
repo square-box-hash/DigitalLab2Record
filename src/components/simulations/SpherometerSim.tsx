@@ -44,11 +44,11 @@ export const SpherometerSim: React.FC<SpherometerSimProps> = ({
     <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm p-5 sm:p-6 space-y-6 transition-colors">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800 gap-2">
         <div>
-          <div className="flex items-center space-x-2.5">
+          <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1">
             <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white tracking-tight">
               Interactive Spherometer & Sagitta Simulator
             </h3>
-            <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">
+            <span className="shrink-0 whitespace-nowrap text-[11px] sm:text-xs font-semibold px-2.5 py-1 rounded-full bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">
               LC = {lc.toFixed(2)} mm (0.001 cm)
             </span>
           </div>
@@ -58,26 +58,28 @@ export const SpherometerSim: React.FC<SpherometerSimProps> = ({
         </div>
 
         {/* Surface Toggle */}
-        <div className="flex items-center space-x-1 bg-slate-100 dark:bg-slate-800 p-1.5 rounded-xl text-xs font-medium self-start sm:self-auto border border-slate-200/50 dark:border-slate-700">
+        <div className="flex items-stretch space-x-1 w-full sm:w-auto bg-slate-100 dark:bg-slate-800 p-1.5 rounded-xl text-xs font-medium self-start sm:self-auto border border-slate-200/50 dark:border-slate-700">
           <button
             onClick={() => setSurfaceType('curved')}
-            className={`px-3 py-1.5 rounded-lg transition-all ${
+            className={`flex-1 sm:flex-none px-2.5 sm:px-3 py-1.5 rounded-lg text-center leading-tight whitespace-nowrap transition-all ${
               surfaceType === 'curved'
                 ? 'bg-white dark:bg-slate-700 text-indigo-700 dark:text-indigo-300 shadow-xs font-bold'
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
-            Curved Surface (h₁)
+            <span className="sm:hidden">Curved</span>
+            <span className="hidden sm:inline">Curved Surface (h₁)</span>
           </button>
           <button
             onClick={() => setSurfaceType('plane')}
-            className={`px-3 py-1.5 rounded-lg transition-all ${
+            className={`flex-1 sm:flex-none px-2.5 sm:px-3 py-1.5 rounded-lg text-center leading-tight whitespace-nowrap transition-all ${
               surfaceType === 'plane'
                 ? 'bg-white dark:bg-slate-700 text-indigo-700 dark:text-indigo-300 shadow-xs font-bold'
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
-            Plane Glass Plate (h₂)
+            <span className="sm:hidden">Plane</span>
+            <span className="hidden sm:inline">Plane Glass Plate (h₂)</span>
           </button>
         </div>
       </div>
