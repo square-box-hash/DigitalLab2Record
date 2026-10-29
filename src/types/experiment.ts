@@ -15,6 +15,8 @@ export interface ExperimentColumn {
   decimalPlaces?: number;
   tooltip?: string;
   placeholder?: string;
+  /** Set false for columns whose average is meaningless (error %, T², division counts). */
+  showMean?: boolean;
 }
 
 export interface CalculationStep {

@@ -1,7 +1,8 @@
 import React from 'react';
 import { ExperimentColumn } from '../types/experiment';
-import { Plus, Trash2, RefreshCw } from 'lucide-react';
+import { Plus, Trash2, RefreshCw, Download } from 'lucide-react';
 import { formatNumber } from '../utils/math';
+import { NumberInput } from './ui/NumberInput';
 
 interface ObservationTableProps {
   columns: ExperimentColumn[];
@@ -10,6 +11,7 @@ interface ObservationTableProps {
   onAddRow: () => void;
   onDeleteRow: (index: number) => void;
   onResetRows: () => void;
+  onExportCsv?: () => void;
 }
 
 export const ObservationTable: React.FC<ObservationTableProps> = ({
@@ -19,11 +21,18 @@ export const ObservationTable: React.FC<ObservationTableProps> = ({
   onAddRow,
   onDeleteRow,
   onResetRows,
+  onExportCsv,
 }) => {
   const columnAverages: Record<string, string> = {};
   columns.forEach((col) => {
     if (col.id === 'obs') {
       columnAverages[col.id] = 'Mean (X̄)';
+      return;
+    }
+    // Columns flagged showMean:false (error %, T², coinciding-division counts…)
+    // have no meaningful average and would only mislead in a CBSE record.
+    if (col.showMean === false) {
+      columnAverages[col.id] = '—';
       return;
     }
     const values = rows
@@ -57,6 +66,17 @@ export const ObservationTable: React.FC<ObservationTableProps> = ({
         </div>
 
         <div className="flex items-center space-x-2 self-start sm:self-auto">
+          {onExportCsv && (
+            <button
+              onClick={onExportCsv}
+              title="Download these observations as a CSV spreadsheet"
+              className="flex items-center space-x-1.5 px-3 py-1.5 text-xs font-medium text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors shadow-2xs"
+            >
+              <Download className="w-3.5 h-3.5 text-slate-400" />
+              <span>Export CSV</span>
+            </button>
+          )}
+
           <button
             onClick={onResetRows}
             title="Load benchmark CBSE lab observations"
@@ -144,15 +164,12 @@ export const ObservationTable: React.FC<ObservationTableProps> = ({
 
                   return (
                     <td key={col.id} className="py-2 px-2 sm:px-3">
-                      <input
-                        type="number"
+                      <NumberInput
+                        value={val}
                         step={col.decimalPlaces ? Math.pow(10, -col.decimalPlaces) : 0.01}
-                        value={val !== undefined ? val : ''}
                         placeholder={col.placeholder || '0'}
-                        onChange={(e) => {
-                          const parsed = parseFloat(e.target.value);
-                          onRowChange(rIdx, col.id, isNaN(parsed) ? 0 : parsed);
-                        }}
+                        ariaLabel={`${col.label}${col.unit ? ` in ${col.unit}` : ''}, row ${rIdx + 1}`}
+                        onCommit={(next) => onRowChange(rIdx, col.id, next)}
                         className="w-full min-w-[70px] max-w-[130px] px-2.5 py-1 text-xs sm:text-sm font-mono font-medium bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-slate-800 dark:text-slate-100 shadow-2xs hover:border-slate-300 dark:hover:border-slate-600 transition-all"
                       />
                     </td>
