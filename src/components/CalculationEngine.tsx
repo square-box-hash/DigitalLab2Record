@@ -27,31 +27,32 @@ export const CalculationEngine: React.FC<CalculationEngineProps> = ({
   return (
     <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-xs overflow-hidden transition-colors">
       {/* Header bar */}
-      <div className="p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-gradient-to-r from-slate-50 via-white to-indigo-50/20 dark:from-slate-900 dark:via-slate-900 dark:to-indigo-950/20">
-        <div className="flex items-center space-x-3">
-          <div className="w-9 h-9 rounded-xl bg-indigo-600 flex items-center justify-center text-white shadow-xs">
+      <div className="p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between bg-gradient-to-r from-slate-50 via-white to-indigo-50/20 dark:from-slate-900 dark:via-slate-900 dark:to-indigo-950/20">
+        <div className="flex items-start gap-3 min-w-0">
+          <div className="w-9 h-9 shrink-0 rounded-xl bg-indigo-600 flex items-center justify-center text-white shadow-xs">
             <Calculator className="w-5 h-5" />
           </div>
-          <div>
-            <div className="flex items-center space-x-2">
-              <h3 className="text-base font-bold text-slate-900 dark:text-white tracking-tight">
+          <div className="min-w-0">
+            <div className="flex flex-wrap items-center gap-2">
+              <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white tracking-tight leading-snug">
                 Step-by-Step Calculations & Proof
               </h3>
-              <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 flex items-center gap-1">
+              <span className="shrink-0 whitespace-nowrap text-[10px] sm:text-[11px] font-semibold px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 inline-flex items-center gap-1">
                 <CheckCircle2 className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
                 Auto Evaluated
               </span>
             </div>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
+            <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 mt-0.5">
               Rigorous CBSE standard arithmetic substitution and unit propagation
             </p>
           </div>
         </div>
 
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center gap-2 shrink-0 self-start sm:self-auto">
           <button
             onClick={handleCopyResult}
-            className="flex items-center space-x-1.5 px-3 py-1.5 text-xs font-medium text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors shadow-2xs"
+            aria-label="Copy the final result"
+            className="flex items-center gap-1.5 h-9 px-3 text-xs font-medium text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors shadow-2xs"
           >
             {copied ? (
               <>
@@ -61,14 +62,16 @@ export const CalculationEngine: React.FC<CalculationEngineProps> = ({
             ) : (
               <>
                 <Copy className="w-3.5 h-3.5 text-slate-400" />
-                <span>Copy Result</span>
+                <span>Copy</span>
+                <span className="hidden sm:inline">Result</span>
               </>
             )}
           </button>
 
           <button
             onClick={() => setIsExpanded(!isExpanded)}
-            className="p-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-white rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            aria-label={isExpanded ? 'Collapse calculation steps' : 'Expand calculation steps'}
+            className="flex items-center justify-center h-9 w-9 text-slate-400 hover:text-slate-600 dark:hover:text-white rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
           >
             {isExpanded ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
           </button>
@@ -81,9 +84,11 @@ export const CalculationEngine: React.FC<CalculationEngineProps> = ({
           {calculation.summaryCards.map((card, idx) => (
             <div
               key={idx}
-              className="p-3.5 rounded-xl bg-white dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 shadow-2xs"
+              className="p-3.5 rounded-xl bg-white dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 shadow-2xs flex flex-col justify-between h-full"
             >
-              <div className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">{card.label}</div>
+              <div className="text-[11px] sm:text-xs font-medium text-slate-500 dark:text-slate-400 mb-1 leading-snug">
+                {card.label}
+              </div>
               <div className="flex items-baseline space-x-1">
                 <span className="text-xl font-extrabold text-slate-900 dark:text-white font-mono tracking-tight">
                   {card.value}
@@ -95,7 +100,9 @@ export const CalculationEngine: React.FC<CalculationEngineProps> = ({
                 )}
               </div>
               {card.subtext && (
-                <div className="text-[11px] text-slate-400 dark:text-slate-500 mt-1 truncate">{card.subtext}</div>
+                <div className="text-[11px] text-slate-400 dark:text-slate-500 mt-1 leading-snug">
+                  {card.subtext}
+                </div>
               )}
             </div>
           ))}
