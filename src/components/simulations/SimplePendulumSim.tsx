@@ -158,7 +158,7 @@ export const SimplePendulumSim: React.FC<SimplePendulumSimProps> = ({
         </div>
 
         <div className="w-full overflow-x-auto">
-          <svg viewBox="0 0 720 260" className="w-full min-w-[650px] h-72 sm:h-80">
+          <svg viewBox="0 0 720 260" className="w-full min-w-[520px] sm:min-w-[650px] h-72 sm:h-80">
             <defs>
               <radialGradient id="bobShineLg" cx="30%" cy="30%" r="70%">
                 <stop offset="0%" stopColor="#fef08a" />

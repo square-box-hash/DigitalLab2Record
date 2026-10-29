@@ -18,12 +18,14 @@ interface RegressionGraphProps {
   graphConfig: GraphConfig;
   rows: Array<Record<string, number>>;
   experimentId: string;
+  constants?: Record<string, number>;
 }
 
 export const RegressionGraph: React.FC<RegressionGraphProps> = ({
   graphConfig,
   rows,
   experimentId,
+  constants,
 }) => {
   const [showSlopeTriangle, setShowSlopeTriangle] = useState(true);
 
@@ -31,7 +33,9 @@ export const RegressionGraph: React.FC<RegressionGraphProps> = ({
     .filter((r) => {
       const x = r[graphConfig.xAxisKey];
       const y = r[graphConfig.yAxisKey];
-      return typeof x === 'number' && typeof y === 'number' && !isNaN(x) && !isNaN(y) && isFinite(x) && isFinite(y) && (x > 0 || y > 0);
+      // Both coordinates must be positive: a zero-extension or zero-load row is
+      // not a valid data point and would drag the fitted slope towards zero.
+      return typeof x === 'number' && typeof y === 'number' && !isNaN(x) && !isNaN(y) && isFinite(x) && isFinite(y) && x > 0 && y > 0;
     })
     .map((r, i) => ({
       obs: i + 1,
@@ -39,7 +43,9 @@ export const RegressionGraph: React.FC<RegressionGraphProps> = ({
       y: r[graphConfig.yAxisKey],
     }));
 
-  const regression = computeLinearRegression(rawData);
+  const regression = computeLinearRegression(rawData, {
+    throughOrigin: graphConfig.yInterceptOrigin === true,
+  });
 
   const chartData = rawData.map((d) => {
     const fitY = regression ? regression.slope * d.x + regression.intercept : d.y;
@@ -51,10 +57,13 @@ export const RegressionGraph: React.FC<RegressionGraphProps> = ({
     };
   });
 
+  const gValue = constants?.g ?? 9.8;
+
   let physicsDerivedText = '';
   if (regression && experimentId === 'helical-spring') {
-    const k = (regression.slope * 0.1 * 9.8).toFixed(1);
-    physicsDerivedText = `Force Constant k = Slope × 0.1 × g = ${regression.slope.toFixed(2)} × 0.98 = ${k} N/m`;
+    const factor = 0.1 * gValue;
+    const k = (regression.slope * factor).toFixed(1);
+    physicsDerivedText = `Force Constant k = Slope × 0.1 × g = ${regression.slope.toFixed(2)} × ${factor.toFixed(2)} = ${k} N/m`;
   } else if (regression && experimentId === 'simple-pendulum') {
     const gVal = (39.4784 / regression.slope).toFixed(2);
     const secLen = (4 / regression.slope * 100).toFixed(1);
@@ -218,7 +227,9 @@ export const RegressionGraph: React.FC<RegressionGraphProps> = ({
                 CBSE Slope Triangulation Proof
               </span>
               <span className="text-[11px] font-mono text-slate-500 dark:text-slate-400">
-                Line Eq: y = {regression.slope.toFixed(4)}x {regression.intercept >= 0 ? `+ ${regression.intercept.toFixed(4)}` : `- ${Math.abs(regression.intercept).toFixed(4)}`}
+                {graphConfig.yInterceptOrigin
+                  ? `Line Eq: y = ${regression.slope.toFixed(4)}x (through origin)`
+                  : `Line Eq: y = ${regression.slope.toFixed(4)}x ${regression.intercept >= 0 ? `+ ${regression.intercept.toFixed(4)}` : `- ${Math.abs(regression.intercept).toFixed(4)}`}`}
               </span>
             </div>
 

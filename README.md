@@ -13,17 +13,16 @@ Visit the deployed app here: https://digitallab2record.vercel.app/
 You can open and edit this codebase natively in **Visual Studio Code** or any editor of your choice with zero vendor lock-in.
 
 ### Prerequisites
-- **Node.js**: v18.0.0 or later (Node 20+ recommended)
+- **Node.js**: 20.19+ or 22.12+ (required by Vite 8)
 - **npm** or **yarn** / **pnpm**
 
 ### Step-by-Step Setup
 1. **Clone or Download the Project**:
-   - In Google AI Studio, click **Export to GitHub** or **Download ZIP** from the top menu.
-   - Extract the project into your preferred local directory.
+   - Clone the repository, or download the ZIP from GitHub and extract it.
 
 2. **Open in VS Code**:
    ```bash
-   cd cbse-physics-practicals-companion
+   cd DigitalLab2Record
    code .
    ```
 
@@ -45,6 +44,12 @@ You can open and edit this codebase natively in **Visual Studio Code** or any ed
    The production-ready static assets will be compiled into the `dist/` directory, ready to deploy to Vercel, Netlify, Cloud Run, GitHub Pages, or any web host.
 
 ---
+
+## 💾 Saving Your Work
+
+Observations and instrument constants are autosaved to this browser's local storage about half a second after you stop typing, so a refresh, a closed tab or a dropped connection no longer loses a session. The workspace header shows the time of the last save, and **Clear saved data** in the footer wipes the stored readings and restores the sample data for every experiment.
+
+To hand a record in or open it in Excel, use **Export CSV** in the observation table: it writes the constants, the full observation table (derived columns included) and the final result as a UTF-8 CSV with `#` comment lines, and the printed A4 record is still available from the Record File tab.
 
 ## 📁 Project Structure
 

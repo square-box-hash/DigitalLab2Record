@@ -106,7 +106,7 @@ export const HelicalSpringSim: React.FC<HelicalSpringSimProps> = ({
         </div>
 
         <div className="w-full overflow-x-auto">
-          <svg viewBox="0 0 720 260" className="w-full min-w-[650px] h-72 sm:h-80">
+          <svg viewBox="0 0 720 260" className="w-full min-w-[520px] sm:min-w-[650px] h-72 sm:h-80">
             <defs>
               <linearGradient id="springMetalLg" x1="0%" y1="0%" x2="100%" y2="0%">
                 <stop offset="0%" stopColor="#94a3b8" />

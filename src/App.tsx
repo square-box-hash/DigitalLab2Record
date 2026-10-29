@@ -10,6 +10,8 @@ import { CbseRecordView } from './components/CbseRecordView';
 import { VivaVoceAccordion } from './components/VivaVoceAccordion';
 import { TheoryView } from './components/TheoryView';
 import { SimulatorContainer } from './components/simulations/SimulatorContainer';
+import { MobileTabBar } from './components/MobileTabBar';
+import { buildRowsCsv, downloadCsv } from './utils/export';
 import {
   Menu,
   TrendingUp,
@@ -19,6 +21,89 @@ import {
   Sparkles,
   BookOpen,
 } from 'lucide-react';
+
+const STORAGE_KEY = 'cbse_lab_state_v1';
+
+type ConstantsMap = Record<string, Record<string, number>>;
+type RowsMap = Record<string, Array<Record<string, number>>>;
+
+interface PersistedState {
+  version?: number;
+  savedAt?: string;
+  rows?: RowsMap;
+  constants?: ConstantsMap;
+}
+
+const defaultConstants = (): ConstantsMap => {
+  const init: ConstantsMap = {};
+  EXPERIMENTS.forEach((exp) => {
+    init[exp.id] = {};
+    exp.constants.forEach((c) => {
+      init[exp.id][c.id] = c.defaultValue;
+    });
+  });
+  return init;
+};
+
+const defaultRows = (): RowsMap => {
+  const init: RowsMap = {};
+  EXPERIMENTS.forEach((exp) => {
+    init[exp.id] = exp.initialRows.map((row) => ({ ...row }));
+  });
+  return init;
+};
+
+const readPersisted = (): PersistedState | null => {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as PersistedState;
+    return parsed && typeof parsed === 'object' ? parsed : null;
+  } catch {
+    return null;
+  }
+};
+
+/**
+ * Restores the last saved session, discarding anything that no longer matches the
+ * current experiment schema (renamed columns, removed experiments, junk values).
+ */
+const buildInitialState = (): { rows: RowsMap; constants: ConstantsMap; savedAt: string | null } => {
+  const rows = defaultRows();
+  const constants = defaultConstants();
+  const persisted = readPersisted();
+  if (!persisted) return { rows, constants, savedAt: null };
+
+  EXPERIMENTS.forEach((exp) => {
+    const persistedConstants = persisted.constants?.[exp.id];
+    if (persistedConstants && typeof persistedConstants === 'object') {
+      exp.constants.forEach((c) => {
+        const value = persistedConstants[c.id];
+        if (typeof value === 'number' && Number.isFinite(value)) {
+          constants[exp.id][c.id] = value;
+        }
+      });
+    }
+
+    const persistedRows = persisted.rows?.[exp.id];
+    if (Array.isArray(persistedRows) && persistedRows.length > 0) {
+      const cleaned = persistedRows
+        .filter((row) => row && typeof row === 'object')
+        .map((row, index) => {
+          const out: Record<string, number> = { obs: index + 1 };
+          exp.columns.forEach((col) => {
+            if (col.id === 'obs') return;
+            const value = row[col.id];
+            if (typeof value === 'number' && Number.isFinite(value)) out[col.id] = value;
+          });
+          return out;
+        });
+      if (cleaned.length > 0) rows[exp.id] = cleaned;
+    }
+  });
+
+  return { rows, constants, savedAt: persisted.savedAt ?? null };
+};
 
 export default function App() {
   const [activeExpId, setActiveExpId] = useState<string>('vernier-calipers');
@@ -50,26 +135,34 @@ export default function App() {
     setIsDark((prev) => !prev);
   };
 
+  // Restored from the last session where available (see buildInitialState).
+  const [initial] = useState(buildInitialState);
+
   // Per-experiment dynamic constants state
-  const [constantsState, setConstantsState] = useState<Record<string, Record<string, number>>>(() => {
-    const init: Record<string, Record<string, number>> = {};
-    EXPERIMENTS.forEach((exp) => {
-      init[exp.id] = {};
-      exp.constants.forEach((c) => {
-        init[exp.id][c.id] = c.defaultValue;
-      });
-    });
-    return init;
-  });
+  const [constantsState, setConstantsState] = useState<ConstantsMap>(initial.constants);
 
   // Per-experiment rows state
-  const [rowsState, setRowsState] = useState<Record<string, Array<Record<string, number>>>>(() => {
-    const init: Record<string, Array<Record<string, number>>> = {};
-    EXPERIMENTS.forEach((exp) => {
-      init[exp.id] = [...exp.initialRows];
-    });
-    return init;
-  });
+  const [rowsState, setRowsState] = useState<RowsMap>(initial.rows);
+
+  const [savedAt, setSavedAt] = useState<string | null>(initial.savedAt);
+
+  // Debounced autosave: observations survive a refresh, a back-navigation or a
+  // dropped connection instead of disappearing with the tab.
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const stamp = new Date().toISOString();
+      try {
+        localStorage.setItem(
+          STORAGE_KEY,
+          JSON.stringify({ version: 1, savedAt: stamp, rows: rowsState, constants: constantsState })
+        );
+        setSavedAt(stamp);
+      } catch {
+        // Storage full or blocked (private mode) — keep working from memory.
+      }
+    }, 600);
+    return () => clearTimeout(timer);
+  }, [rowsState, constantsState]);
 
   const activeExp = useMemo(() => {
     return EXPERIMENTS.find((e) => e.id === activeExpId) || EXPERIMENTS[0];
@@ -178,6 +271,30 @@ export default function App() {
     });
   };
 
+  const handleExportCsv = () => {
+    const csv = buildRowsCsv(activeExp, computedRows, activeConstants, calculationResult);
+    downloadCsv(`${activeExp.id}-observations.csv`, csv);
+  };
+
+  const handleClearSaved = () => {
+    const confirmed = window.confirm(
+      'Delete the observations saved in this browser and restore the sample data for every experiment?'
+    );
+    if (!confirmed) return;
+    try {
+      localStorage.removeItem(STORAGE_KEY);
+    } catch {
+      // ignore
+    }
+    setConstantsState(defaultConstants());
+    setRowsState(defaultRows());
+    setSavedAt(null);
+  };
+
+  const savedLabel = savedAt
+    ? new Date(savedAt).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })
+    : null;
+
   const handlePrint = () => {
     if (currentTab !== 'record') {
       setCurrentTab('record');
@@ -204,7 +321,7 @@ export default function App() {
       />
 
       {/* Main Layout Area */}
-      <div className="flex-1 max-w-7xl w-full mx-auto flex">
+      <div className="flex-1 max-w-[1440px] w-full mx-auto flex">
         {/* Sidebar */}
         <Sidebar
           experiments={EXPERIMENTS}
@@ -217,7 +334,7 @@ export default function App() {
         />
 
         {/* Content Pane */}
-        <main className="flex-1 min-w-0 p-4 sm:p-6 lg:p-8 space-y-6">
+        <main className="flex-1 min-w-0 px-3 py-4 sm:px-6 sm:py-6 lg:px-8 lg:py-8 space-y-5 sm:space-y-6 pb-24 lg:pb-8">
           {/* Mobile Top Bar */}
           <div className="no-print lg:hidden flex items-center justify-between bg-white dark:bg-stone-900 p-3.5 rounded-xl border border-stone-200 dark:border-stone-800 shadow-2xs">
             <button
@@ -233,7 +350,7 @@ export default function App() {
           </div>
 
           {/* Editorial Annual Report Hero Banner */}
-          <div className="no-print bg-white dark:bg-[#12151e] rounded-2xl border border-stone-200/90 dark:border-stone-800/90 shadow-sm p-6 sm:p-7 space-y-3 transition-colors">
+          <div className="no-print bg-white dark:bg-[#12151e] rounded-2xl border border-stone-200/90 dark:border-stone-800/90 shadow-sm p-5 sm:p-7 xl:p-8 space-y-3 transition-colors">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <div className="flex items-center space-x-2 text-xs font-mono">
                 <span className="px-2.5 py-1 rounded-md bg-amber-500/10 text-amber-800 dark:text-amber-400 font-bold uppercase tracking-widest text-[10px] border border-amber-500/20">
@@ -260,7 +377,7 @@ export default function App() {
             </div>
 
             {/* Editorial Serif Title */}
-            <h1 className="font-serif italic font-bold text-2xl sm:text-3xl text-stone-900 dark:text-stone-50 tracking-tight leading-snug">
+            <h1 className="font-serif italic font-bold text-xl sm:text-3xl text-stone-900 dark:text-stone-50 tracking-tight leading-snug">
               {activeExp.title}
             </h1>
             
@@ -322,13 +439,18 @@ export default function App() {
                     Laboratory Workspace & Analysis
                   </span>
                 </div>
-                <button
-                  onClick={() => setShowSimInWorkspace(!showSimInWorkspace)}
-                  className="text-xs font-semibold text-amber-600 dark:text-amber-400 hover:text-amber-700 flex items-center gap-1 hover:underline"
-                >
-                  <FlaskConical className="w-3.5 h-3.5" />
-                  <span>{showSimInWorkspace ? 'Hide Virtual Rig' : 'Show Virtual Rig'}</span>
-                </button>
+                <div className="flex items-center gap-3">
+                  <span className="text-[11px] font-mono text-stone-400 dark:text-stone-500">
+                    {savedLabel ? `Saved locally at ${savedLabel}` : 'Not saved yet'}
+                  </span>
+                  <button
+                    onClick={() => setShowSimInWorkspace(!showSimInWorkspace)}
+                    className="text-xs font-semibold text-amber-600 dark:text-amber-400 hover:text-amber-700 flex items-center gap-1 hover:underline"
+                  >
+                    <FlaskConical className="w-3.5 h-3.5" />
+                    <span>{showSimInWorkspace ? 'Hide Virtual Rig' : 'Show Virtual Rig'}</span>
+                  </button>
+                </div>
               </div>
 
               {showSimInWorkspace && (
@@ -353,6 +475,7 @@ export default function App() {
                 onAddRow={handleAddRow}
                 onDeleteRow={handleDeleteRow}
                 onResetRows={handleResetRows}
+                onExportCsv={handleExportCsv}
               />
 
               <CalculationEngine
@@ -366,6 +489,7 @@ export default function App() {
                   graphConfig={activeExp.graphConfig}
                   rows={computedRows}
                   experimentId={activeExp.id}
+                  constants={activeConstants}
                 />
               )}
             </div>
@@ -398,16 +522,31 @@ export default function App() {
       </div>
 
       {/* Footer */}
-      <footer className="no-print bg-white dark:bg-[#0c0e14] border-t border-stone-200/80 dark:border-stone-800/80 py-7 mt-12 text-center text-xs text-stone-500 dark:text-stone-400 transition-colors">
-        <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <footer className="no-print bg-white dark:bg-[#0c0e14] border-t border-stone-200/80 dark:border-stone-800/80 py-7 mt-12 mb-16 lg:mb-0 text-center text-xs text-stone-500 dark:text-stone-400 transition-colors">
+        <div className="max-w-[1440px] mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="font-serif italic text-sm text-stone-700 dark:text-stone-300">
             CBSE Physics Practicals Companion • Class 11 Laboratory Manual
           </p>
-          <p className="text-[11px] font-mono text-stone-400 dark:text-stone-500">
-            Based on NCERT Practical Curriculum & Examination Standards
-          </p>
+          <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 text-[11px] font-mono text-stone-400 dark:text-stone-500">
+            <span>Based on NCERT Practical Curriculum & Examination Standards</span>
+            {savedLabel && <span className="hidden sm:inline">•</span>}
+            {savedLabel && <span>Autosaved {savedLabel}</span>}
+            <button
+              onClick={handleClearSaved}
+              className="text-stone-400 dark:text-stone-500 hover:text-rose-600 dark:hover:text-rose-400 underline underline-offset-2"
+            >
+              Clear saved data
+            </button>
+          </div>
         </div>
       </footer>
+
+      {/* Phone navigation: the header dock only fits from lg upwards. */}
+      <MobileTabBar
+        currentTab={currentTab}
+        onTabChange={setCurrentTab}
+        hasGraph={Boolean(activeExp.graphConfig)}
+      />
     </div>
   );
 }

@@ -3,65 +3,97 @@ import { Sparkles, Check, Power, ZoomIn } from 'lucide-react';
 import { roundTo } from '../../utils/math';
 
 interface BeamBalanceSimProps {
-  onRecordRow: (row: { gramWeights: number; mgWeights: number; l1: number; r1: number }) => void;
+  onRecordRow: (row: {
+    gramWeights: number;
+    mgWeights: number;
+    l1: number;
+    l2: number;
+    r1: number;
+    r2: number;
+  }) => void;
   zeroRestingPoint: number;
 }
+
+/** Pointer deflection in scale divisions per milligram of imbalance. */
+const SENSITIVITY_DIV_PER_MG = 0.02;
+const MAX_DEFLECTION_DIV = 6;
 
 export const BeamBalanceSim: React.FC<BeamBalanceSimProps> = ({
   onRecordRow,
   zeroRestingPoint,
 }) => {
-  const targetMassG = 24.365;
-  const [gramWeights, setGramWeights] = useState<number[]>([]);
-  const [mgWeights, setMgWeights] = useState<number[]>([]);
+  // The unknown body is generated once per session and never displayed: the whole
+  // point of the practical is that its mass is found from the deflection readings.
+  const [targetMassG] = useState<number>(() => roundTo(20 + Math.random() * 8, 3));
+  // Slots (indices into the weight box) so two identical 2 g weights toggle independently.
+  const [gramSlots, setGramSlots] = useState<number[]>([]);
+  const [mgSlots, setMgSlots] = useState<number[]>([]);
   const [isArrested, setIsArrested] = useState<boolean>(false);
   const [justRecorded, setJustRecorded] = useState(false);
+  const [warning, setWarning] = useState<string | null>(null);
 
   const availableGrams = [20, 10, 5, 2, 2, 1];
   const availableMgs = [500, 200, 100, 50, 20, 10, 5];
 
+  const gramWeights = gramSlots.map((slot) => availableGrams[slot]);
+  const mgWeights = mgSlots.map((slot) => availableMgs[slot]);
+
   const totalGramsInPan = gramWeights.reduce((a, b) => a + b, 0);
   const totalMgsInPan = mgWeights.reduce((a, b) => a + b, 0);
   const totalRightMass = roundTo(totalGramsInPan + totalMgsInPan / 1000, 3);
-  const massDiff = roundTo(targetMassG - totalRightMass, 3);
 
-  const tiltDeg = isArrested ? 0 : Math.max(-12, Math.min(12, massDiff * 8));
-  const pointerPos = roundTo(10.0 + tiltDeg * 0.4, 1);
-  const leftTurnL1 = roundTo(Math.max(5, pointerPos - 1.8), 1);
-  const rightTurnR1 = roundTo(Math.min(15, pointerPos + 1.8), 1);
+  // Deflection of the pointer about the zero resting point (positive = right pan heavier).
+  const imbalanceMg = roundTo((totalRightMass - targetMassG) * 1000, 1);
+  const deflectionDiv = isArrested
+    ? 0
+    : roundTo(
+        Math.max(-MAX_DEFLECTION_DIV, Math.min(MAX_DEFLECTION_DIV, imbalanceMg * SENSITIVITY_DIV_PER_MG)),
+        1
+      );
+  const tiltDeg = Math.max(-12, Math.min(12, deflectionDiv * 2));
+  const pointerPos = roundTo(zeroRestingPoint + deflectionDiv, 1);
 
-  const toggleGramWeight = (w: number) => {
+  // Turning points read off the swinging pointer; they average back to pointerPos.
+  const leftTurnL1 = roundTo(pointerPos - 0.3, 1);
+  const leftTurnL2 = roundTo(pointerPos + 0.3, 1);
+  const rightTurnR1 = roundTo(pointerPos + 0.2, 1);
+  const rightTurnR2 = roundTo(pointerPos - 0.2, 1);
+
+  const toggleSlot = (
+    slot: number,
+    setSlots: React.Dispatch<React.SetStateAction<number[]>>
+  ) => {
     if (isArrested) {
-      alert('Arrest the balance (turn Arrest knob to OFF) before adding or removing weights!');
+      setWarning('Arrest the balance (turn the knob OFF) before adding or removing weights.');
       return;
     }
-    setGramWeights((prev) => (prev.includes(w) ? prev.filter((item, i) => i !== prev.indexOf(w)) : [...prev, w]));
-  };
-
-  const toggleMgWeight = (w: number) => {
-    if (isArrested) {
-      alert('Arrest the balance (turn Arrest knob to OFF) before adding or removing weights!');
-      return;
-    }
-    setMgWeights((prev) => (prev.includes(w) ? prev.filter((item, i) => i !== prev.indexOf(w)) : [...prev, w]));
+    setWarning(null);
+    setSlots((prev) => (prev.includes(slot) ? prev.filter((i) => i !== slot) : [...prev, slot]));
   };
 
   const clearRightPan = () => {
-    setGramWeights([]);
-    setMgWeights([]);
-  };
-
-  const autoBalance = () => {
-    setGramWeights([20, 2, 2]);
-    setMgWeights([200, 100, 50, 10, 5]);
+    setGramSlots([]);
+    setMgSlots([]);
+    setWarning(null);
   };
 
   const handleRecord = () => {
+    if (isArrested) {
+      setWarning('Release the beam (knob ON) and let it swing before recording the turning points.');
+      return;
+    }
+    if (totalGramsInPan + totalMgsInPan === 0) {
+      setWarning('Place some standard weights in the right pan first.');
+      return;
+    }
+    setWarning(null);
     onRecordRow({
       gramWeights: totalGramsInPan,
       mgWeights: totalMgsInPan,
       l1: leftTurnL1,
+      l2: leftTurnL2,
       r1: rightTurnR1,
+      r2: rightTurnR2,
     });
     setJustRecorded(true);
     setTimeout(() => setJustRecorded(false), 1800);
@@ -102,18 +134,21 @@ export const BeamBalanceSim: React.FC<BeamBalanceSimProps> = ({
         <div className="flex flex-wrap justify-between items-center text-xs sm:text-sm text-slate-400 mb-3 gap-2">
           <span className="font-medium text-slate-300 flex items-center gap-1.5">
             <ZoomIn className="w-4 h-4 text-indigo-400" />
-            Left Pan: Unknown Body ({targetMassG} g)
+            Left Pan: Unknown Body (mass to be determined)
           </span>
           <div className="flex items-center space-x-3 bg-slate-900/80 px-3.5 py-1.5 rounded-xl border border-slate-700">
             <span className="text-slate-400 text-xs">Right Pan:</span>
             <span className="font-mono text-emerald-400 font-extrabold text-base">
-              {totalRightMass.toFixed(3)} g {Math.abs(massDiff) <= 0.005 ? '(Balanced!)' : ''}
+              {totalRightMass.toFixed(3)} g
+            </span>
+            <span className="text-slate-400 text-xs font-mono">
+              pointer {deflectionDiv === 0 ? 'at 0' : deflectionDiv > 0 ? 'right of 0' : 'left of 0'}
             </span>
           </div>
         </div>
 
         <div className="w-full overflow-x-auto">
-          <svg viewBox="0 0 720 240" className="w-full min-w-[650px] h-64 sm:h-72">
+          <svg viewBox="0 0 720 240" className="w-full min-w-[520px] sm:min-w-[650px] h-64 sm:h-72">
             <defs>
               <linearGradient id="beamMetalLg" x1="0%" y1="0%" x2="100%" y2="0%">
                 <stop offset="0%" stopColor="#cbd5e1" />
@@ -211,12 +246,6 @@ export const BeamBalanceSim: React.FC<BeamBalanceSimProps> = ({
           </span>
           <div className="flex items-center space-x-3">
             <button
-              onClick={autoBalance}
-              className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:underline"
-            >
-              Exact Match Preset (24.365 g)
-            </button>
-            <button
               onClick={clearRightPan}
               className="text-xs text-slate-500 hover:text-rose-600 hover:underline"
             >
@@ -229,11 +258,11 @@ export const BeamBalanceSim: React.FC<BeamBalanceSimProps> = ({
         <div className="flex flex-wrap gap-2 items-center">
           <span className="text-xs font-semibold text-slate-500 w-16">Brass (g):</span>
           {availableGrams.map((w, idx) => {
-            const inPan = gramWeights.includes(w);
+            const inPan = gramSlots.includes(idx);
             return (
               <button
-                key={idx}
-                onClick={() => toggleGramWeight(w)}
+                key={`gram-${idx}`}
+                onClick={() => toggleSlot(idx, setGramSlots)}
                 className={`px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-mono font-bold transition-all border ${
                   inPan
                     ? 'bg-amber-500 text-white border-amber-600 shadow-sm'
@@ -250,11 +279,11 @@ export const BeamBalanceSim: React.FC<BeamBalanceSimProps> = ({
         <div className="flex flex-wrap gap-2 items-center">
           <span className="text-xs font-semibold text-slate-500 w-16">Al (mg):</span>
           {availableMgs.map((w, idx) => {
-            const inPan = mgWeights.includes(w);
+            const inPan = mgSlots.includes(idx);
             return (
               <button
-                key={idx}
-                onClick={() => toggleMgWeight(w)}
+                key={`mg-${idx}`}
+                onClick={() => toggleSlot(idx, setMgSlots)}
                 className={`px-3 py-1 rounded-xl text-xs font-mono font-semibold transition-all border ${
                   inPan
                     ? 'bg-indigo-600 text-white border-indigo-700 shadow-sm'
@@ -269,6 +298,11 @@ export const BeamBalanceSim: React.FC<BeamBalanceSimProps> = ({
       </div>
 
       {/* Summary Footer */}
+      {warning && (
+        <div className="px-4 py-2.5 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 text-xs font-medium text-amber-800 dark:text-amber-200">
+          {warning}
+        </div>
+      )}
       <div className="p-4 bg-slate-50 dark:bg-slate-800/80 rounded-xl border border-slate-200 dark:border-slate-700 flex flex-col sm:flex-row items-center justify-between gap-4">
         <div className="text-xs sm:text-sm space-y-1 w-full sm:w-auto font-mono">
           <div className="flex items-center space-x-2">
@@ -276,16 +310,27 @@ export const BeamBalanceSim: React.FC<BeamBalanceSimProps> = ({
             <strong className="text-slate-900 dark:text-white text-base">{totalRightMass.toFixed(3)} g</strong>
           </div>
           <div className="flex items-center space-x-2">
-            <span className="text-slate-500 dark:text-slate-400">Status:</span>
-            {Math.abs(massDiff) <= 0.005 ? (
-              <span className="text-emerald-600 dark:text-emerald-400 font-bold flex items-center gap-1 font-sans">
-                <Check className="w-4 h-4" /> Perfect Equilibrium Achieved!
+            <span className="text-slate-500 dark:text-slate-400">Pointer:</span>
+            {isArrested ? (
+              <span className="text-slate-500 dark:text-slate-400 font-medium font-sans">
+                Beam arrested — release the knob to read the deflection
               </span>
-            ) : massDiff > 0 ? (
-              <span className="text-amber-600 dark:text-amber-400 font-medium font-sans">Add +{(massDiff * 1000).toFixed(0)} mg to balance</span>
+            ) : Math.abs(deflectionDiv) < 0.05 ? (
+              <span className="text-emerald-600 dark:text-emerald-400 font-bold flex items-center gap-1 font-sans">
+                <Check className="w-4 h-4" /> Resting on the zero mark
+              </span>
+            ) : deflectionDiv > 0 ? (
+              <span className="text-amber-600 dark:text-amber-400 font-medium font-sans">
+                Resting right of zero — right pan is heavier
+              </span>
             ) : (
-              <span className="text-rose-600 dark:text-rose-400 font-medium font-sans">Remove {(Math.abs(massDiff) * 1000).toFixed(0)} mg</span>
+              <span className="text-rose-600 dark:text-rose-400 font-medium font-sans">
+                Resting left of zero — right pan is lighter
+              </span>
             )}
+          </div>
+          <div className="text-[11px] text-slate-500 dark:text-slate-400 font-sans">
+            Record one reading below and one above the unknown mass, then interpolate.
           </div>
         </div>
 

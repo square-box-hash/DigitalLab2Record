@@ -1,6 +1,7 @@
 import React from 'react';
 import { ExperimentConstant } from '../types/experiment';
 import { Sliders, AlertCircle } from 'lucide-react';
+import { NumberInput } from './ui/NumberInput';
 
 interface InstrumentSetupCardProps {
   constants: ExperimentConstant[];
@@ -38,7 +39,7 @@ export const InstrumentSetupCard: React.FC<InstrumentSetupCardProps> = ({
         </button>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
         {constants.map((c) => {
           const val = values[c.id] ?? c.defaultValue;
           const isZeroError = c.id.toLowerCase().includes('zeroerror');
@@ -53,7 +54,10 @@ export const InstrumentSetupCard: React.FC<InstrumentSetupCardProps> = ({
               }`}
             >
               <div className="flex items-start justify-between mb-1.5">
-                <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 leading-tight">
+                <label
+                  htmlFor={`constant-${c.id}`}
+                  className="text-xs font-semibold text-slate-700 dark:text-slate-300 leading-tight"
+                >
                   {c.label}
                 </label>
                 {c.unit && (
@@ -64,14 +68,13 @@ export const InstrumentSetupCard: React.FC<InstrumentSetupCardProps> = ({
               </div>
 
               <div className="mt-2 flex items-center space-x-2">
-                <input
-                  type="number"
-                  step={c.step ?? 0.01}
+                <NumberInput
+                  id={`constant-${c.id}`}
                   value={val}
-                  onChange={(e) => {
-                    const parsed = parseFloat(e.target.value);
-                    onChange(c.id, isNaN(parsed) ? 0 : parsed);
-                  }}
+                  step={c.step ?? 0.01}
+                  ariaLabel={`${c.label}${c.unit ? ` in ${c.unit}` : ''}`}
+                  placeholder={String(c.defaultValue)}
+                  onCommit={(next) => onChange(c.id, next)}
                   className="w-full px-3 py-1.5 text-sm font-mono font-semibold bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-slate-900 dark:text-white shadow-xs"
                 />
               </div>

@@ -102,7 +102,7 @@ export const VernierCalipersSim: React.FC<VernierCalipersSimProps> = ({ onRecord
 
         {/* SVG Drawing - High Res & Large (ViewBox 740 x 230) */}
         <div className="w-full overflow-x-auto">
-          <svg viewBox="0 0 740 230" className="w-full min-w-[650px] h-56 sm:h-64">
+          <svg viewBox="0 0 740 230" className="w-full min-w-[520px] sm:min-w-[650px] h-56 sm:h-64">
             <defs>
               <linearGradient id="metalGradLg" x1="0%" y1="0%" x2="100%" y2="100%">
                 <stop offset="0%" stopColor="#f1f5f9" />
