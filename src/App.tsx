@@ -493,6 +493,7 @@ export default function App() {
                   rows={computedRows}
                   experimentId={activeExp.id}
                   constants={activeConstants}
+                  experimentTitle={activeExp.title}
                 />
               )}
             </div>
