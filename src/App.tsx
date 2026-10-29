@@ -317,7 +317,6 @@ export default function App() {
         onTabChange={setCurrentTab}
         onResetData={handleResetRows}
         onPrint={handlePrint}
-        activeExperimentTitle={activeExp.title}
         hasGraph={Boolean(activeExp.graphConfig)}
         isDark={isDark}
         onToggleTheme={handleToggleTheme}
@@ -530,7 +529,7 @@ export default function App() {
         <div className="max-w-[1440px] mx-auto px-4 flex flex-col items-center gap-4 sm:gap-3">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3 w-full">
             <p className="font-serif italic text-sm text-stone-700 dark:text-stone-300 text-center sm:text-left">
-              CBSE Physics Practicals Companion • Class 11 Laboratory Manual
+              DigitalLab2Record · CBSE Physics Practicals Companion · Class XI
             </p>
 
             <div className="flex flex-wrap items-center justify-center gap-2">
