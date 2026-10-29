@@ -2,6 +2,7 @@ import React from 'react';
 import { ExperimentConfig, CalculationResult } from '../types/experiment';
 import { Printer, Award, FileText } from 'lucide-react';
 import { formatNumber } from '../utils/math';
+import { getExperimentNumber } from '../data/experiments';
 
 interface CbseRecordViewProps {
   experiment: ExperimentConfig;
@@ -18,6 +19,8 @@ export const CbseRecordView: React.FC<CbseRecordViewProps> = ({
   calculation,
   onPrint,
 }) => {
+  const experimentNumber = getExperimentNumber(experiment.id);
+
   const currentDate = new Date().toLocaleDateString('en-GB', {
     day: '2-digit',
     month: 'short',
@@ -55,12 +58,10 @@ export const CbseRecordView: React.FC<CbseRecordViewProps> = ({
             <span>CBSE Physics Laboratory Record</span>
             <span>Class XI – Term Practicals</span>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 text-xs border-t border-slate-200">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 pt-2 text-xs border-t border-slate-200">
             <div>
-              <span className="text-slate-500">Exp No:</span>{' '}
-              <strong className="text-slate-900 font-mono">
-                {experiment.id.toUpperCase().slice(0, 6)}
-              </strong>
+              <span className="text-slate-500">Experiment No:</span>{' '}
+              <strong className="text-slate-900 font-mono">{experimentNumber}</strong>
             </div>
             <div>
               <span className="text-slate-500">Date:</span>{' '}
@@ -69,10 +70,6 @@ export const CbseRecordView: React.FC<CbseRecordViewProps> = ({
             <div>
               <span className="text-slate-500">Section:</span>{' '}
               <strong className="text-slate-900">{experiment.section}</strong>
-            </div>
-            <div>
-              <span className="text-slate-500">Page No:</span>{' '}
-              <strong className="text-slate-900 font-mono">01</strong>
             </div>
           </div>
         </div>
@@ -194,11 +191,58 @@ export const CbseRecordView: React.FC<CbseRecordViewProps> = ({
           </div>
         </div>
 
+        {/* 6. ERROR ANALYSIS */}
+        {calculation.errorAnalysis && (
+          <div className="space-y-2">
+            <h2 className="text-xs font-extrabold uppercase tracking-widest text-indigo-900 bg-indigo-50/60 px-2 py-1 rounded inline-block border border-indigo-100">
+              6. Mean Absolute Error & Percentage Error
+            </h2>
+            <div className="overflow-x-auto border border-slate-900 rounded-lg">
+              <table className="w-full text-xs text-left border-collapse">
+                <thead>
+                  <tr className="bg-slate-100 border-b border-slate-900 font-bold">
+                    <th className="p-2 border-r border-slate-300">Quantity</th>
+                    <th className="p-2 border-r border-slate-300">Mean value</th>
+                    <th className="p-2 border-r border-slate-300">Mean absolute error</th>
+                    <th className="p-2 border-r border-slate-300">Percentage error</th>
+                    <th className="p-2">Result</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-300 font-mono">
+                  {calculation.errorAnalysis.entries.map((entry) => (
+                    <tr key={entry.symbol}>
+                      <td className="p-2 border-r border-slate-300">{entry.quantity}</td>
+                      <td className="p-2 border-r border-slate-300">
+                        {entry.mean} {entry.unit}
+                      </td>
+                      <td className="p-2 border-r border-slate-300">± {entry.meanAbsError}</td>
+                      <td className="p-2 border-r border-slate-300">{entry.percentageError}</td>
+                      <td className="p-2 font-semibold">{entry.notation}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <div className="space-y-1 pl-1 text-[11px] text-slate-700">
+              {calculation.errorAnalysis.steps.map((step, i) => (
+                <div key={i} className="flex flex-col sm:flex-row sm:items-baseline gap-0.5 sm:gap-2">
+                  <span className="font-bold shrink-0">{i + 1}. {step.label}:</span>
+                  <span className="font-mono text-slate-600">{step.substitution}</span>
+                  <span className="font-mono font-bold">= {step.result}</span>
+                </div>
+              ))}
+            </div>
+            {calculation.errorAnalysis.note && (
+              <p className="text-[11px] text-slate-600 italic pl-1">{calculation.errorAnalysis.note}</p>
+            )}
+          </div>
+        )}
+
         {/* 6. RESULT */}
         <div className="space-y-1.5 p-4 rounded-xl bg-slate-50 border-2 border-slate-900">
           <h2 className="text-xs font-extrabold uppercase tracking-widest text-slate-900 flex items-center gap-1.5">
             <Award className="w-4 h-4 text-emerald-600" />
-            6. Result
+            7. Result
           </h2>
           <p className="text-sm font-bold text-slate-900 font-mono leading-relaxed">
             {calculation.finalResult}
@@ -213,7 +257,7 @@ export const CbseRecordView: React.FC<CbseRecordViewProps> = ({
         {/* 7. PRECAUTIONS */}
         <div className="space-y-1.5">
           <h2 className="text-xs font-extrabold uppercase tracking-widest text-indigo-900 bg-indigo-50/60 px-2 py-1 rounded inline-block border border-indigo-100">
-            7. Precautions (Minimum 4 Points)
+            8. Precautions (Minimum 4 Points)
           </h2>
           <ol className="list-decimal list-inside text-xs text-slate-700 space-y-1 pl-1">
             {experiment.precautions.map((p, idx) => (
@@ -227,7 +271,7 @@ export const CbseRecordView: React.FC<CbseRecordViewProps> = ({
         {/* 8. SOURCES OF ERROR */}
         <div className="space-y-1.5">
           <h2 className="text-xs font-extrabold uppercase tracking-widest text-indigo-900 bg-indigo-50/60 px-2 py-1 rounded inline-block border border-indigo-100">
-            8. Sources of Error (Minimum 3 Points)
+            9. Sources of Error (Minimum 3 Points)
           </h2>
           <ol className="list-decimal list-inside text-xs text-slate-700 space-y-1 pl-1">
             {experiment.sourcesOfError.map((err, idx) => (

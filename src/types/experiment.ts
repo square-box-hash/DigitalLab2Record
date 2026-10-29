@@ -40,11 +40,33 @@ export interface SummaryCard {
   subtext?: string;
 }
 
+export interface ErrorAnalysisEntry {
+  symbol: string;
+  quantity: string;
+  unit: string;
+  mean: string;
+  meanAbsError: string;
+  percentageError: string;
+  /** CBSE-style statement of the result: "D = (2.15 ± 0.01) cm" */
+  notation: string;
+  /** How this entry's error was obtained, when it is a propagated one. */
+  basis?: string;
+}
+
+export interface ErrorAnalysis {
+  /** Number of repeated readings the mean and mean absolute error come from. */
+  readings: number;
+  entries: ErrorAnalysisEntry[];
+  steps: CalculationStep[];
+  note?: string;
+}
+
 export interface CalculationResult {
   steps: CalculationStep[];
   finalResult: string;
   percentageError?: PercentageError;
   summaryCards?: SummaryCard[];
+  errorAnalysis?: ErrorAnalysis;
 }
 
 export interface GraphConfig {

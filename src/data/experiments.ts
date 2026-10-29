@@ -1,5 +1,6 @@
 import { ExperimentConfig } from '../types/experiment';
 import { roundTo, calculateMean, computeLinearRegression, calculatePercentageError } from '../utils/math';
+import { buildMeanErrorAnalysis, analyseReadings } from '../utils/errorAnalysis';
 
 export const EXPERIMENTS: ExperimentConfig[] = [
   // --------------------------------------------------------------------------
@@ -105,6 +106,35 @@ export const EXPERIMENTS: ExperimentConfig[] = [
       const volume = roundTo(Math.PI * Math.pow(meanR, 2) * H, 3);
       const sphereVolume = roundTo((4 / 3) * Math.PI * Math.pow(meanR, 3), 3);
 
+      const errorAnalysis = buildMeanErrorAnalysis({
+        symbol: 'D',
+        quantity: 'Mean corrected diameter',
+        unit: 'cm',
+        values: correctedValues,
+        decimals: 3,
+        derived: [
+          {
+            symbol: 'A',
+            quantity: 'Cross-sectional area',
+            unit: 'cm²',
+            value: area,
+            decimals: 3,
+            factor: 2,
+            basis: 'A = πR² ∝ D², so ΔA/A = 2 ΔD/D',
+          },
+          {
+            symbol: 'V',
+            quantity: 'Cylinder volume',
+            unit: 'cm³',
+            value: volume,
+            decimals: 3,
+            factor: 2,
+            basis: 'V = πR²H ∝ D², so ΔV/V = 2 ΔD/D',
+          },
+        ],
+        note: 'The height H is entered once as an instrument constant, so its own uncertainty is not propagated into ΔV.',
+      });
+
       return {
         steps: [
           {
@@ -139,6 +169,7 @@ export const EXPERIMENTS: ExperimentConfig[] = [
           },
         ],
         finalResult: `Diameter D = ${meanD.toFixed(2)} cm | Radius R = ${meanR.toFixed(3)} cm | Volume V = ${volume.toFixed(3)} cm³ (${(volume * 1e-6).toExponential(3)} m³)`,
+        errorAnalysis,
         summaryCards: [
           { label: 'Mean Diameter', value: `${meanD.toFixed(2)}`, unit: 'cm' },
           { label: 'Mean Radius', value: `${meanR.toFixed(3)}`, unit: 'cm' },
@@ -301,6 +332,25 @@ export const EXPERIMENTS: ExperimentConfig[] = [
       const area_mm2 = roundTo(Math.PI * Math.pow(meanR_mm, 2), 4);
       const area_m2 = roundTo(area_mm2 * 1e-6, 8);
 
+      const errorAnalysis = buildMeanErrorAnalysis({
+        symbol: 'd',
+        quantity: 'Mean corrected diameter',
+        unit: 'mm',
+        values: correctedValues,
+        decimals: 3,
+        derived: [
+          {
+            symbol: 'A',
+            quantity: 'Cross-sectional area',
+            unit: 'mm²',
+            value: area_mm2,
+            decimals: 4,
+            factor: 2,
+            basis: 'A = πd²/4 ∝ d², so ΔA/A = 2 Δd/d',
+          },
+        ],
+      });
+
       return {
         steps: [
           {
@@ -329,6 +379,7 @@ export const EXPERIMENTS: ExperimentConfig[] = [
           },
         ],
         finalResult: `Mean Diameter d = ${meanD.toFixed(2)} mm | Radius r = ${meanR_mm.toFixed(3)} mm | Cross-sectional Area A = ${area_mm2.toFixed(4)} mm²`,
+        errorAnalysis,
         summaryCards: [
           { label: 'Mean Diameter', value: `${meanD.toFixed(2)}`, unit: 'mm' },
           { label: 'Mean Radius', value: `${meanR_mm.toFixed(3)}`, unit: 'mm' },
@@ -486,6 +537,61 @@ export const EXPERIMENTS: ExperimentConfig[] = [
       const term2 = meanH_cm / 2;
       const R = roundTo(term1 + term2, 2);
 
+      // R = l²/(6h) + h/2, so dR/dh = -l²/(6h²) + 1/2 and ΔR = |dR/dh| · Δh
+      const hStats = analyseReadings(sagittaValues_cm, 4);
+      const dRdh = meanH_cm > 0 ? Math.abs(-(l * l) / (6 * meanH_cm * meanH_cm) + 0.5) : 0;
+      const deltaR = hStats ? dRdh * hStats.meanAbsError : 0;
+      const pctR = R !== 0 ? (deltaR / R) * 100 : 0;
+
+      const errorAnalysis = hStats
+        ? {
+            readings: hStats.readings,
+            entries: [
+              {
+                symbol: 'h',
+                quantity: 'Mean sagitta',
+                unit: 'cm',
+                mean: hStats.mean.toFixed(4),
+                meanAbsError: hStats.meanAbsError.toFixed(4),
+                percentageError: `${hStats.percentageError.toFixed(2)} %`,
+                notation: `h = (${hStats.mean.toFixed(4)} ± ${hStats.meanAbsError.toFixed(4)}) cm`,
+                basis: `Mean of ${hStats.readings} readings`,
+              },
+              {
+                symbol: 'R',
+                quantity: 'Radius of curvature',
+                unit: 'cm',
+                mean: R.toFixed(2),
+                meanAbsError: deltaR.toFixed(2),
+                percentageError: `${pctR.toFixed(2)} %`,
+                notation: `R = (${R.toFixed(2)} ± ${deltaR.toFixed(2)}) cm`,
+                basis: 'ΔR = |dR/dh| · Δh, with R = l²/6h + h/2',
+              },
+            ],
+            steps: [
+              {
+                label: 'Mean sagitta (h)',
+                formula: 'h̄ = (h₁ + h₂ + … + hₙ) / n',
+                substitution: `(${sagittaValues_cm.map((v) => v.toFixed(4)).join(' + ')}) / ${hStats.readings}`,
+                result: `${hStats.mean.toFixed(4)} cm`,
+              },
+              {
+                label: 'Mean absolute error in h',
+                formula: 'Δh̄ = (|h₁ − h̄| + … + |hₙ − h̄|) / n',
+                substitution: `deviations measured from h̄ = ${hStats.mean.toFixed(4)} cm`,
+                result: `${hStats.meanAbsError.toFixed(4)} cm`,
+              },
+              {
+                label: 'Error in R by propagation',
+                formula: 'ΔR = |dR/dh| · Δh̄,  dR/dh = −l²/(6h²) + ½',
+                substitution: `|−(${l.toFixed(2)})² / (6 × (${meanH_cm.toFixed(4)})²) + 0.5| × ${hStats.meanAbsError.toFixed(4)}`,
+                result: `±${deltaR.toFixed(2)} cm (${pctR.toFixed(2)} %)`,
+              },
+            ],
+            note: 'The leg distance l is entered once as a constant, so its uncertainty is not propagated into ΔR.',
+          }
+        : undefined;
+
       return {
         steps: [
           {
@@ -520,6 +626,7 @@ export const EXPERIMENTS: ExperimentConfig[] = [
           },
         ],
         finalResult: `Radius of Curvature R = ${R.toFixed(2)} cm (Sagitta h = ${meanH_cm.toFixed(3)} cm, Leg Distance l = ${l.toFixed(2)} cm)`,
+        errorAnalysis,
         summaryCards: [
           { label: 'Mean Sagitta (h)', value: `${meanH_cm.toFixed(3)}`, unit: 'cm' },
           { label: 'Leg Spacing (l)', value: `${l.toFixed(2)}`, unit: 'cm' },
@@ -738,6 +845,55 @@ export const EXPERIMENTS: ExperimentConfig[] = [
         };
       }
 
+      // Uncertainty in the determined mass comes from how sharply the pointer can
+      // be read, divided by the sensitivity the two bracketing readings give.
+      const pointerPrecisionDiv = 0.1;
+      const sensitivityDivPerMg = bracket
+        ? Math.abs(
+            (bracket.high.deflection - bracket.low.deflection) /
+              ((bracket.high.mass - bracket.low.mass) * 1000)
+          )
+        : 0;
+      const deltaMass_g =
+        sensitivityDivPerMg > 0 ? pointerPrecisionDiv / sensitivityDivPerMg / 1000 : precision / 1000;
+      const pctMass = determinedMass && determinedMass !== 0 ? (deltaMass_g / determinedMass) * 100 : 0;
+
+      const errorAnalysis =
+        determinedMass !== null
+          ? {
+              readings: points.length,
+              entries: [
+                {
+                  symbol: 'm',
+                  quantity: 'Determined mass',
+                  unit: 'g',
+                  mean: determinedMass.toFixed(3),
+                  meanAbsError: deltaMass_g.toFixed(3),
+                  percentageError: `${pctMass.toFixed(2)} %`,
+                  notation: `m = (${determinedMass.toFixed(3)} ± ${deltaMass_g.toFixed(3)}) g`,
+                  basis: 'Δm = (pointer reading precision) / (balance sensitivity)',
+                },
+              ],
+              steps: [
+                {
+                  label: 'Sensitivity of the balance',
+                  formula: 's = Δd / Δm  (divisions per mg)',
+                  substitution: bracket
+                    ? `(${bracket.high.deflection.toFixed(2)} − (${bracket.low.deflection.toFixed(2)})) div / (${bracket.high.mass.toFixed(3)} − ${bracket.low.mass.toFixed(3)}) g`
+                    : 'needs two readings on opposite sides of R₀',
+                  result: sensitivityDivPerMg > 0 ? `${sensitivityDivPerMg.toFixed(4)} div/mg` : '—',
+                },
+                {
+                  label: 'Uncertainty in the mass',
+                  formula: 'Δm = (reading precision) / s',
+                  substitution: `${pointerPrecisionDiv} div / ${sensitivityDivPerMg > 0 ? sensitivityDivPerMg.toFixed(4) : '—'} div/mg`,
+                  result: `±${(deltaMass_g * 1000).toFixed(1)} mg (${pctMass.toFixed(2)} %)`,
+                },
+              ],
+              note: 'The pointer is read to ±0.1 division, so the uncertainty in the mass is set by how much mass one division corresponds to.',
+            }
+          : undefined;
+
       const example = points[0];
       const restingPointStep = example
         ? {
@@ -780,8 +936,9 @@ export const EXPERIMENTS: ExperimentConfig[] = [
         ],
         finalResult:
           determinedMass !== null
-            ? `Determined Mass m = ${determinedMass.toFixed(3)} g (${(determinedMass * 1e-3).toFixed(6)} kg) ± ${precision} mg`
+            ? `Determined Mass m = (${determinedMass.toFixed(3)} ± ${deltaMass_g.toFixed(3)}) g (${(determinedMass * 1e-3).toFixed(6)} kg)`
             : `Determined Mass m = not yet determinable — record readings on both sides of the zero resting point`,
+        errorAnalysis,
         summaryCards: [
           {
             label: 'Determined Mass',
@@ -1472,3 +1629,9 @@ export const EXPERIMENTS: ExperimentConfig[] = [
     ],
   },
 ];
+
+/** Two-digit lab number for an experiment, used on the printed record sheet. */
+export const getExperimentNumber = (id: string): string => {
+  const index = EXPERIMENTS.findIndex((exp) => exp.id === id);
+  return index >= 0 ? String(index + 1).padStart(2, '0') : '—';
+};
