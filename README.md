@@ -46,6 +46,12 @@ You can open and edit this codebase natively in **Visual Studio Code** or any ed
 
 ---
 
+## 💾 Saving Your Work
+
+Observations and instrument constants are autosaved to this browser's local storage about half a second after you stop typing, so a refresh, a closed tab or a dropped connection no longer loses a session. The workspace header shows the time of the last save, and **Clear saved data** in the footer wipes the stored readings and restores the sample data for every experiment.
+
+To hand a record in or open it in Excel, use **Export CSV** in the observation table: it writes the constants, the full observation table (derived columns included) and the final result as a UTF-8 CSV with `#` comment lines, and the printed A4 record is still available from the Record File tab.
+
 ## 📁 Project Structure
 
 ```
