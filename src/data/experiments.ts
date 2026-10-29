@@ -67,7 +67,7 @@ export const EXPERIMENTS: ExperimentConfig[] = [
     columns: [
       { id: 'obs', label: 'Obs. No.', unit: '#' },
       { id: 'msr', label: 'Main Scale Reading (MSR)', unit: 'cm', decimalPlaces: 1, placeholder: '2.1' },
-      { id: 'vsr', label: 'Coinciding Vernier Div. (n)', unit: 'div', decimalPlaces: 0, placeholder: '4' },
+      { id: 'vsr', label: 'Coinciding Vernier Div. (n)', unit: 'div', decimalPlaces: 0, placeholder: '4', showMean: false },
       { id: 'measured', label: 'Measured Value (MSR + n × LC)', unit: 'cm', isDerived: true, decimalPlaces: 2 },
       { id: 'corrected', label: 'Corrected Diameter (D = Measured - e)', unit: 'cm', isDerived: true, decimalPlaces: 2 },
     ],
@@ -260,7 +260,7 @@ export const EXPERIMENTS: ExperimentConfig[] = [
     columns: [
       { id: 'obs', label: 'Obs. No.', unit: '#' },
       { id: 'psr', label: 'Pitch Scale Reading (PSR)', unit: 'mm', decimalPlaces: 0, placeholder: '0' },
-      { id: 'csr', label: 'Circular Scale Reading (n)', unit: 'div', decimalPlaces: 0, placeholder: '82' },
+      { id: 'csr', label: 'Circular Scale Reading (n)', unit: 'div', decimalPlaces: 0, placeholder: '82', showMean: false },
       { id: 'observed', label: 'Observed Reading (PSR + n × LC)', unit: 'mm', isDerived: true, decimalPlaces: 2 },
       { id: 'corrected', label: 'Corrected Diameter (d)', unit: 'mm', isDerived: true, decimalPlaces: 2 },
     ],
@@ -597,12 +597,14 @@ export const EXPERIMENTS: ExperimentConfig[] = [
       'The physical balance is based on the Principle of Moments. In an ideal beam balance with equal arms (a₁ = a₂) and identical pans, equilibrium occurs when the clockwise torque equals the anticlockwise torque:\n\n' +
       'm₁ · g · a₁ = m₂ · g · a₂  =>  m₁ = m₂\n\n' +
       'In practice, due to friction and air damping, resting point is determined using the Method of Swings: recording consecutive turning points on the left (L₁, L₂) and right (R₁, R₂) of the central scale:\n' +
-      'Resting Point R = ½ [ (L₁ + L₂) / 2 + (R₁ + R₂) / 2 ]',
+      'Resting Point R = ½ [ (L₁ + L₂) / 2 + (R₁ + R₂) / 2 ]\n\n' +
+      'The unknown mass is NOT read off directly from the weights placed in the pan. Two weight sets are found — one lighter and one heavier than the body — whose resting points fall on opposite sides of the zero resting point R₀. The mass is then obtained by linear interpolation of the deflection d = R − R₀ between those two readings, which is what removes the effect of friction at the knife edges.',
     formula:
-      'Zero Resting Point R₀ = Resting point with empty pans\n' +
-      'Loaded Resting Point R = Resting point with unknown mass in left pan and weights in right pan\n' +
-      'Deflection Method: Unknown Mass = Gram weights + Milligram weights\n' +
-      'Sensitivity = Deflection / Added mass (divisions / mg)',
+      'Zero Resting Point R₀ = resting point with empty pans\n' +
+      'Loaded Resting Point R = ¼ (L₁ + L₂ + R₁ + R₂)\n' +
+      'Deflection d = R − R₀  (positive when the weights exceed the unknown mass)\n' +
+      'Unknown Mass m = m₁ + (m₂ − m₁) · (0 − d₁) / (d₂ − d₁)\n' +
+      '  where (m₁, d₁) and (m₂, d₂) are consecutive readings with d of opposite sign',
     formulaLatex: 'm_1 = m_2 \\quad \\text{(at equilibrium under equal arm lengths)}',
     constants: [
       {
@@ -623,55 +625,176 @@ export const EXPERIMENTS: ExperimentConfig[] = [
       },
     ],
     columns: [
-      { id: 'obs', label: 'Obs. No.', unit: '#' },
+      { id: 'obs', label: 'Obs. No.', unit: '#', showMean: false },
       { id: 'gramWeights', label: 'Gram Weights (x)', unit: 'g', decimalPlaces: 0, placeholder: '24' },
       { id: 'mgWeights', label: 'Milligram Weights (y)', unit: 'mg', decimalPlaces: 0, placeholder: '360' },
-      { id: 'l1', label: 'Left Turn L₁', unit: 'div', decimalPlaces: 1, placeholder: '8.2' },
-      { id: 'r1', label: 'Right Turn R₁', unit: 'div', decimalPlaces: 1, placeholder: '11.8' },
-      { id: 'totalMass_g', label: 'Total Mass (x + y/1000)', unit: 'g', isDerived: true, decimalPlaces: 3 },
+      { id: 'l1', label: 'Left Turn L₁', unit: 'div', decimalPlaces: 1, placeholder: '8.4' },
+      { id: 'l2', label: 'Left Turn L₂', unit: 'div', decimalPlaces: 1, placeholder: '9.0' },
+      { id: 'r1', label: 'Right Turn R₁', unit: 'div', decimalPlaces: 1, placeholder: '8.9' },
+      { id: 'r2', label: 'Right Turn R₂', unit: 'div', decimalPlaces: 1, placeholder: '8.5' },
+      { id: 'restingPoint', label: 'Resting Point R', unit: 'div', isDerived: true, decimalPlaces: 2 },
+      { id: 'deflection', label: 'Deflection (R − R₀)', unit: 'div', isDerived: true, decimalPlaces: 2, showMean: false },
+      { id: 'totalMass_g', label: 'Weights in Pan (x + y/1000)', unit: 'g', isDerived: true, decimalPlaces: 3 },
     ],
     initialRows: [
-      { obs: 1, gramWeights: 24, mgWeights: 365, l1: 8.2, r1: 11.8 },
-      { obs: 2, gramWeights: 24, mgWeights: 364, l1: 8.4, r1: 11.6 },
-      { obs: 3, gramWeights: 24, mgWeights: 365, l1: 8.3, r1: 11.7 },
-      { obs: 4, gramWeights: 24, mgWeights: 366, l1: 8.1, r1: 11.9 },
+      { obs: 1, gramWeights: 24, mgWeights: 300, l1: 8.4, l2: 9.0, r1: 8.9, r2: 8.5 },
+      { obs: 2, gramWeights: 24, mgWeights: 340, l1: 9.1, l2: 9.7, r1: 9.7, r2: 9.3 },
+      { obs: 3, gramWeights: 24, mgWeights: 380, l1: 10.0, l2: 10.6, r1: 10.5, r2: 10.1 },
+      { obs: 4, gramWeights: 24, mgWeights: 400, l1: 10.4, l2: 11.0, r1: 10.9, r2: 10.5 },
     ],
-    calculateRow: (row) => {
-      const g = Number(row.gramWeights) || 0;
-      const mg = Number(row.mgWeights) || 0;
-      const totalMass_g = roundTo(g + mg / 1000, 3);
+    calculateRow: (row, constants) => {
+      const zeroRestingPoint = Number(constants.zeroRestingPoint ?? 10);
+      const gramWeights = Number(row.gramWeights) || 0;
+      const mgWeights = Number(row.mgWeights) || 0;
+      const l1 = Number(row.l1) || 0;
+      const l2 = Number(row.l2) || 0;
+      const r1 = Number(row.r1) || 0;
+      const r2 = Number(row.r2) || 0;
+
+      const restingPoint = roundTo((l1 + l2 + r1 + r2) / 4, 2);
+      const deflection = roundTo(restingPoint - zeroRestingPoint, 2);
+      const totalMass_g = roundTo(gramWeights + mgWeights / 1000, 3);
 
       return {
         ...row,
+        restingPoint,
+        deflection,
         totalMass_g,
       };
     },
-    calculateResult: (rows) => {
-      const masses = rows
-        .map((r) => r.totalMass_g)
-        .filter((v) => typeof v === 'number' && !isNaN(v) && v > 0);
-      const meanMass = calculateMean(masses, 3);
+    calculateResult: (rows, constants) => {
+      const zeroRestingPoint = Number(constants.zeroRestingPoint ?? 10);
+      const precision = Number(constants.balancePrecision ?? 1);
+
+      interface BalancePoint {
+        mass: number;
+        deflection: number;
+      }
+
+      const points: BalancePoint[] = rows
+        .filter(
+          (r) =>
+            typeof r.totalMass_g === 'number' &&
+            r.totalMass_g > 0 &&
+            typeof r.deflection === 'number' &&
+            !isNaN(r.deflection)
+        )
+        .map((r) => ({ mass: r.totalMass_g, deflection: r.deflection }))
+        .sort((a, b) => a.mass - b.mass);
+
+      const exact = points.find((p) => Math.abs(p.deflection) < 1e-9);
+
+      let bracket: { low: BalancePoint; high: BalancePoint } | null = null;
+      for (let i = 0; i < points.length - 1; i += 1) {
+        const low = points[i];
+        const high = points[i + 1];
+        const straddles =
+          (low.deflection < 0 && high.deflection > 0) ||
+          (low.deflection > 0 && high.deflection < 0);
+        if (!straddles) continue;
+        if (
+          !bracket ||
+          Math.abs(low.deflection) + Math.abs(high.deflection) <
+            Math.abs(bracket.low.deflection) + Math.abs(bracket.high.deflection)
+        ) {
+          bracket = { low, high };
+        }
+      }
+
+      let determinedMass: number | null = null;
+      let interpolationStep = {
+        formula: 'm = m₁ + (m₂ − m₁) · (0 − d₁) / (d₂ − d₁)',
+        substitution: '—',
+        result: '—',
+      };
+
+      if (exact) {
+        determinedMass = roundTo(exact.mass, 3);
+        interpolationStep = {
+          formula: 'R = R₀  ⇒  m = weights in pan',
+          substitution: `Deflection is zero at ${exact.mass.toFixed(3)} g`,
+          result: `${determinedMass.toFixed(3)} g`,
+        };
+      } else if (bracket) {
+        const { low, high } = bracket;
+        const fraction = (0 - low.deflection) / (high.deflection - low.deflection);
+        determinedMass = roundTo(low.mass + (high.mass - low.mass) * fraction, 3);
+        interpolationStep = {
+          formula: 'm = m₁ + (m₂ − m₁) · (0 − d₁) / (d₂ − d₁)',
+          substitution:
+            `${low.mass.toFixed(3)} + (${high.mass.toFixed(3)} − ${low.mass.toFixed(3)}) × ` +
+            `(0 − (${low.deflection.toFixed(2)})) / (${high.deflection.toFixed(2)} − (${low.deflection.toFixed(2)}))`,
+          result: `${determinedMass.toFixed(3)} g`,
+        };
+      } else {
+        interpolationStep = {
+          formula: 'm = m₁ + (m₂ − m₁) · (0 − d₁) / (d₂ − d₁)',
+          substitution:
+            'No two readings straddle zero deflection — add one weight set below and one above the unknown mass.',
+          result: 'Not yet determinable',
+        };
+      }
+
+      const example = points[0];
+      const restingPointStep = example
+        ? {
+            formula: 'R = ¼ (L₁ + L₂ + R₁ + R₂)',
+            substitution: `Row with ${example.mass.toFixed(3)} g in the pan: ¼ (L₁ + L₂ + R₁ + R₂) = ${(example.deflection + zeroRestingPoint).toFixed(2)} div`,
+            result: `R = ${(example.deflection + zeroRestingPoint).toFixed(2)} div (d = ${example.deflection.toFixed(2)} div)`,
+          }
+        : {
+            formula: 'R = ¼ (L₁ + L₂ + R₁ + R₂)',
+            substitution: '—',
+            result: '—',
+          };
 
       return {
         steps: [
           {
-            label: 'Mass summation',
-            formula: 'Mass = Standard Gram Weights + Milligram Weights / 1000',
-            substitution: 'Summing brass gram weights with aluminium fractional weights',
-            result: 'Direct mass balance',
+            label: 'Zero Resting Point (R₀)',
+            formula: 'R₀ = resting point with empty pans',
+            substitution: `Read from the balance with both pans empty`,
+            result: `${zeroRestingPoint.toFixed(2)} div`,
           },
           {
-            label: 'Mean Unknown Mass',
-            formula: 'm̄ = ∑ m_i / n',
-            substitution: `(${masses.join(' + ')}) / ${masses.length}`,
-            result: `${meanMass.toFixed(3)} g`,
+            label: 'Loaded Resting Point (R) from turning points',
+            formula: restingPointStep.formula,
+            substitution: restingPointStep.substitution,
+            result: restingPointStep.result,
+          },
+          {
+            label: 'Deflection from the zero point',
+            formula: 'd = R − R₀',
+            substitution: `d = ${(example ? (example.deflection + zeroRestingPoint).toFixed(2) : '—')} − ${zeroRestingPoint.toFixed(2)}`,
+            result: example ? `${example.deflection.toFixed(2)} div` : '—',
+          },
+          {
+            label: 'Interpolation for the unknown mass',
+            formula: interpolationStep.formula,
+            substitution: interpolationStep.substitution,
+            result: interpolationStep.result,
           },
         ],
-        finalResult: `Determined Mass m = ${meanMass.toFixed(3)} g (${(meanMass * 1e-3).toFixed(6)} kg)`,
+        finalResult:
+          determinedMass !== null
+            ? `Determined Mass m = ${determinedMass.toFixed(3)} g (${(determinedMass * 1e-3).toFixed(6)} kg) ± ${precision} mg`
+            : `Determined Mass m = not yet determinable — record readings on both sides of the zero resting point`,
         summaryCards: [
-          { label: 'Mean Mass', value: `${meanMass.toFixed(3)}`, unit: 'g' },
-          { label: 'Mass in SI', value: `${(meanMass * 1e-3).toFixed(5)}`, unit: 'kg' },
-          { label: 'Balance Precision', value: '±0.001', unit: 'g (1 mg)' },
+          {
+            label: 'Determined Mass',
+            value: determinedMass !== null ? `${determinedMass.toFixed(3)}` : '—',
+            unit: 'g',
+          },
+          { label: 'Zero Resting Point (R₀)', value: `${zeroRestingPoint.toFixed(2)}`, unit: 'div' },
+          {
+            label: 'Bracketing Readings',
+            value: bracket ? '2' : exact ? '1 (exact)' : '0',
+            unit: 'rows',
+            subtext: bracket
+              ? `${bracket.low.mass.toFixed(3)} g to ${bracket.high.mass.toFixed(3)} g`
+              : 'Add readings on both sides of R₀',
+          },
+          { label: 'Balance Precision', value: `±${precision}`, unit: 'mg' },
         ],
       };
     },
@@ -771,8 +894,8 @@ export const EXPERIMENTS: ExperimentConfig[] = [
       { id: 'q', label: 'Force Q (Hanger + Weights)', unit: 'gf', decimalPlaces: 0, placeholder: '100' },
       { id: 'theta', label: 'Angle Between P & Q (θ)', unit: '°', decimalPlaces: 1, placeholder: '83.0' },
       { id: 'resultant', label: 'Resultant R', unit: 'gf', isDerived: true, decimalPlaces: 1 },
-      { id: 'diff', label: 'Difference |R - W|', unit: 'gf', isDerived: true, decimalPlaces: 1 },
-      { id: 'errorPct', label: 'Error %', unit: '%', isDerived: true, decimalPlaces: 2 },
+      { id: 'diff', label: 'Difference |R - W|', unit: 'gf', isDerived: true, decimalPlaces: 1, showMean: false },
+      { id: 'errorPct', label: 'Error %', unit: '%', isDerived: true, decimalPlaces: 2, showMean: false },
     ],
     initialRows: [
       { obs: 1, p: 100, q: 100, theta: 83.0 },
@@ -982,7 +1105,9 @@ export const EXPERIMENTS: ExperimentConfig[] = [
         .filter((r) => r.extension > 0 && r.load > 0)
         .map((r) => ({ x: r.extension, y: r.load }));
 
-      const regression = computeLinearRegression(validPoints);
+      // A load-extension line must pass through the origin; a free intercept
+      // would bend the slope (and hence k) away from the CBSE construction.
+      const regression = computeLinearRegression(validPoints, { throughOrigin: true });
       const slope = regression ? regression.slope : 24.5; // g/cm
       // k = slope(g/cm) * 1e-3 kg * g / (1e-2 m) = slope * 0.1 * g
       const kFromGraph = roundTo(slope * 0.1 * g, 1);
@@ -1164,7 +1289,7 @@ export const EXPERIMENTS: ExperimentConfig[] = [
       { id: 't2', label: 'Time t₂', unit: 's', decimalPlaces: 1, placeholder: '34.0' },
       { id: 'meanTime', label: 'Mean Time (t)', unit: 's', isDerived: true, decimalPlaces: 2 },
       { id: 'period', label: 'Period T = t/20', unit: 's', isDerived: true, decimalPlaces: 3 },
-      { id: 'tSquared', label: 'T²', unit: 's²', isDerived: true, decimalPlaces: 3 },
+      { id: 'tSquared', label: 'T²', unit: 's²', isDerived: true, decimalPlaces: 3, showMean: false },
       { id: 'l_over_t2', label: 'L / T²', unit: 'm/s²', isDerived: true, decimalPlaces: 3 },
     ],
     initialRows: [
@@ -1207,7 +1332,8 @@ export const EXPERIMENTS: ExperimentConfig[] = [
         .filter((r) => r.effLength_m > 0 && r.tSquared > 0)
         .map((r) => ({ x: r.effLength_m, y: r.tSquared }));
 
-      const regression = computeLinearRegression(validPoints);
+      // T^2 = (4*pi^2/g) * L passes through the origin, so constrain the fit.
+      const regression = computeLinearRegression(validPoints, { throughOrigin: true });
       // Slope of T^2 vs L is (4 pi^2 / g)
       const slope = regression ? regression.slope : 4.028;
       const gCalculated = slope > 0 ? roundTo((4 * Math.PI * Math.PI) / slope, 2) : 9.8;
