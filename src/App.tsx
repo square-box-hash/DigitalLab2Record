@@ -10,6 +10,7 @@ import { CbseRecordView } from './components/CbseRecordView';
 import { VivaVoceAccordion } from './components/VivaVoceAccordion';
 import { TheoryView } from './components/TheoryView';
 import { SimulatorContainer } from './components/simulations/SimulatorContainer';
+import { MobileTabBar } from './components/MobileTabBar';
 import { buildRowsCsv, downloadCsv } from './utils/export';
 import {
   Menu,
@@ -320,7 +321,7 @@ export default function App() {
       />
 
       {/* Main Layout Area */}
-      <div className="flex-1 max-w-7xl w-full mx-auto flex">
+      <div className="flex-1 max-w-[1440px] w-full mx-auto flex">
         {/* Sidebar */}
         <Sidebar
           experiments={EXPERIMENTS}
@@ -333,7 +334,7 @@ export default function App() {
         />
 
         {/* Content Pane */}
-        <main className="flex-1 min-w-0 p-4 sm:p-6 lg:p-8 space-y-6">
+        <main className="flex-1 min-w-0 px-3 py-4 sm:px-6 sm:py-6 lg:px-8 lg:py-8 space-y-5 sm:space-y-6 pb-24 lg:pb-8">
           {/* Mobile Top Bar */}
           <div className="no-print lg:hidden flex items-center justify-between bg-white dark:bg-stone-900 p-3.5 rounded-xl border border-stone-200 dark:border-stone-800 shadow-2xs">
             <button
@@ -349,7 +350,7 @@ export default function App() {
           </div>
 
           {/* Editorial Annual Report Hero Banner */}
-          <div className="no-print bg-white dark:bg-[#12151e] rounded-2xl border border-stone-200/90 dark:border-stone-800/90 shadow-sm p-6 sm:p-7 space-y-3 transition-colors">
+          <div className="no-print bg-white dark:bg-[#12151e] rounded-2xl border border-stone-200/90 dark:border-stone-800/90 shadow-sm p-5 sm:p-7 xl:p-8 space-y-3 transition-colors">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <div className="flex items-center space-x-2 text-xs font-mono">
                 <span className="px-2.5 py-1 rounded-md bg-amber-500/10 text-amber-800 dark:text-amber-400 font-bold uppercase tracking-widest text-[10px] border border-amber-500/20">
@@ -376,7 +377,7 @@ export default function App() {
             </div>
 
             {/* Editorial Serif Title */}
-            <h1 className="font-serif italic font-bold text-2xl sm:text-3xl text-stone-900 dark:text-stone-50 tracking-tight leading-snug">
+            <h1 className="font-serif italic font-bold text-xl sm:text-3xl text-stone-900 dark:text-stone-50 tracking-tight leading-snug">
               {activeExp.title}
             </h1>
             
@@ -521,8 +522,8 @@ export default function App() {
       </div>
 
       {/* Footer */}
-      <footer className="no-print bg-white dark:bg-[#0c0e14] border-t border-stone-200/80 dark:border-stone-800/80 py-7 mt-12 text-center text-xs text-stone-500 dark:text-stone-400 transition-colors">
-        <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <footer className="no-print bg-white dark:bg-[#0c0e14] border-t border-stone-200/80 dark:border-stone-800/80 py-7 mt-12 mb-16 lg:mb-0 text-center text-xs text-stone-500 dark:text-stone-400 transition-colors">
+        <div className="max-w-[1440px] mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="font-serif italic text-sm text-stone-700 dark:text-stone-300">
             CBSE Physics Practicals Companion • Class 11 Laboratory Manual
           </p>
@@ -539,6 +540,13 @@ export default function App() {
           </div>
         </div>
       </footer>
+
+      {/* Phone navigation: the header dock only fits from lg upwards. */}
+      <MobileTabBar
+        currentTab={currentTab}
+        onTabChange={setCurrentTab}
+        hasGraph={Boolean(activeExp.graphConfig)}
+      />
     </div>
   );
 }

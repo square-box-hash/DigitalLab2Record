@@ -74,7 +74,7 @@ export const ScrewGaugeSim: React.FC<ScrewGaugeSimProps> = ({
         </div>
 
         <div className="w-full overflow-x-auto">
-          <svg viewBox="0 0 720 220" className="w-full min-w-[650px] h-56 sm:h-64">
+          <svg viewBox="0 0 720 220" className="w-full min-w-[520px] sm:min-w-[650px] h-56 sm:h-64">
             <defs>
               <linearGradient id="frameGradLg" x1="0%" y1="0%" x2="100%" y2="100%">
                 <stop offset="0%" stopColor="#334155" />

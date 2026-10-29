@@ -148,7 +148,7 @@ export const BeamBalanceSim: React.FC<BeamBalanceSimProps> = ({
         </div>
 
         <div className="w-full overflow-x-auto">
-          <svg viewBox="0 0 720 240" className="w-full min-w-[650px] h-64 sm:h-72">
+          <svg viewBox="0 0 720 240" className="w-full min-w-[520px] sm:min-w-[650px] h-64 sm:h-72">
             <defs>
               <linearGradient id="beamMetalLg" x1="0%" y1="0%" x2="100%" y2="0%">
                 <stop offset="0%" stopColor="#cbd5e1" />

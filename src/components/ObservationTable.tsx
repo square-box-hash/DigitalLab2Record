@@ -65,7 +65,7 @@ export const ObservationTable: React.FC<ObservationTableProps> = ({
           </p>
         </div>
 
-        <div className="flex items-center space-x-2 self-start sm:self-auto">
+        <div className="flex flex-wrap items-center gap-2 self-start sm:self-auto">
           {onExportCsv && (
             <button
               onClick={onExportCsv}
@@ -98,7 +98,7 @@ export const ObservationTable: React.FC<ObservationTableProps> = ({
 
       {/* Table Container */}
       <div className="overflow-x-auto">
-        <table className="w-full text-left border-collapse">
+        <table className="w-full min-w-[640px] text-left border-collapse">
           <thead>
             <tr className="bg-slate-50/90 dark:bg-slate-800/80 border-b border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-700 dark:text-slate-200">
               {columns.map((col) => (
@@ -222,6 +222,10 @@ export const ObservationTable: React.FC<ObservationTableProps> = ({
           </tfoot>
         </table>
       </div>
+
+      <p className="sm:hidden px-4 py-2.5 text-[11px] text-slate-400 dark:text-slate-500 border-t border-slate-100 dark:border-slate-800">
+        Swipe the table sideways to reach every column.
+      </p>
     </div>
   );
 };

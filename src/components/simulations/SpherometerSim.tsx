@@ -98,7 +98,7 @@ export const SpherometerSim: React.FC<SpherometerSimProps> = ({
         </div>
 
         <div className="w-full overflow-x-auto">
-          <svg viewBox="0 0 720 230" className="w-full min-w-[650px] h-60 sm:h-68">
+          <svg viewBox="0 0 720 230" className="w-full min-w-[520px] sm:min-w-[650px] h-60 sm:h-68">
             <defs>
               <linearGradient id="brassGradLg" x1="0%" y1="0%" x2="100%" y2="100%">
                 <stop offset="0%" stopColor="#fef08a" />
