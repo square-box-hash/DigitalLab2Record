@@ -13,17 +13,16 @@ Visit the deployed app here: https://digitallab2record.vercel.app/
 You can open and edit this codebase natively in **Visual Studio Code** or any editor of your choice with zero vendor lock-in.
 
 ### Prerequisites
-- **Node.js**: v18.0.0 or later (Node 20+ recommended)
+- **Node.js**: 20.19+ or 22.12+ (required by Vite 8)
 - **npm** or **yarn** / **pnpm**
 
 ### Step-by-Step Setup
 1. **Clone or Download the Project**:
-   - In Google AI Studio, click **Export to GitHub** or **Download ZIP** from the top menu.
-   - Extract the project into your preferred local directory.
+   - Clone the repository, or download the ZIP from GitHub and extract it.
 
 2. **Open in VS Code**:
    ```bash
-   cd cbse-physics-practicals-companion
+   cd DigitalLab2Record
    code .
    ```
 

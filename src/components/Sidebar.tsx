@@ -85,7 +85,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <div>
             <div className="flex items-center justify-between px-2 mb-2">
               <span className="text-[10px] font-mono font-bold text-stone-400 dark:text-stone-500 uppercase tracking-widest">
-                Section A: Mechanics & Matter
+                Section A: Mechanics & Measurements
               </span>
               <span className="text-[10px] bg-stone-200/70 dark:bg-stone-800 text-stone-600 dark:text-stone-400 font-mono font-bold px-1.5 py-0.2 rounded">
                 {sectionA.length}
@@ -148,7 +148,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <div>
             <div className="flex items-center justify-between px-2 mb-2">
               <span className="text-[10px] font-mono font-bold text-stone-400 dark:text-stone-500 uppercase tracking-widest">
-                Section B: Oscillations & Gravity
+                Section B: Oscillations & Gravitation
               </span>
               <span className="text-[10px] bg-stone-200/70 dark:bg-stone-800 text-stone-600 dark:text-stone-400 font-mono font-bold px-1.5 py-0.2 rounded">
                 {sectionB.length}

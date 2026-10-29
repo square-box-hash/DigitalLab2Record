@@ -99,6 +99,7 @@ export const EXPERIMENTS: ExperimentConfig[] = [
         .filter((v) => typeof v === 'number' && !isNaN(v) && v > 0);
       const meanD = calculateMean(correctedValues, 2);
       const meanR = roundTo(meanD / 2, 3);
+      const lc = roundTo((Number(constants.msd) || 0.1) / (Number(constants.totalVsd) || 10), 4);
       const H = Number(constants.cylinderHeight) || 4.85;
       const area = roundTo(Math.PI * Math.pow(meanR, 2), 3);
       const volume = roundTo(Math.PI * Math.pow(meanR, 2) * H, 3);
@@ -109,8 +110,8 @@ export const EXPERIMENTS: ExperimentConfig[] = [
           {
             label: 'Least Count calculation',
             formula: 'LC = 1 MSD / Total Vernier Divisions',
-            substitution: `0.1 cm / ${constants.totalVsd} = 0.01 cm (0.1 mm)`,
-            result: '0.01 cm',
+            substitution: `${constants.msd} cm / ${constants.totalVsd} = ${lc} cm (${roundTo(lc * 10, 3)} mm)`,
+            result: `${lc} cm`,
           },
           {
             label: 'Mean Corrected Diameter (D)',
@@ -293,6 +294,7 @@ export const EXPERIMENTS: ExperimentConfig[] = [
         .map((r) => r.corrected)
         .filter((v) => typeof v === 'number' && !isNaN(v) && v > 0);
       const meanD = calculateMean(correctedValues, 2);
+      const lc = roundTo((Number(constants.pitch) || 1.0) / (Number(constants.circularDivisions) || 100), 4);
       const meanD_cm = roundTo(meanD / 10, 3);
       const meanR_mm = roundTo(meanD / 2, 3);
       const meanR_cm = roundTo(meanR_mm / 10, 4);
@@ -304,8 +306,8 @@ export const EXPERIMENTS: ExperimentConfig[] = [
           {
             label: 'Least Count calculation',
             formula: 'LC = Pitch / Circular Divisions',
-            substitution: `${constants.pitch} mm / ${constants.circularDivisions} = 0.01 mm`,
-            result: '0.01 mm (10 µm)',
+            substitution: `${constants.pitch} mm / ${constants.circularDivisions} = ${lc} mm`,
+            result: `${lc} mm (${roundTo(lc * 1000, 2)} µm)`,
           },
           {
             label: 'Mean Corrected Diameter (d)',
@@ -478,6 +480,7 @@ export const EXPERIMENTS: ExperimentConfig[] = [
         .filter((v) => typeof v === 'number' && !isNaN(v) && v > 0);
       const meanH_cm = calculateMean(sagittaValues_cm, 3);
       const l = Number(constants.legDistance) || 4.25;
+      const lc = roundTo((Number(constants.pitch) || 1.0) / (Number(constants.divisions) || 100), 4);
 
       const term1 = meanH_cm > 0 ? (l * l) / (6 * meanH_cm) : 0;
       const term2 = meanH_cm / 2;
@@ -488,8 +491,8 @@ export const EXPERIMENTS: ExperimentConfig[] = [
           {
             label: 'Least Count calculation',
             formula: 'LC = Pitch / Circular Divisions',
-            substitution: `${constants.pitch} mm / ${constants.divisions} = 0.01 mm = 0.001 cm`,
-            result: '0.001 cm',
+            substitution: `${constants.pitch} mm / ${constants.divisions} = ${lc} mm = ${roundTo(lc / 10, 4)} cm`,
+            result: `${roundTo(lc / 10, 4)} cm`,
           },
           {
             label: 'Mean Sagitta (h)',
@@ -820,7 +823,7 @@ export const EXPERIMENTS: ExperimentConfig[] = [
       {
         category: 'Apparatus & Errors',
         q: 'Why must the balance always be arrested before changing weights?',
-        a: 'Lifting or placing weights while the beam is free exerts shock shocks on the sharp agate knife-edges, causing chipping and dulling of the pivot edges.',
+        a: 'Lifting or placing weights while the beam is free delivers a sudden shock to the sharp agate knife-edges, chipping and dulling the pivot edges.',
       },
       {
         category: 'Apparatus & Errors',
