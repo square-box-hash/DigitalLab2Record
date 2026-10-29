@@ -49,6 +49,16 @@ export function buildRowsCsv(
   lines.push('');
   lines.push(`# Result: ${escapeCell(calculation.finalResult)}`);
 
+  if (calculation.errorAnalysis) {
+    lines.push('');
+    lines.push('# Error analysis');
+    calculation.errorAnalysis.entries.forEach((entry) => {
+      lines.push(
+        `# ${escapeCell(entry.quantity)}: ${escapeCell(entry.notation)} (${entry.percentageError})`
+      );
+    });
+  }
+
   return lines.join('\r\n');
 }
 

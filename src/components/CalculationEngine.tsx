@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { CalculationResult } from '../types/experiment';
-import { Calculator, CheckCircle2, ChevronDown, ChevronUp, Copy, Check, ArrowRight, Percent, Award } from 'lucide-react';
+import { Calculator, CheckCircle2, ChevronDown, ChevronUp, Copy, Check, ArrowRight, Percent, Award, Sigma } from 'lucide-react';
 
 interface CalculationEngineProps {
   calculation: CalculationResult;
@@ -106,6 +106,74 @@ export const CalculationEngine: React.FC<CalculationEngineProps> = ({
               )}
             </div>
           ))}
+        </div>
+      )}
+
+      {/* Mean absolute error and percentage error */}
+      {calculation.errorAnalysis && (
+        <div className="p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 space-y-3">
+          <div className="flex items-start gap-2.5">
+            <div className="w-8 h-8 shrink-0 rounded-lg bg-amber-500/15 text-amber-700 dark:text-amber-400 flex items-center justify-center">
+              <Sigma className="w-4 h-4" />
+            </div>
+            <div>
+              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-200">
+                Error Analysis
+              </h4>
+              <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                Mean absolute error and percentage error from {calculation.errorAnalysis.readings} readings
+              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-2">
+            {calculation.errorAnalysis.entries.map((entry) => (
+              <div
+                key={entry.symbol}
+                className="p-3 rounded-xl bg-white dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80"
+              >
+                <div className="flex items-baseline justify-between gap-2">
+                  <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">
+                    {entry.quantity}
+                  </span>
+                  <span className="text-[10px] font-mono font-bold text-amber-700 dark:text-amber-400 bg-amber-500/10 px-1.5 py-0.5 rounded whitespace-nowrap">
+                    {entry.percentageError}
+                  </span>
+                </div>
+                <div className="mt-1 font-mono text-[13px] font-bold text-slate-900 dark:text-white break-words">
+                  {entry.notation}
+                </div>
+                {entry.basis && (
+                  <div className="mt-1 text-[10px] text-slate-400 dark:text-slate-500 leading-snug">
+                    {entry.basis}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+
+          <ol className="space-y-1.5">
+            {calculation.errorAnalysis.steps.map((step, idx) => (
+              <li
+                key={idx}
+                className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-2 text-[11px] rounded-lg bg-slate-50/70 dark:bg-slate-800/40 border border-slate-200/70 dark:border-slate-700/60 px-2.5 py-2"
+              >
+                <span className="font-bold text-slate-700 dark:text-slate-200 shrink-0">
+                  {idx + 1}. {step.label}
+                </span>
+                <span className="font-mono text-slate-500 dark:text-slate-400 break-words">
+                  {step.substitution}
+                </span>
+                <span className="font-mono font-bold text-slate-900 dark:text-white sm:ml-auto shrink-0">
+                  = {step.result}
+                </span>
+              </li>
+            ))}
+          </ol>
+
+          {calculation.errorAnalysis.note && (
+            <p className="text-[11px] text-slate-500 dark:text-slate-400">{calculation.errorAnalysis.note}</p>
+          )}
         </div>
       )}
 
