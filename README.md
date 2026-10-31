@@ -46,11 +46,13 @@ None of these are physics problems. They're bookkeeping problems sitting on top 
 
 ## 🙋 Where it came from
 
-I'm a student. I built this because I kept making the same mistakes in the school lab — forgetting the zero-error correction on the third reading, recomputing `ΔR` for the spherometer because I'd lost the rough sheet, drawing a graph on the wrong scale and starting over on a fresh sheet of graph paper.
+I'm a student. I built this because the apparatus in our school lab mostly didn't work.
 
-The last straw was rewriting the same observation table for the fourth time. So instead of writing it again, I wrote this.
+The pulley on the Gravesand's apparatus wouldn't turn, so the knot never settled at its true position and every angle we read was guesswork. The screw gauge had been through so many hands that its ratchet no longer clicked — you couldn't tell when the studs had touched the wire, only that the wire was flattened afterwards. The helical spring had rusted badly enough that it barely stretched, and the scale markings behind it had washed off years ago.
 
-It is the tool I wanted in the lab: something that takes your real readings, does the boring arithmetic honestly, shows its working so you can defend it, and hands you a record page you can paste into your file. It's free, it has no account, and nothing you type ever leaves your browser.
+When the equipment is that far gone, the practical quietly turns into a copying exercise: you write down what the group next to you got, or what the manual's sample table says, and the only thing you learn is how to fill a table.
+
+So instead of writing it out again, I wrote this. It takes the readings you can actually get, does the arithmetic honestly, shows its working so you can defend it, and hands you a record page you can paste into your file. It's free, it has no account, and nothing you type ever leaves your browser.
 
 ---
 
@@ -65,6 +67,8 @@ Worth being blunt about, because the app is quite good at looking authoritative:
 **Zero error belongs to your instrument, on your day.** The app can apply a correction beautifully — but only you can measure what that correction is.
 
 **Use it like this:** read the theory and rehearse the rig before the lab, then bring your real readings back and let it do the arithmetic and the page layout. Not the other way round.
+
+**And if the apparatus is broken:** that's a resource problem, not a personal failing. Say what was wrong, take whatever readings you can legitimately take, and label the rest for what it is.
 
 A note for teachers: if a record was produced with this, the observations should still be the student's own. The numbers in the table are theirs; the app only did the sums and the ruling.
 
@@ -101,6 +105,21 @@ The theory is in the app. These are the things that decide whether your readings
 | **Simple pendulum** | Keep the amplitude under 15°. Time 20 oscillations, start the watch as the bob crosses the **mean** position, and count that crossing as zero. Check the thread isn't rubbing the clamp, and make sure the stand doesn't wobble — a swaying support ruins the period. |
 
 **Before you submit, check four things:** units on every column, significant figures to match the least count, the sign of your zero-error correction, and whether your graph should pass through the origin.
+
+### When the apparatus itself is the problem
+
+Worth ruling out before you blame your own hands. These are the faults that make a reading meaningless no matter how carefully you take it.
+
+| Symptom | What it usually means | What to do |
+|---|---|---|
+| Screw gauge ratchet no longer clicks | The slip clutch is worn out, so contact pressure is whatever you happen to apply | Advance the thimble very gently by hand, take three readings at the same spot; if they scatter by more than the least count, the gauge is unusable — report it |
+| Vernier zero error differs each time you close the jaws | Worn or sprung jaws | Take the zero error three times; if it varies by more than the least count, the calipers are done |
+| Spring barely stretches, or the coils stick | Rust binding the coils — Hooke's law has stopped applying | Don't load it. A force-constant graph from a binding spring curves instead of straightening |
+| Spring broke while loading | It was loaded past the elastic limit, or corrosion did the work | Note where it failed; a shorter spring has a different `k` anyway |
+| Pulley won't spin freely | Frayed thread doubled in the groove, a bent axle, or a board that isn't vertical | Re-thread it, check the plumb line, tap and re-settle; if it still binds, θ is not measurable |
+| Scale markings washed off | Age | Clamp a steel rule behind the scale and read against that, or reject the instrument |
+
+If it can't be fixed, say so on the record. A labelled limitation — *"apparatus faulty, readings from simulation"* — is something a teacher can accept. A silent one isn't.
 
 ---
 
