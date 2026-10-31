@@ -10,6 +10,7 @@ import {
   Sun,
   Moon,
   FileCheck,
+  ChevronLeft,
 } from 'lucide-react';
 
 type TabId = 'simulation' | 'workspace' | 'record' | 'viva' | 'theory';
@@ -19,6 +20,7 @@ interface HeaderProps {
   onTabChange: (tab: TabId) => void;
   onResetData: () => void;
   onPrint: () => void;
+  onHome: () => void;
   hasGraph: boolean;
   isDark: boolean;
   onToggleTheme: () => void;
@@ -37,18 +39,27 @@ export const Header: React.FC<HeaderProps> = ({
   onTabChange,
   onResetData,
   onPrint,
+  onHome,
   hasGraph,
   isDark,
   onToggleTheme,
 }) => {
   return (
-    <header className="no-print sticky top-0 z-30 bg-[#faf9f6]/95 dark:bg-[#0c0e14]/95 backdrop-blur-md border-b border-stone-200/80 dark:border-stone-800/80 transition-colors">
+    <header className="no-print sticky top-0 z-30 bg-stone-50/95 dark:bg-stone-950/95 backdrop-blur-md border-b border-stone-200/80 dark:border-stone-800/80 transition-colors">
       <div className="max-w-[1440px] mx-auto px-3 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-14 sm:h-16 gap-2 sm:gap-4">
           {/* Brand */}
-          <div className="flex items-center space-x-2.5 sm:space-x-3 min-w-0">
+          <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
+            <button
+              onClick={onHome}
+              title="Back to the landing page"
+              aria-label="Back to the landing page"
+              className="w-8 h-8 shrink-0 grid place-items-center rounded-lg border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900 text-stone-500 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 hover:border-stone-300 dark:hover:border-stone-700 transition-colors"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </button>
             <div className="w-8 h-8 sm:w-9 sm:h-9 shrink-0 rounded-xl bg-stone-900 dark:bg-stone-100 flex items-center justify-center text-amber-400 dark:text-stone-900 shadow-sm border border-stone-800 dark:border-white">
-              <Atom className="w-4 h-4 sm:w-5 sm:h-5 animate-pulse" />
+              <Atom className="w-4 h-4 sm:w-5 sm:h-5" />
             </div>
             <div className="min-w-0">
               <div className="flex items-baseline space-x-2">

@@ -2,6 +2,92 @@
 
 @variant dark (&:where(.dark, .dark *));
 
+/*
+  Design tokens.
+  ---------------------------------------------------------------------------
+  The whole app is skinned from here: the warm neutral ramp, the near-black
+  "ink" used for primary actions, the green used for computed values and the
+  ochre used for warnings. Overriding the palette entries means every existing
+  utility (bg-stone-50, text-slate-500, bg-indigo-600, …) resolves to the new
+  system without touching a single component.
+*/
+@theme {
+  /* Warm neutrals — stone and slate both resolve to one ramp so the app reads
+     as a single surface instead of the old cool/warm split. */
+  --color-stone-50: #fbfaf8;
+  --color-stone-100: #f5f3ef;
+  --color-stone-200: #e8e5e0;
+  --color-stone-300: #d5d1c9;
+  --color-stone-400: #a9a49b;
+  --color-stone-500: #7d7871;
+  --color-stone-600: #605c55;
+  --color-stone-700: #46433d;
+  --color-stone-800: #2c2a26;
+  --color-stone-900: #1a1917;
+  --color-stone-950: #0f0f0e;
+
+  --color-slate-50: #fbfaf8;
+  --color-slate-100: #f5f3ef;
+  --color-slate-200: #e8e5e0;
+  --color-slate-300: #d5d1c9;
+  --color-slate-400: #a9a49b;
+  --color-slate-500: #7d7871;
+  --color-slate-600: #605c55;
+  --color-slate-700: #46433d;
+  --color-slate-800: #2c2a26;
+  --color-slate-900: #1a1917;
+  --color-slate-950: #0f0f0e;
+
+  /* Ink — primary actions and accents. */
+  --color-indigo-50: #f4f4f5;
+  --color-indigo-100: #e9e9ec;
+  --color-indigo-200: #dcdce0;
+  --color-indigo-300: #c3c3c9;
+  --color-indigo-400: #9a9aa2;
+  --color-indigo-500: #55555e;
+  --color-indigo-600: #1c1c22;
+  --color-indigo-700: #111114;
+  --color-indigo-800: #0b0b0e;
+  --color-indigo-900: #08080a;
+  --color-indigo-950: #050506;
+
+  /* Green — derived values, success, the "live" pip. */
+  --color-emerald-50: #eef7f2;
+  --color-emerald-100: #d7ecdf;
+  --color-emerald-200: #aedcc2;
+  --color-emerald-300: #7bc5a1;
+  --color-emerald-400: #45a97f;
+  --color-emerald-500: #1c8a61;
+  --color-emerald-600: #0f7b53;
+  --color-emerald-700: #0b6142;
+  --color-emerald-800: #094d35;
+  --color-emerald-900: #073c2a;
+  --color-emerald-950: #041f16;
+
+  /* Ochre — warnings and the instrument badge. */
+  --color-amber-50: #fdf5e7;
+  --color-amber-100: #fae7c9;
+  --color-amber-200: #f2d09a;
+  --color-amber-300: #e6b569;
+  --color-amber-400: #d2963a;
+  --color-amber-500: #b9771f;
+  --color-amber-600: #9a5b00;
+  --color-amber-700: #7a4800;
+  --color-amber-800: #5c3600;
+  --color-amber-900: #422700;
+  --color-amber-950: #241500;
+
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-serif: "Instrument Serif", "Iowan Old Style", Georgia, Cambria, serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --radius-md: 8px;
+  --radius-lg: 10px;
+  --radius-xl: 12px;
+  --radius-2xl: 16px;
+  --radius-3xl: 22px;
+}
+
 @layer base {
   :root {
     color-scheme: light;
@@ -12,7 +98,8 @@
   }
 
   body {
-    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-family: var(--font-sans);
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
     /* Room for the phone tab bar so the last card is never hidden behind it. */
     padding-bottom: env(safe-area-inset-bottom);
   }
@@ -26,17 +113,39 @@
       transition-duration: 0.01ms !important;
     }
   }
-  
+
   h1, h2, .font-serif {
-    font-family: 'Newsreader', Georgia, Cambria, serif;
+    font-family: var(--font-serif);
+    font-weight: 400;
+    letter-spacing: -0.012em;
   }
 
   .font-display {
-    font-family: 'Space Grotesk', 'Plus Jakarta Sans', sans-serif;
+    font-family: var(--font-serif);
   }
-  
+
   code, pre, .font-mono {
-    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-family: var(--font-mono);
+  }
+
+  /* Mono micro-labels: the eyebrow style used across the landing page and app. */
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-stone-500);
+  }
+
+  .eyebrow .dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--color-stone-400);
+    display: inline-block;
   }
 }
 
@@ -46,6 +155,7 @@
     background-color: white !important;
     color: black !important;
     font-size: 11pt;
+    padding-bottom: 0 !important;
   }
 
   /* Hide app navigation and interactive controls when printing */
@@ -83,7 +193,7 @@
   }
 
   th, td {
-    border: 1px solid #1e293b !important;
+    border: 1px solid #1f2937 !important;
     color: #000 !important;
     padding: 6px 8px !important;
   }
@@ -102,31 +212,26 @@
   .print-container > div {
     break-inside: avoid-page;
   }
-
-  /* Phones print too: restore normal flow for the record sheet. */
-  body {
-    padding-bottom: 0 !important;
-  }
 }
 
-/* Elegant custom scrollbar */
+/* Scrollbars */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 8px;
+  height: 8px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #d6d3d1;
-  border-radius: 3px;
+  background: #d5d1c9;
+  border-radius: 4px;
 }
 .dark ::-webkit-scrollbar-thumb {
-  background: #292524;
+  background: #2c2a26;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #a8a29e;
+  background: #a9a49b;
 }
 .dark ::-webkit-scrollbar-thumb:hover {
-  background: #44403c;
+  background: #46433d;
 }

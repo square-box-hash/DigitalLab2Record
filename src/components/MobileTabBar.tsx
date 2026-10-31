@@ -26,7 +26,7 @@ export const MobileTabBar: React.FC<MobileTabBarProps> = ({ currentTab, onTabCha
   return (
     <nav
       aria-label="Experiment sections"
-      className="no-print lg:hidden fixed bottom-0 inset-x-0 z-30 bg-white/95 dark:bg-[#0c0e14]/95 backdrop-blur-md border-t border-stone-200 dark:border-stone-800"
+      className="no-print lg:hidden fixed bottom-0 inset-x-0 z-30 bg-white/95 dark:bg-stone-950/95 backdrop-blur-md border-t border-stone-200 dark:border-stone-800"
       style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
     >
       <div className="flex items-stretch justify-around px-1">

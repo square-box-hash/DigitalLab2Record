@@ -11,6 +11,7 @@ import { VivaVoceAccordion } from './components/VivaVoceAccordion';
 import { TheoryView } from './components/TheoryView';
 import { SimulatorContainer } from './components/simulations/SimulatorContainer';
 import { MobileTabBar } from './components/MobileTabBar';
+import { LandingView } from './components/LandingView';
 import { buildRowsCsv, downloadCsv } from './utils/export';
 import {
   Menu,
@@ -113,6 +114,46 @@ export default function App() {
   const [currentTab, setCurrentTab] = useState<'simulation' | 'workspace' | 'record' | 'viva' | 'theory'>('simulation');
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState<boolean>(false);
   const [showSimInWorkspace, setShowSimInWorkspace] = useState<boolean>(true);
+
+  // Landing page vs workspace, driven by the URL hash so it can be linked and
+  // the browser's back button does the obvious thing.
+  //   (nothing)          → landing
+  //   #/lab              → workspace
+  //   #/lab/<exp-id>     → workspace with that practical selected
+  const readRoute = (): { view: 'landing' | 'app'; experimentId?: string } => {
+    if (typeof window === 'undefined') return { view: 'landing' };
+    const raw = window.location.hash.replace(/^#\/?/, '');
+    const [section, experimentId] = raw.split('/');
+    return { view: section === 'lab' ? 'app' : 'landing', experimentId: experimentId || undefined };
+  };
+
+  const [route, setRoute] = useState<{ view: 'landing' | 'app'; experimentId?: string }>(readRoute);
+
+  useEffect(() => {
+    const applyHash = () => {
+      const next = readRoute();
+      setRoute(next);
+      if (next.experimentId && EXPERIMENTS.some((exp) => exp.id === next.experimentId)) {
+        setActiveExpId(next.experimentId);
+      }
+    };
+    applyHash();
+    window.addEventListener('hashchange', applyHash);
+    return () => window.removeEventListener('hashchange', applyHash);
+  }, []);
+
+  const goToLab = (experimentId?: string) => {
+    if (experimentId) setActiveExpId(experimentId);
+    window.location.hash = experimentId ? `#/lab/${experimentId}` : '#/lab';
+    setRoute({ view: 'app', experimentId });
+    window.scrollTo({ top: 0, behavior: 'auto' });
+  };
+
+  const goHome = () => {
+    window.history.pushState(null, '', window.location.pathname);
+    setRoute({ view: 'landing' });
+    window.scrollTo({ top: 0, behavior: 'auto' });
+  };
 
   // Light / Dark Theme State (synced with HTML root class)
   const [isDark, setIsDark] = useState<boolean>(() => {
@@ -310,13 +351,17 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#faf9f6] dark:bg-[#0c0e14] text-stone-800 dark:text-stone-100 flex flex-col transition-colors duration-200">
+    route.view === 'landing' ? (
+      <LandingView onEnterLab={goToLab} isDark={isDark} onToggleTheme={handleToggleTheme} />
+    ) : (
+    <div className="min-h-screen bg-stone-50 dark:bg-stone-950 text-stone-800 dark:text-stone-100 flex flex-col transition-colors duration-200">
       {/* Global Header */}
       <Header
         currentTab={currentTab}
         onTabChange={setCurrentTab}
         onResetData={handleResetRows}
         onPrint={handlePrint}
+        onHome={goHome}
         hasGraph={Boolean(activeExp.graphConfig)}
         isDark={isDark}
         onToggleTheme={handleToggleTheme}
@@ -352,7 +397,7 @@ export default function App() {
           </div>
 
           {/* Editorial Annual Report Hero Banner */}
-          <div className="no-print bg-white dark:bg-[#12151e] rounded-2xl border border-stone-200/90 dark:border-stone-800/90 shadow-sm p-5 sm:p-7 xl:p-8 space-y-3 transition-colors">
+          <div className="no-print bg-white dark:bg-stone-900 rounded-2xl border border-stone-200/90 dark:border-stone-800/90 shadow-sm p-5 sm:p-7 xl:p-8 space-y-3 transition-colors">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <div className="flex items-center gap-2 min-w-0 text-xs font-mono">
                 <span className="shrink-0 whitespace-nowrap px-2.5 py-1 rounded-md bg-amber-500/10 text-amber-800 dark:text-amber-400 font-bold uppercase tracking-widest text-[10px] border border-amber-500/20">
@@ -384,7 +429,7 @@ export default function App() {
             </h1>
             
             {/* Elegant Aim callout box */}
-            <div className="p-3.5 bg-[#faf9f6] dark:bg-stone-900/60 rounded-xl border-l-2 border-amber-500 text-xs sm:text-sm text-stone-600 dark:text-stone-300 leading-relaxed font-sans">
+            <div className="p-3.5 bg-stone-50 dark:bg-stone-900/60 rounded-xl border-l-2 border-amber-500 text-xs sm:text-sm text-stone-600 dark:text-stone-300 leading-relaxed font-sans">
               <strong className="text-stone-900 dark:text-white font-semibold">Objective:</strong> {activeExp.aim}
             </div>
           </div>
@@ -525,7 +570,7 @@ export default function App() {
       </div>
 
       {/* Footer */}
-      <footer className="no-print bg-white dark:bg-[#0c0e14] border-t border-stone-200/80 dark:border-stone-800/80 py-7 mt-12 mb-16 lg:mb-0 text-center text-xs text-stone-500 dark:text-stone-400 transition-colors">
+      <footer className="no-print bg-white dark:bg-stone-950 border-t border-stone-200/80 dark:border-stone-800/80 py-7 mt-12 mb-16 lg:mb-0 text-center text-xs text-stone-500 dark:text-stone-400 transition-colors">
         <div className="max-w-[1440px] mx-auto px-4 flex flex-col items-center gap-4 sm:gap-3">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3 w-full">
             <p className="font-serif italic text-sm text-stone-700 dark:text-stone-300 text-center sm:text-left">
@@ -576,5 +621,6 @@ export default function App() {
         hasGraph={Boolean(activeExp.graphConfig)}
       />
     </div>
+    )
   );
 }
