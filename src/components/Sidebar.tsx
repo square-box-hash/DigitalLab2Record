@@ -44,7 +44,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
       {/* Sidebar Content */}
       <aside
-        className={`fixed lg:sticky top-0 lg:top-16 left-0 h-full lg:h-[calc(100vh-4rem)] w-72 sm:w-80 bg-[#fbf9f5] dark:bg-[#0e1118] border-r border-stone-200/80 dark:border-stone-800/80 z-50 lg:z-10 flex flex-col transition-all duration-300 ease-in-out ${
+        className={`fixed lg:sticky top-0 lg:top-16 left-0 h-full lg:h-[calc(100vh-4rem)] w-72 sm:w-80 bg-stone-100/60 dark:bg-stone-950 border-r border-stone-200/80 dark:border-stone-800/80 z-50 lg:z-10 flex flex-col transition-all duration-300 ease-in-out ${
           isOpenMobile ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
         }`}
       >
