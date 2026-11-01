@@ -115,10 +115,11 @@ export const LandingView: React.FC<LandingViewProps> = ({ onEnterLab, isDark, on
             </button>
             <button
               onClick={() => onEnterLab()}
-              className="inline-flex items-center gap-2 h-9 px-4 rounded-full bg-stone-900 dark:bg-stone-100 text-stone-50 dark:text-stone-900 text-[13.5px] font-medium hover:bg-black dark:hover:bg-white transition-colors"
+              className="inline-flex items-center gap-1.5 h-9 pl-3.5 pr-3 rounded-full bg-stone-900 dark:bg-stone-100 text-stone-50 dark:text-stone-900 text-[13.5px] font-medium whitespace-nowrap hover:bg-black dark:hover:bg-white transition-colors"
             >
-              Open the lab
-              <ArrowRight className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Open the lab</span>
+              <span className="sm:hidden">Lab</span>
+              <ArrowRight className="w-3.5 h-3.5 shrink-0" />
             </button>
           </div>
         </div>
@@ -126,8 +127,8 @@ export const LandingView: React.FC<LandingViewProps> = ({ onEnterLab, isDark, on
 
       {/* Hero */}
       <section className="max-w-[1180px] mx-auto px-5 sm:px-6 pt-16 sm:pt-24 pb-14">
-        <span className="eyebrow">
-          CBSE Class XI <span className="dot" /> Physics practicals <span className="dot" /> 7 experiments
+        <span className="eyebrow text-[10px] sm:text-[10.5px] leading-relaxed">
+          CBSE Class XI · Physics practicals · 7 experiments
         </span>
         <h1 className="mt-5 text-[clamp(38px,6.4vw,76px)] leading-[1.02] max-w-[17ch]">
           The record writes itself.
@@ -240,8 +241,8 @@ export const LandingView: React.FC<LandingViewProps> = ({ onEnterLab, isDark, on
                   To measure the diameter and length of a small cylindrical body, and hence its volume and cross-sectional area.
                 </p>
 
-                <div className="mt-4 overflow-hidden rounded-xl border border-stone-200 dark:border-stone-800">
-                  <table className="w-full text-[11.5px]">
+                <div className="mt-4 rounded-xl border border-stone-200 dark:border-stone-800 overflow-x-auto">
+                  <table className="w-full min-w-[460px] text-[11.5px]">
                     <thead>
                       <tr className="bg-stone-50 dark:bg-stone-950/40 text-stone-500 dark:text-stone-400">
                         {['Obs', 'MSR (cm)', 'n (div)', 'Measured', 'Corrected D'].map((h) => (
