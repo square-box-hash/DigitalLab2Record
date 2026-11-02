@@ -23,6 +23,7 @@ interface HeaderProps {
   onHome: () => void;
   hasGraph: boolean;
   isDark: boolean;
+  themePreference: 'auto' | 'light' | 'dark';
   onToggleTheme: () => void;
 }
 
@@ -42,6 +43,7 @@ export const Header: React.FC<HeaderProps> = ({
   onHome,
   hasGraph,
   isDark,
+  themePreference,
   onToggleTheme,
 }) => {
   return (
@@ -114,7 +116,11 @@ export const Header: React.FC<HeaderProps> = ({
           <div className="flex items-center space-x-1.5 sm:space-x-2 shrink-0">
             <button
               onClick={onToggleTheme}
-              title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+              title={
+                themePreference === 'auto'
+                  ? `Following the clock — dark 7 pm to 6 am. Click to pin ${isDark ? 'light' : 'dark'}.`
+                  : `Pinned to ${themePreference} — click to change the theme.`
+              }
               aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
               className="flex items-center justify-center h-9 w-9 rounded-xl bg-stone-200/70 dark:bg-stone-800/80 text-stone-700 dark:text-stone-300 hover:bg-stone-300 dark:hover:bg-stone-700 border border-stone-300/70 dark:border-stone-700/80 transition-colors shadow-2xs"
             >

@@ -18,6 +18,7 @@ interface LandingViewProps {
   onEnterLab: (experimentId?: string) => void;
   isDark: boolean;
   onToggleTheme: () => void;
+  themePreference?: 'auto' | 'light' | 'dark';
 }
 
 const CHANGES: Array<{ what: string; before: string; after: string }> = [
@@ -85,7 +86,12 @@ const CAPABILITIES = [
   { icon: MessageSquareQuote, title: 'Viva without panic', body: 'Curated examiner questions per practical, with a self-test mode that hides the answers.' },
 ];
 
-export const LandingView: React.FC<LandingViewProps> = ({ onEnterLab, isDark, onToggleTheme }) => {
+export const LandingView: React.FC<LandingViewProps> = ({
+  onEnterLab,
+  isDark,
+  onToggleTheme,
+  themePreference = 'auto',
+}) => {
   return (
     <div className="min-h-screen bg-stone-50 dark:bg-stone-950 text-stone-900 dark:text-stone-100 transition-colors">
       {/* Top bar */}
@@ -109,6 +115,11 @@ export const LandingView: React.FC<LandingViewProps> = ({ onEnterLab, isDark, on
             <button
               onClick={onToggleTheme}
               aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+              title={
+                themePreference === 'auto'
+                  ? `Following the clock — dark 7 pm to 6 am. Click to pin ${isDark ? 'light' : 'dark'}.`
+                  : `Pinned to ${themePreference} — click to change the theme.`
+              }
               className="w-9 h-9 grid place-items-center rounded-xl border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900 text-stone-600 dark:text-stone-300 hover:border-stone-300 dark:hover:border-stone-700 transition-colors"
             >
               {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
