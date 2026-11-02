@@ -27,6 +27,31 @@ import {
 } from 'lucide-react';
 
 const STORAGE_KEY = 'cbse_lab_state_v1';
+const THEME_KEY = 'cbse_theme_pref';
+
+/** Dark from 19:00 to 06:00 local time, light through the working day. */
+const NIGHT_START_HOUR = 19;
+const DAY_START_HOUR = 6;
+
+type ThemePreference = 'auto' | 'light' | 'dark';
+
+const isNightNow = (): boolean => {
+  const hour = new Date().getHours();
+  return hour < DAY_START_HOUR || hour >= NIGHT_START_HOUR;
+};
+
+const readThemePreference = (): ThemePreference => {
+  try {
+    const saved = localStorage.getItem(THEME_KEY);
+    if (saved === 'auto' || saved === 'light' || saved === 'dark') return saved;
+    // Carry over the old two-state key so nobody loses their choice on upgrade.
+    const legacy = localStorage.getItem('cbse_theme');
+    if (legacy === 'light' || legacy === 'dark') return legacy;
+  } catch {
+    // storage blocked — fall through to auto
+  }
+  return 'auto';
+};
 
 type ConstantsMap = Record<string, Record<string, number>>;
 type RowsMap = Record<string, Array<Record<string, number>>>;
@@ -155,28 +180,48 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'auto' });
   };
 
-  // Light / Dark Theme State (synced with HTML root class)
-  const [isDark, setIsDark] = useState<boolean>(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('cbse_theme');
-      if (saved) return saved === 'dark';
-      return window.matchMedia('(prefers-color-scheme: dark)').matches;
-    }
-    return false;
-  });
+  // Theme follows the clock unless the reader pins one explicitly.
+  const [themePreference, setThemePreference] = useState<ThemePreference>(readThemePreference);
+  const [isNight, setIsNight] = useState<boolean>(isNightNow);
+
+  // Re-check the clock every minute and whenever the tab comes back into focus,
+  // so a page left open across the boundary flips on its own.
+  useEffect(() => {
+    const tick = () => setIsNight(isNightNow());
+    const timer = window.setInterval(tick, 60_000);
+    const onVisible = () => {
+      if (document.visibilityState === 'visible') tick();
+    };
+    document.addEventListener('visibilitychange', onVisible);
+    return () => {
+      window.clearInterval(timer);
+      document.removeEventListener('visibilitychange', onVisible);
+    };
+  }, []);
+
+  const isDark = themePreference === 'auto' ? isNight : themePreference === 'dark';
 
   useEffect(() => {
-    if (isDark) {
-      document.documentElement.classList.add('dark');
-      localStorage.setItem('cbse_theme', 'dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-      localStorage.setItem('cbse_theme', 'light');
+    document.documentElement.classList.toggle('dark', isDark);
+    document.documentElement.style.colorScheme = isDark ? 'dark' : 'light';
+    try {
+      localStorage.setItem(THEME_KEY, themePreference);
+    } catch {
+      // storage blocked — the theme still applies for this session
     }
-  }, [isDark]);
+  }, [isDark, themePreference]);
 
+  /**
+   * One tap always changes what you see: pin the opposite of the automatic
+   * theme, and tap again to hand control back to the clock.
+   */
   const handleToggleTheme = () => {
-    setIsDark((prev) => !prev);
+    const automatic = isNightNow();
+    setThemePreference((prev) => {
+      if (prev === 'auto') return automatic ? 'light' : 'dark';
+      const showingDark = prev === 'dark';
+      return showingDark === automatic ? (showingDark ? 'light' : 'dark') : 'auto';
+    });
   };
 
   // Restored from the last session where available (see buildInitialState).
@@ -352,7 +397,12 @@ export default function App() {
 
   return (
     route.view === 'landing' ? (
-      <LandingView onEnterLab={goToLab} isDark={isDark} onToggleTheme={handleToggleTheme} />
+      <LandingView
+        onEnterLab={goToLab}
+        isDark={isDark}
+        themePreference={themePreference}
+        onToggleTheme={handleToggleTheme}
+      />
     ) : (
     <div className="min-h-screen bg-stone-50 dark:bg-stone-950 text-stone-800 dark:text-stone-100 flex flex-col transition-colors duration-200">
       {/* Global Header */}
@@ -364,6 +414,7 @@ export default function App() {
         onHome={goHome}
         hasGraph={Boolean(activeExp.graphConfig)}
         isDark={isDark}
+        themePreference={themePreference}
         onToggleTheme={handleToggleTheme}
       />
 

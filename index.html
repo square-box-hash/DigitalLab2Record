@@ -16,6 +16,24 @@
   </head>
   <body class="bg-stone-50 dark:bg-stone-950 text-stone-900 dark:text-stone-100 antialiased selection:bg-amber-200 selection:text-stone-900 transition-colors duration-200">
     <div id="root"></div>
+    <script>
+      // Resolve the theme before React mounts so the first paint is already
+      // correct — no white flash at 9 pm.
+      (function () {
+        try {
+          var pref = localStorage.getItem('cbse_theme_pref');
+          if (pref !== 'light' && pref !== 'dark' && pref !== 'auto') {
+            var legacy = localStorage.getItem('cbse_theme');
+            pref = legacy === 'light' || legacy === 'dark' ? legacy : 'auto';
+          }
+          var hour = new Date().getHours();
+          var night = hour < 6 || hour >= 19;
+          var dark = pref === 'dark' || (pref !== 'light' && night);
+          if (dark) document.documentElement.classList.add('dark');
+          document.documentElement.style.colorScheme = dark ? 'dark' : 'light';
+        } catch (e) {}
+      })();
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
