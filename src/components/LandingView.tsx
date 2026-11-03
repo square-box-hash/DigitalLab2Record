@@ -13,6 +13,7 @@ import {
   Check,
 } from 'lucide-react';
 import { EXPERIMENTS } from '../data/experiments';
+import { formatNumber } from '../utils/math';
 
 interface LandingViewProps {
   onEnterLab: (experimentId?: string) => void;
@@ -92,6 +93,27 @@ export const LandingView: React.FC<LandingViewProps> = ({
   onToggleTheme,
   themePreference = 'auto',
 }) => {
+  /*
+    The hero showpiece is the app's own output, not typed-in numbers: the
+    experiment's calculateRow / calculateResult run over its seeded readings, so
+    the table, the mean and the uncertainty can never drift apart again.
+    A zero error of −0.02 cm is used so the correction is visibly doing work.
+  */
+  const VERNIER_ZERO_ERROR = -0.02;
+  const vernierExperiment =
+    EXPERIMENTS.find((exp) => exp.id === 'vernier-calipers') ?? EXPERIMENTS[0];
+
+  const vernierConstants: Record<string, number> = {};
+  vernierExperiment.constants.forEach((c) => {
+    vernierConstants[c.id] = c.id === 'zeroError' ? VERNIER_ZERO_ERROR : c.defaultValue;
+  });
+
+  const vernierRows = vernierExperiment.initialRows.map((row) =>
+    vernierExperiment.calculateRow(row, vernierConstants)
+  );
+  const vernierResult = vernierExperiment.calculateResult(vernierRows, vernierConstants);
+  const vernierUncertainty = vernierResult.errorAnalysis?.entries[0];
+
   return (
     <div className="min-h-screen bg-stone-50 dark:bg-stone-950 text-stone-900 dark:text-stone-100 transition-colors">
       {/* Top bar */}
@@ -137,46 +159,111 @@ export const LandingView: React.FC<LandingViewProps> = ({
       </header>
 
       {/* Hero */}
-      <section className="max-w-[1180px] mx-auto px-5 sm:px-6 pt-16 sm:pt-24 pb-14">
-        <span className="eyebrow text-[10px] sm:text-[10.5px] leading-relaxed">
-          CBSE Class XI · Physics practicals · 7 experiments
-        </span>
-        <h1 className="mt-5 text-[clamp(38px,6.4vw,76px)] leading-[1.02] max-w-[17ch]">
-          The record writes itself.
-          <br />
-          <em className="italic">The physics stays yours.</em>
-        </h1>
-        <p className="mt-6 max-w-[58ch] text-stone-600 dark:text-stone-400 text-[16.5px] leading-relaxed">
-          DigitalLab2Record takes the readings you actually took, does the arithmetic honestly, and
-          hands you an A4 page in CBSE format — with every substitution shown, so you can defend
-          each line in a viva.
-        </p>
+      <section className="max-w-[1180px] mx-auto px-5 sm:px-6 pt-14 sm:pt-20 pb-14">
+        <div className="grid gap-10 lg:grid-cols-[1.12fr_0.88fr] lg:items-center lg:gap-12">
+          <div>
+            <span className="eyebrow text-[10px] sm:text-[10.5px] leading-relaxed">
+              CBSE Class XI · Physics practicals · 7 experiments
+            </span>
+            <h1 className="mt-5 text-[clamp(34px,4.6vw,56px)] leading-[1.04] text-balance">
+              The record writes itself.
+              <br />
+              <em className="italic">The physics stays yours.</em>
+            </h1>
+            <p className="mt-6 max-w-[52ch] text-stone-600 dark:text-stone-400 text-[16px] leading-relaxed">
+              DigitalLab2Record takes the readings you actually took, does the arithmetic honestly,
+              and hands you an A4 page in CBSE format — with every substitution shown, so you can
+              defend each line in a viva.
+            </p>
 
-        <div className="mt-8 flex flex-wrap items-center gap-2.5">
-          <button
-            onClick={() => onEnterLab()}
-            className="inline-flex items-center gap-2 h-11 px-5 rounded-full bg-stone-900 dark:bg-stone-100 text-stone-50 dark:text-stone-900 text-sm font-medium hover:bg-black dark:hover:bg-white transition-colors"
-          >
-            Start experimenting
-            <ArrowRight className="w-4 h-4" />
-          </button>
-          <a
-            href="#practicals"
-            className="inline-flex items-center gap-2 h-11 px-5 rounded-full border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-900 text-sm font-medium text-stone-800 dark:text-stone-200 hover:border-stone-400 dark:hover:border-stone-600 transition-colors"
-          >
-            See the seven practicals
-          </a>
+            <div className="mt-8 flex flex-wrap items-center gap-2.5">
+              <button
+                onClick={() => onEnterLab()}
+                className="inline-flex items-center gap-2 h-11 px-5 rounded-full bg-stone-900 dark:bg-stone-100 text-stone-50 dark:text-stone-900 text-sm font-medium hover:bg-black dark:hover:bg-white transition-colors"
+              >
+                Start experimenting
+                <ArrowRight className="w-4 h-4" />
+              </button>
+              <a
+                href="#practicals"
+                className="inline-flex items-center gap-2 h-11 px-5 rounded-full border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-900 text-sm font-medium text-stone-800 dark:text-stone-200 hover:border-stone-400 dark:hover:border-stone-600 transition-colors"
+              >
+                See the seven practicals
+              </a>
+            </div>
+
+            <div className="mt-7 flex flex-wrap items-center gap-x-2.5 gap-y-1 font-mono text-[11.5px] text-stone-500 dark:text-stone-500">
+              <span>No account</span>
+              <span className="w-[3px] h-[3px] rounded-full bg-stone-400 inline-block" />
+              <span>Nothing leaves your browser</span>
+              <span className="w-[3px] h-[3px] rounded-full bg-stone-400 inline-block" />
+              <span>Autosaves as you type</span>
+            </div>
+          </div>
+
+          {/* The showpiece: real output from the Vernier practical */}
+          <div className="rounded-2xl border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900 overflow-hidden shadow-[0_1px_2px_rgba(16,16,20,.04),0_24px_60px_-32px_rgba(16,16,20,.18)]">
+            <div className="flex items-center justify-between gap-2 px-4 h-11 border-b border-stone-200 dark:border-stone-800">
+              <span className="inline-flex items-center gap-2 min-w-0">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 shrink-0" />
+                <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-emerald-700 dark:text-emerald-400">Live</span>
+                <span className="text-[11.5px] text-stone-500 dark:text-stone-400 truncate">the real interface</span>
+              </span>
+              <button
+                onClick={() => onEnterLab(vernierExperiment.id)}
+                className="font-mono text-[10.5px] text-stone-500 dark:text-stone-500 hover:text-stone-900 dark:hover:text-stone-100 transition-colors shrink-0"
+              >
+                open →
+              </button>
+            </div>
+
+            <div className="p-4">
+              <div className="flex items-start justify-between gap-2">
+                <div className="min-w-0">
+                  <div className="font-mono text-[9.5px] uppercase tracking-[0.12em] text-stone-400 dark:text-stone-600">
+                    Experiment 01 · Section A
+                  </div>
+                  <div className="mt-1 text-[19px] leading-tight">Vernier Calipers</div>
+                </div>
+                <span className="shrink-0 rounded-full border border-stone-200 dark:border-stone-700 px-2 py-0.5 font-mono text-[10px] text-stone-500 dark:text-stone-400">
+                  e = {formatNumber(VERNIER_ZERO_ERROR, 2).replace('-', '−')} cm
+                </span>
+              </div>
+
+              <div className="mt-3 overflow-x-auto rounded-lg border border-stone-200 dark:border-stone-800">
+                <table className="w-full min-w-[280px] text-[11px]">
+                  <thead>
+                    <tr className="bg-stone-50 dark:bg-stone-950/40 text-stone-500 dark:text-stone-400">
+                      {['Obs', 'MSR', 'n', 'Corrected D'].map((h) => (
+                        <th key={h} className="text-left font-medium px-2.5 py-1.5 border-b border-stone-200 dark:border-stone-800 whitespace-nowrap">{h}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody className="font-mono">
+                    {vernierRows.map((row, i) => (
+                      <tr key={i}>
+                        <td className="px-2.5 py-1.5 border-b border-stone-100 dark:border-stone-800/70 text-stone-500 dark:text-stone-500">{i + 1}</td>
+                        <td className="px-2.5 py-1.5 border-b border-stone-100 dark:border-stone-800/70">{formatNumber(row.msr, 1)}</td>
+                        <td className="px-2.5 py-1.5 border-b border-stone-100 dark:border-stone-800/70">{formatNumber(row.vsr, 0)}</td>
+                        <td className="px-2.5 py-1.5 border-b border-stone-100 dark:border-stone-800/70 text-emerald-700 dark:text-emerald-400">{formatNumber(row.corrected, 2)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              <div className="mt-3 flex flex-wrap items-center justify-between gap-2 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-900 px-3 py-2 text-[11.5px] text-emerald-900 dark:text-emerald-300">
+                <span className="min-w-0">
+                  <span className="block font-mono text-[9px] uppercase tracking-[0.12em] opacity-70">Mean ± mean absolute error</span>
+                  <span className="font-mono">{vernierUncertainty?.notation ?? '—'}</span>
+                </span>
+                <span className="font-mono shrink-0">{vernierUncertainty?.percentageError ?? ''}</span>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div className="mt-7 flex flex-wrap items-center gap-x-2.5 gap-y-1 font-mono text-[11.5px] text-stone-500 dark:text-stone-500">
-          <span>No account</span>
-          <span className="w-[3px] h-[3px] rounded-full bg-stone-400 inline-block" />
-          <span>Nothing leaves your browser</span>
-          <span className="w-[3px] h-[3px] rounded-full bg-stone-400 inline-block" />
-          <span>Autosaves as you type</span>
-        </div>
-
-        <div className="mt-9 pt-6 border-t border-stone-200 dark:border-stone-800 flex flex-wrap gap-2">
+        <div className="mt-10 pt-6 border-t border-stone-200 dark:border-stone-800 flex flex-wrap gap-2">
           {['React 19 + Vite 8', '7 practicals, Class XI', 'Mean absolute error, propagated', 'Graphs export as PNG', 'Print the record as PDF'].map((item) => (
             <span
               key={item}
@@ -262,17 +349,13 @@ export const LandingView: React.FC<LandingViewProps> = ({
                       </tr>
                     </thead>
                     <tbody className="font-mono">
-                      {[
-                        [1, '2.1', 4, '2.14', '2.16'],
-                        [2, '2.1', 5, '2.15', '2.17'],
-                        [3, '2.1', 4, '2.14', '2.16'],
-                      ].map((row) => (
-                        <tr key={String(row[0])}>
-                          <td className="px-3 py-2 border-b border-stone-100 dark:border-stone-800/70">{row[0]}</td>
-                          <td className="px-3 py-2 border-b border-stone-100 dark:border-stone-800/70">{row[1]}</td>
-                          <td className="px-3 py-2 border-b border-stone-100 dark:border-stone-800/70">{row[2]}</td>
-                          <td className="px-3 py-2 border-b border-stone-100 dark:border-stone-800/70 text-emerald-700 dark:text-emerald-400">{row[3]}</td>
-                          <td className="px-3 py-2 border-b border-stone-100 dark:border-stone-800/70 text-emerald-700 dark:text-emerald-400">{row[4]}</td>
+                      {vernierRows.map((row, i) => (
+                        <tr key={i}>
+                          <td className="px-3 py-2 border-b border-stone-100 dark:border-stone-800/70 text-stone-500 dark:text-stone-500">{i + 1}</td>
+                          <td className="px-3 py-2 border-b border-stone-100 dark:border-stone-800/70">{formatNumber(row.msr, 1)}</td>
+                          <td className="px-3 py-2 border-b border-stone-100 dark:border-stone-800/70">{formatNumber(row.vsr, 0)}</td>
+                          <td className="px-3 py-2 border-b border-stone-100 dark:border-stone-800/70 text-emerald-700 dark:text-emerald-400">{formatNumber(row.measured, 2)}</td>
+                          <td className="px-3 py-2 border-b border-stone-100 dark:border-stone-800/70 text-emerald-700 dark:text-emerald-400">{formatNumber(row.corrected, 2)}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -282,9 +365,9 @@ export const LandingView: React.FC<LandingViewProps> = ({
                 <div className="mt-3 flex flex-wrap items-center justify-between gap-2 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-900 px-3.5 py-2.5 text-[11.5px] text-emerald-900 dark:text-emerald-300">
                   <span>
                     <span className="font-mono text-[9.5px] uppercase tracking-[0.12em] opacity-70 block">Uncertainty</span>
-                    D = (2.15 ± 0.01) cm
+                    {vernierUncertainty?.notation ?? '—'}
                   </span>
-                  <span className="font-mono">0.30 %</span>
+                  <span className="font-mono">{vernierUncertainty?.percentageError ?? ''}</span>
                 </div>
               </div>
             </div>
