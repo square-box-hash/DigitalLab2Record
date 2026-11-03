@@ -67,7 +67,8 @@ const meanErrorSteps = (
   unit: string,
   values: number[],
   stats: MeanStats,
-  decimals: number
+  decimals: number,
+  displayedPercentage: number
 ): CalculationStep[] => {
   const meanText = stats.mean.toFixed(decimals);
   const absText = stats.meanAbsError.toFixed(decimals);
@@ -93,7 +94,7 @@ const meanErrorSteps = (
       label: 'Percentage error',
       formula: `(Δ${symbol}̄ / ${symbol}̄) × 100`,
       substitution: `(${absText} / ${meanText}) × 100`,
-      result: `${stats.percentageError.toFixed(2)} %`,
+      result: `${displayedPercentage.toFixed(2)} %`,
     },
   ];
 };
@@ -109,27 +110,37 @@ export function buildMeanErrorAnalysis(options: BuildErrorAnalysisOptions): Erro
   const stats = analyseReadings(values, decimals);
   if (!stats || stats.readings === 0) return undefined;
 
+  const meanText = stats.mean.toFixed(decimals);
+  const meanAbsText = stats.meanAbsError.toFixed(decimals);
+
+  // The percentage is computed from the numbers as printed, not from the raw
+  // values: a reader who divides the two figures on the card must get the
+  // printed percentage back. (Dividing a rounded Δ by a rounded mean and
+  // printing a percentage from the unrounded pair is how "±0.01 cm, 0.30 %"
+  // ends up on a page that does not add up.)
+  const displayedPercentage =
+    Number(meanText) !== 0 ? roundTo((Number(meanAbsText) / Number(meanText)) * 100, 2) : 0;
+
   const entries: ErrorAnalysisEntry[] = [
     {
       symbol,
       quantity,
       unit,
-      mean: stats.mean.toFixed(decimals),
-      meanAbsError: stats.meanAbsError.toFixed(decimals),
-      percentageError: `${stats.percentageError.toFixed(2)} %`,
-      notation: `${symbol} = (${stats.mean.toFixed(Math.max(decimals - 1, 0))} ± ${stats.meanAbsError.toFixed(
-        Math.max(decimals - 1, 0)
-      )}) ${unit}`,
+      mean: meanText,
+      meanAbsError: meanAbsText,
+      percentageError: `${displayedPercentage.toFixed(2)} %`,
+      notation: `${symbol} = (${meanText} ± ${meanAbsText}) ${unit}`,
       basis: `Mean of ${stats.readings} readings`,
     },
   ];
 
-  const steps = meanErrorSteps(symbol, unit, values, stats, decimals);
+  const steps = meanErrorSteps(symbol, unit, values, stats, decimals, displayedPercentage);
 
   derived.forEach((d) => {
     const dec = d.decimals ?? decimals;
-    const absoluteError = Math.abs(d.value) * d.factor * stats.relativeError;
-    const pct = d.factor * stats.percentageError;
+    const pct = d.factor * displayedPercentage;
+    // Absolute error follows from the printed percentage, so ± and % agree here too.
+    const absoluteError = Math.abs(d.value) * (pct / 100);
 
     entries.push({
       symbol: d.symbol,
@@ -145,7 +156,7 @@ export function buildMeanErrorAnalysis(options: BuildErrorAnalysisOptions): Erro
     steps.push({
       label: `Error in ${d.quantity.toLowerCase()} (${d.symbol})`,
       formula: `Δ${d.symbol}/${d.symbol} = ${d.factor} × Δ${symbol}/${symbol}`,
-      substitution: `${d.factor} × ${stats.percentageError.toFixed(2)} %`,
+      substitution: `${d.factor} × ${displayedPercentage.toFixed(2)} %`,
       result: `${pct.toFixed(2)} %  ⇒  ±${absoluteError.toFixed(dec)} ${d.unit}`,
     });
   });

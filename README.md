@@ -82,7 +82,7 @@ A note for teachers: if a record was produced with this, the observations should
 |---|---|
 | 🎛️ **A working virtual rig** | Every practical has an interactive apparatus — slide the vernier jaw, add milligram weights, release the pendulum. Log a reading with one tap instead of typing it. |
 | 📊 **Arithmetic you can defend** | Formula → substitution → result, step by step, exactly how an examiner wants to see it. No black boxes. |
-| 📐 **Error analysis that's real** | Mean absolute error and percentage error for the four measurement practicals, propagated properly (the spherometer's `R` goes through `dR/dh`, not a hand-wave). Results written as `D = (2.15 ± 0.01) cm`. |
+| 📐 **Error analysis that's real** | Mean absolute error and percentage error for the four measurement practicals, propagated properly (the spherometer's `R` goes through `dR/dh`, not a hand-wave). Results written as `D = (2.148 ± 0.006) cm`, with the percentage worked out from the printed figures. |
 | 📈 **Graphs you can hand in** | Least-squares fit forced through the origin, the Δy/Δx triangle drawn on the line, and a **Download PNG** button that gives you the plot on a clean white sheet. |
 | 💾 **Nothing gets lost** | Readings autosave to your browser about half a second after you stop typing. Refresh, close the tab, lose signal — it's still there. |
 | 📄 **A record, not a screenshot** | A4 page in CBSE order: aim, apparatus, theory, observations, calculations, error analysis, result, precautions, sources of error. Print it or save it as PDF. |
