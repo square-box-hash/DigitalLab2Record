@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { EXPERIMENTS } from './data/experiments';
+import { EXPERIMENTS, getExperimentNumber } from './data/experiments';
 import { Header } from './components/Header';
 import { Sidebar } from './components/Sidebar';
 import { InstrumentSetupCard } from './components/InstrumentSetupCard';
@@ -409,7 +409,6 @@ export default function App() {
       <Header
         currentTab={currentTab}
         onTabChange={setCurrentTab}
-        onResetData={handleResetRows}
         onPrint={handlePrint}
         onHome={goHome}
         hasGraph={Boolean(activeExp.graphConfig)}
@@ -447,42 +446,16 @@ export default function App() {
             </span>
           </div>
 
-          {/* Editorial Annual Report Hero Banner */}
-          <div className="no-print bg-white dark:bg-stone-900 rounded-2xl border border-stone-200/90 dark:border-stone-800/90 shadow-sm p-5 sm:p-7 xl:p-8 space-y-3 transition-colors">
-            <div className="flex flex-wrap items-center justify-between gap-2">
-              <div className="flex items-center gap-2 min-w-0 text-xs font-mono">
-                <span className="shrink-0 whitespace-nowrap px-2.5 py-1 rounded-md bg-amber-500/10 text-amber-800 dark:text-amber-400 font-bold uppercase tracking-widest text-[10px] border border-amber-500/20">
-                  {activeExp.section}
-                </span>
-                <span className="hidden sm:inline text-stone-300 dark:text-stone-700">•</span>
-                <span className="hidden sm:inline font-sans font-medium text-stone-500 dark:text-stone-400 text-xs truncate">
-                  {activeExp.categoryTitle}
-                </span>
-              </div>
-
-              <div className="flex flex-wrap items-center gap-2">
-                {activeExp.graphConfig && (
-                  <span className="inline-flex shrink-0 whitespace-nowrap items-center text-[10px] font-mono font-semibold text-emerald-700 dark:text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20">
-                    <TrendingUp className="w-3 h-3 mr-1" />
-                    LINEAR FIT GRAPH
-                  </span>
-                )}
-                <span className="shrink-0 whitespace-nowrap text-[10px] font-mono font-semibold text-amber-700 dark:text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded-full border border-amber-500/20 flex items-center gap-1">
-                  <FlaskConical className="w-3 h-3" />
-                  VIRTUAL RIG
-                </span>
-              </div>
-            </div>
-
-            {/* Editorial Serif Title */}
-            <h1 className="font-serif italic font-bold text-xl sm:text-3xl text-stone-900 dark:text-stone-50 tracking-tight leading-snug">
-              {activeExp.title}
-            </h1>
-            
-            {/* Elegant Aim callout box */}
-            <div className="p-3.5 bg-stone-50 dark:bg-stone-900/60 rounded-xl border-l-2 border-amber-500 text-xs sm:text-sm text-stone-600 dark:text-stone-300 leading-relaxed font-sans">
-              <strong className="text-stone-900 dark:text-white font-semibold">Objective:</strong> {activeExp.aim}
-            </div>
+          {/* Experiment header */}
+          <div className="no-print space-y-1.5">
+            <p className="font-mono text-[11px] tracking-[0.04em] text-stone-500 dark:text-stone-500">
+              {activeExp.section} · {(activeExp.categoryTitle || '').replace(/^Section [AB]:\s*/, '')} · Experiment{' '}
+              {getExperimentNumber(activeExp.id)}
+            </p>
+            <h1 className="text-[clamp(26px,3.2vw,38px)] leading-[1.06]">{activeExp.title}</h1>
+            <p className="text-[14px] text-stone-600 dark:text-stone-400 max-w-[72ch] leading-relaxed">
+              {activeExp.aim}
+            </p>
           </div>
 
           {/* TAB 1: VIRTUAL SIMULATOR */}

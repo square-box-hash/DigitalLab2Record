@@ -53,15 +53,15 @@ export const ObservationTable: React.FC<ObservationTableProps> = ({
       <div className="p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <div className="flex items-center space-x-2">
-            <h3 className="text-base font-bold text-slate-900 dark:text-white tracking-tight">
-              Observation Table
+            <h3 className="text-sm sm:text-[15px] font-semibold text-stone-900 dark:text-stone-100 tracking-tight">
+              Observations
             </h3>
-            <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
-              {rows.length} Readings
+            <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-stone-500 dark:text-stone-500">
+              {rows.length} readings
             </span>
           </div>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-            Enter raw readings directly or log from the Simulator. Derived columns (highlighted in emerald) auto-compute.
+          <p className="text-[11.5px] text-stone-500 dark:text-stone-400 mt-0.5">
+            Type readings directly or log them from the rig. Derived columns compute as you go.
           </p>
         </div>
 

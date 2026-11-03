@@ -14,7 +14,7 @@ import {
   ReferenceLine,
   ReferenceDot,
 } from 'recharts';
-import { TrendingUp, Award, Activity, Compass, Download, Loader2 } from 'lucide-react';
+import { Award, Activity, Compass, Download, Loader2 } from 'lucide-react';
 
 interface RegressionGraphProps {
   graphConfig: GraphConfig;
@@ -140,23 +140,18 @@ export const RegressionGraph: React.FC<RegressionGraphProps> = ({
     <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-xs overflow-hidden transition-colors">
       {/* Header */}
       <div className="p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-        <div className="flex items-start gap-3 min-w-0">
-          <div className="w-9 h-9 shrink-0 rounded-xl bg-emerald-600 flex items-center justify-center text-white shadow-xs">
-            <TrendingUp className="w-5 h-5" />
+        <div className="min-w-0">
+          <div className="flex flex-wrap items-center gap-2">
+            <h3 className="text-sm sm:text-[15px] font-semibold tracking-tight leading-snug">
+              Best-fit graph
+            </h3>
+            <span className="shrink-0 whitespace-nowrap font-mono text-[10px] uppercase tracking-[0.1em] text-stone-500 dark:text-stone-500">
+              y = mx + c
+            </span>
           </div>
-          <div className="min-w-0">
-            <div className="flex flex-wrap items-center gap-2">
-              <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white tracking-tight leading-snug">
-                Linear Regression &amp; Best-Fit Graph
-              </h3>
-              <span className="shrink-0 whitespace-nowrap text-[10px] sm:text-[11px] font-semibold px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
-                y = mx + c
-              </span>
-            </div>
-            <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-              Least-squares fit with slope triangulation. Download the graph on a white sheet for your record.
-            </p>
-          </div>
+          <p className="text-[11.5px] text-stone-500 dark:text-stone-400 mt-0.5">
+            Least-squares fit with the Δy/Δx triangle drawn. Download it on a white sheet for your record.
+          </p>
         </div>
 
         <div className="flex items-center gap-2 shrink-0 self-start md:self-auto">

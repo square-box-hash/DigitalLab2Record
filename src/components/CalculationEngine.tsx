@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { CalculationResult } from '../types/experiment';
-import { Calculator, CheckCircle2, ChevronDown, ChevronUp, Copy, Check, ArrowRight, Percent, Award, Sigma } from 'lucide-react';
+import { CheckCircle2, ChevronDown, ChevronUp, Copy, Check, ArrowRight, Percent, Award, Sigma } from 'lucide-react';
 
 interface CalculationEngineProps {
   calculation: CalculationResult;
@@ -13,7 +13,7 @@ export const CalculationEngine: React.FC<CalculationEngineProps> = ({
   formulaLatex,
   title,
 }) => {
-  const [isExpanded, setIsExpanded] = useState(true);
+  const [isExpanded, setIsExpanded] = useState(false);
   const [copied, setCopied] = useState(false);
 
   const handleCopyResult = () => {
@@ -27,25 +27,19 @@ export const CalculationEngine: React.FC<CalculationEngineProps> = ({
   return (
     <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-xs overflow-hidden transition-colors">
       {/* Header bar */}
-      <div className="p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between bg-gradient-to-r from-slate-50 via-white to-indigo-50/20 dark:from-slate-900 dark:via-slate-900 dark:to-indigo-950/20">
-        <div className="flex items-start gap-3 min-w-0">
-          <div className="w-9 h-9 shrink-0 rounded-xl bg-indigo-600 flex items-center justify-center text-white shadow-xs">
-            <Calculator className="w-5 h-5" />
+      <div className="p-4 sm:p-5 border-b border-stone-200 dark:border-stone-800 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="min-w-0">
+          <div className="flex flex-wrap items-center gap-2">
+            <h3 className="text-sm sm:text-[15px] font-semibold tracking-tight leading-snug">
+              Calculations
+            </h3>
+            <span className="shrink-0 whitespace-nowrap font-mono text-[10px] uppercase tracking-[0.1em] text-emerald-700 dark:text-emerald-400">
+              auto
+            </span>
           </div>
-          <div className="min-w-0">
-            <div className="flex flex-wrap items-center gap-2">
-              <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white tracking-tight leading-snug">
-                Step-by-Step Calculations & Proof
-              </h3>
-              <span className="shrink-0 whitespace-nowrap text-[10px] sm:text-[11px] font-semibold px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 inline-flex items-center gap-1">
-                <CheckCircle2 className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
-                Auto Evaluated
-              </span>
-            </div>
-            <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-              Rigorous CBSE standard arithmetic substitution and unit propagation
-            </p>
-          </div>
+          <p className="text-[11.5px] text-stone-500 dark:text-stone-400 mt-0.5">
+            Formula, substitution, result — every line, in CBSE order.
+          </p>
         </div>
 
         <div className="flex items-center gap-2 shrink-0 self-start sm:self-auto">
@@ -70,17 +64,18 @@ export const CalculationEngine: React.FC<CalculationEngineProps> = ({
 
           <button
             onClick={() => setIsExpanded(!isExpanded)}
-            aria-label={isExpanded ? 'Collapse calculation steps' : 'Expand calculation steps'}
-            className="flex items-center justify-center h-9 w-9 text-slate-400 hover:text-slate-600 dark:hover:text-white rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            aria-expanded={isExpanded}
+            className="flex items-center gap-1.5 h-9 px-3 text-xs font-medium text-stone-600 dark:text-stone-300 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-lg hover:bg-stone-50 dark:hover:bg-stone-700 transition-colors"
           >
-            {isExpanded ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+            <span>{isExpanded ? 'Hide working' : 'Show working'}</span>
+            {isExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
           </button>
         </div>
       </div>
 
       {/* Summary KPI Cards */}
       {calculation.summaryCards && calculation.summaryCards.length > 0 && (
-        <div className="p-4 sm:p-5 bg-slate-50/50 dark:bg-slate-900/50 border-b border-slate-100 dark:border-slate-800 grid grid-cols-2 lg:grid-cols-4 gap-3">
+        <div className="p-4 sm:p-5 border-b border-stone-200 dark:border-stone-800 grid grid-cols-2 lg:grid-cols-4 gap-3">
           {calculation.summaryCards.map((card, idx) => (
             <div
               key={idx}
