@@ -2,7 +2,6 @@ import React from 'react';
 import {
   Atom,
   Printer,
-  RotateCcw,
   BookOpen,
   HelpCircle,
   Table2,
@@ -18,7 +17,6 @@ type TabId = 'simulation' | 'workspace' | 'record' | 'viva' | 'theory';
 interface HeaderProps {
   currentTab: TabId;
   onTabChange: (tab: TabId) => void;
-  onResetData: () => void;
   onPrint: () => void;
   onHome: () => void;
   hasGraph: boolean;
@@ -38,7 +36,6 @@ const TABS: Array<{ id: TabId; label: string; shortLabel: string; icon: React.El
 export const Header: React.FC<HeaderProps> = ({
   currentTab,
   onTabChange,
-  onResetData,
   onPrint,
   onHome,
   hasGraph,
@@ -81,7 +78,7 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Desktop tab dock — hidden on phones, which use the bottom bar instead */}
           <nav
             aria-label="Experiment sections"
-            className="hidden lg:flex items-center space-x-1 bg-stone-200/60 dark:bg-stone-900/90 p-1 rounded-xl border border-stone-300/60 dark:border-stone-800 text-xs sm:text-sm font-medium"
+            className="hidden lg:flex items-center gap-1 bg-stone-100 dark:bg-stone-900/70 p-1 rounded-xl border border-stone-200 dark:border-stone-800 text-[13px] font-medium"
           >
             {TABS.map((tab) => {
               const Icon = tab.icon;
@@ -93,11 +90,15 @@ export const Header: React.FC<HeaderProps> = ({
                   aria-current={isActive ? 'page' : undefined}
                   className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg transition-all ${
                     isActive
-                      ? 'bg-white dark:bg-stone-800 text-stone-900 dark:text-white shadow-xs font-semibold'
+                      ? 'bg-white dark:bg-stone-800 text-stone-900 dark:text-white shadow-sm font-medium'
                       : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-white'
                   }`}
                 >
-                  <Icon className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
+                  <Icon
+                    className={`w-3.5 h-3.5 ${
+                      isActive ? 'text-stone-900 dark:text-stone-100' : 'text-stone-400 dark:text-stone-500'
+                    }`}
+                  />
                   <span>{tab.label}</span>
                   {tab.id === 'simulation' && (
                     <span className="hidden xl:inline-block px-1.5 rounded-full bg-amber-500/15 text-amber-700 dark:text-amber-400 text-[9px] font-mono font-bold">
@@ -132,21 +133,11 @@ export const Header: React.FC<HeaderProps> = ({
             </button>
 
             <button
-              onClick={onResetData}
-              title="Reset observation table to benchmark values"
-              aria-label="Reset observation table to benchmark values"
-              className="hidden lg:flex items-center gap-1.5 h-9 px-3 text-xs font-medium text-stone-700 dark:text-stone-300 bg-white dark:bg-stone-800/90 border border-stone-200 dark:border-stone-700 rounded-xl hover:bg-stone-50 dark:hover:bg-stone-700 transition-colors shadow-2xs"
-            >
-              <RotateCcw className="w-3 h-3 text-stone-400" />
-              <span>Reset</span>
-            </button>
-
-            <button
               onClick={onPrint}
               aria-label="Print the A4 record page"
-              className="flex items-center justify-center gap-1.5 h-9 w-9 sm:w-auto px-0 sm:px-3.5 text-xs font-bold text-stone-900 dark:text-stone-950 bg-amber-400 hover:bg-amber-300 dark:bg-amber-400 dark:hover:bg-amber-300 rounded-xl transition-all shadow-sm shadow-amber-200/50 dark:shadow-none"
+              className="flex items-center justify-center gap-1.5 h-9 w-9 sm:w-auto px-0 sm:px-3.5 text-[13px] font-medium text-stone-50 dark:text-stone-900 bg-stone-900 hover:bg-black dark:bg-stone-100 dark:hover:bg-white rounded-full transition-colors"
             >
-              <Printer className="w-4 h-4 text-stone-950" />
+              <Printer className="w-4 h-4" />
               <span className="hidden sm:inline">Print A4</span>
             </button>
           </div>

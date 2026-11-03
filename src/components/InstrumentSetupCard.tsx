@@ -1,6 +1,6 @@
 import React from 'react';
 import { ExperimentConstant } from '../types/experiment';
-import { Sliders, AlertCircle } from 'lucide-react';
+import { Sliders, AlertCircle, ChevronDown } from 'lucide-react';
 import { NumberInput } from './ui/NumberInput';
 
 interface InstrumentSetupCardProps {
@@ -16,30 +16,33 @@ export const InstrumentSetupCard: React.FC<InstrumentSetupCardProps> = ({
   onChange,
   onResetConstants,
 }) => {
+  const zeroError = constants.find((c) => c.id.toLowerCase().includes('zeroerror'));
+  const summary = zeroError
+    ? `zero error ${values[zeroError.id] ?? zeroError.defaultValue} ${zeroError.unit}`
+    : `${constants.length} constants`;
+
   return (
-    <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-xs p-5 transition-colors">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 mb-4 border-b border-slate-100 dark:border-slate-800 gap-2">
-        <div className="flex items-center space-x-2.5">
-          <div className="w-8 h-8 rounded-lg bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-100 dark:border-indigo-800 flex items-center justify-center text-indigo-600 dark:text-indigo-400">
-            <Sliders className="w-4 h-4" />
-          </div>
-          <div>
-            <h3 className="text-sm font-bold text-slate-900 dark:text-white">Instrument Setup & Calibration Constants</h3>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
-              Fine-tune instrument parameters. Derived columns and calculations update in real-time.
-            </p>
-          </div>
+    <details className="group bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800">
+      <summary className="flex items-center justify-between gap-3 px-4 py-3 cursor-pointer list-none select-none">
+        <span className="flex items-center gap-2 min-w-0">
+          <Sliders className="w-4 h-4 text-stone-400 shrink-0" />
+          <span className="text-[13px] font-medium text-stone-900 dark:text-stone-100">Instrument &amp; calibration</span>
+          <span className="font-mono text-[11px] text-stone-500 dark:text-stone-500 truncate">{summary}</span>
+        </span>
+        <ChevronDown className="w-4 h-4 shrink-0 text-stone-400 transition-transform group-open:rotate-180" />
+      </summary>
+
+      <div className="px-4 pb-4">
+        <div className="flex justify-end pb-3">
+          <button
+            onClick={onResetConstants}
+            className="text-[11px] font-medium text-stone-500 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 underline underline-offset-2"
+          >
+            Reset defaults
+          </button>
         </div>
 
-        <button
-          onClick={onResetConstants}
-          className="text-xs text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 font-semibold self-start sm:self-auto hover:underline"
-        >
-          Reset Instrument Defaults
-        </button>
-      </div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
         {constants.map((c) => {
           const val = values[c.id] ?? c.defaultValue;
           const isZeroError = c.id.toLowerCase().includes('zeroerror');
@@ -98,7 +101,8 @@ export const InstrumentSetupCard: React.FC<InstrumentSetupCardProps> = ({
             </div>
           );
         })}
+        </div>
       </div>
-    </div>
+    </details>
   );
 };
