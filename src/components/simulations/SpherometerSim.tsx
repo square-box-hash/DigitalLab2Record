@@ -25,6 +25,15 @@ export const SpherometerSim: React.FC<SpherometerSimProps> = ({
   const currentPsr = Math.floor(currentMm / pitch) * pitch;
   const currentCsr = Math.round((currentMm - currentPsr) / lc);
 
+  // The screw advances through the frame as the reading grows: the whole central
+  // assembly (shaft, tip, circular disc) slides, which is the motion the real
+  // instrument makes when you turn the knurled head.
+  const travel = Math.max(-22, Math.min(22, (currentMm - 2.25) * 20));
+  // Which of the drawn disc graduations is the one coinciding with the index.
+  const coincideIdx = Math.round((currentCsr / (divisions || 100)) * 14);
+  // The pitch-scale mark the disc edge is sitting on.
+  const psrStep = Math.round(currentPsr / (pitch || 1));
+
   const sagittaMm = roundTo(Math.abs(h1Mm - h2Mm), 2);
   const sagittaCm = roundTo(sagittaMm / 10, 3);
   const R_cm = sagittaCm > 0 ? roundTo((legDistance * legDistance) / (6 * sagittaCm) + sagittaCm / 2, 2) : 0;
@@ -131,21 +140,43 @@ export const SpherometerSim: React.FC<SpherometerSimProps> = ({
 
             {/* Vertical Pitch Scale P attached to frame */}
             <rect x="300" y="25" width="22" height="75" fill="#f8fafc" stroke="#475569" strokeWidth="1.5" rx="2" />
-            {[-3, -2, -1, 0, 1, 2, 3].map((val, idx) => (
-              <g key={idx}>
-                <line x1="300" y1={35 + idx * 10} x2="312" y2={35 + idx * 10} stroke="#0f172a" strokeWidth={1.5} />
-                <text x="315" y={39 + idx * 10} fill="#0f172a" fontSize="10" fontWeight="bold" fontFamily="monospace">
-                  {val}
-                </text>
-              </g>
-            ))}
+            {[-3, -2, -1, 0, 1, 2, 3].map((val, idx) => {
+              const isActive = val === psrStep;
+              return (
+                <g key={idx}>
+                  <line
+                    x1="300"
+                    y1={35 + idx * 10}
+                    x2={isActive ? 314 : 312}
+                    y2={35 + idx * 10}
+                    stroke={isActive ? '#dc2626' : '#0f172a'}
+                    strokeWidth={isActive ? 2.5 : 1.5}
+                  />
+                  <text
+                    x="315"
+                    y={39 + idx * 10}
+                    fill={isActive ? '#dc2626' : '#0f172a'}
+                    fontSize="10"
+                    fontWeight="bold"
+                    fontFamily="monospace"
+                  >
+                    {val}
+                  </text>
+                </g>
+              );
+            })}
 
             {/* Central Screw Assembly */}
             {(() => {
               const tipY = surfaceType === 'curved' ? 183 : 195;
               const screwTopY = tipY - 145;
               return (
-                <g>
+                <g
+                  style={{
+                    transform: `translateY(${travel}px)`,
+                    transition: 'transform 160ms ease-out',
+                  }}
+                >
                   {/* Central Screw Shaft */}
                   <rect x="350" y={screwTopY + 25} width="20" height="120" fill="#94a3b8" stroke="#475569" strokeWidth="1.5" />
                   {/* Conical pointed tip */}
@@ -158,7 +189,7 @@ export const SpherometerSim: React.FC<SpherometerSimProps> = ({
                   {Array.from({ length: 15 }).map((_, dIdx) => {
                     const angle = (dIdx - 7) * 10;
                     const markX = 360 + angle * 7.5;
-                    const isCoincide = dIdx === 7;
+                    const isCoincide = dIdx === coincideIdx;
                     return (
                       <line
                         key={dIdx}
@@ -192,7 +223,7 @@ export const SpherometerSim: React.FC<SpherometerSimProps> = ({
         <div className="space-y-2 md:col-span-1">
           <div className="flex justify-between items-center text-xs sm:text-sm">
             <span className="font-bold text-slate-700 dark:text-slate-300">
-              {surfaceType === 'curved' ? 'Adjust Reading on Curved (h₁):' : 'Adjust Reading on Plane (h₂):'}
+              {surfaceType === 'curved' ? 'Turn the screw — reading on curved (h₁)' : 'Turn the screw — reading on plane (h₂)'}
             </span>
             <span className="font-mono font-extrabold text-indigo-600 dark:text-indigo-400 text-base">{currentMm.toFixed(2)} mm</span>
           </div>
