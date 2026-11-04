@@ -11,12 +11,14 @@ import {
   Sigma,
   MessageSquareQuote,
   Check,
+  Rotate3d,
 } from 'lucide-react';
 import { EXPERIMENTS } from '../data/experiments';
 import { formatNumber } from '../utils/math';
 
 interface LandingViewProps {
   onEnterLab: (experimentId?: string) => void;
+  onOpenInstruments: () => void;
   isDark: boolean;
   onToggleTheme: () => void;
   themePreference?: 'auto' | 'light' | 'dark';
@@ -89,6 +91,7 @@ const CAPABILITIES = [
 
 export const LandingView: React.FC<LandingViewProps> = ({
   onEnterLab,
+  onOpenInstruments,
   isDark,
   onToggleTheme,
   themePreference = 'auto',
@@ -131,6 +134,12 @@ export const LandingView: React.FC<LandingViewProps> = ({
             <a href="#changes" className="hover:text-stone-900 dark:hover:text-stone-100 transition-colors">What changes</a>
             <a href="#practicals" className="hover:text-stone-900 dark:hover:text-stone-100 transition-colors">Practicals</a>
             <a href="#about" className="hover:text-stone-900 dark:hover:text-stone-100 transition-colors">About</a>
+            <button
+              onClick={onOpenInstruments}
+              className="hover:text-stone-900 dark:hover:text-stone-100 transition-colors"
+            >
+              Instrument room
+            </button>
           </nav>
 
           <div className="flex items-center gap-2">
@@ -464,6 +473,28 @@ export const LandingView: React.FC<LandingViewProps> = ({
               </button>
             ))}
           </div>
+
+          <button
+            onClick={onOpenInstruments}
+            className="mt-4 w-full text-left rounded-2xl border border-stone-200 dark:border-stone-800 bg-stone-50 dark:bg-stone-950 p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-stone-300 dark:hover:border-stone-700 transition-colors group"
+          >
+            <span className="flex items-start gap-3">
+              <Rotate3d className="w-4 h-4 mt-0.5 shrink-0 text-stone-400" />
+              <span>
+                <span className="block text-[14px] font-medium text-stone-900 dark:text-stone-100">
+                  Look at the apparatus in 3D
+                </span>
+                <span className="block text-[12.5px] text-stone-500 dark:text-stone-400 mt-0.5 max-w-[64ch]">
+                  Rotatable models of the calipers, the screw gauge, the spherometer and the pendulum —
+                  embedded from Sketchfab, with credit to the makers.
+                </span>
+              </span>
+            </span>
+            <span className="inline-flex items-center gap-1.5 font-mono text-[11px] text-stone-500 dark:text-stone-500 group-hover:text-stone-900 dark:group-hover:text-stone-100 transition-colors shrink-0">
+              Instrument room
+              <ArrowRight className="w-3.5 h-3.5" />
+            </span>
+          </button>
         </div>
       </section>
 

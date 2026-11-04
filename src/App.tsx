@@ -12,6 +12,7 @@ import { TheoryView } from './components/TheoryView';
 import { SimulatorContainer } from './components/simulations/SimulatorContainer';
 import { MobileTabBar } from './components/MobileTabBar';
 import { LandingView } from './components/LandingView';
+import { InstrumentExplorerView } from './components/InstrumentExplorerView';
 import { buildRowsCsv, downloadCsv } from './utils/export';
 import {
   Menu,
@@ -25,6 +26,8 @@ import {
   AtSign,
   ArrowUpRight,
 } from 'lucide-react';
+
+type RouteView = 'landing' | 'app' | 'instruments';
 
 const STORAGE_KEY = 'cbse_lab_state_v1';
 const THEME_KEY = 'cbse_theme_pref';
@@ -145,14 +148,16 @@ export default function App() {
   //   (nothing)          → landing
   //   #/lab              → workspace
   //   #/lab/<exp-id>     → workspace with that practical selected
-  const readRoute = (): { view: 'landing' | 'app'; experimentId?: string } => {
+  const readRoute = (): { view: RouteView; experimentId?: string } => {
     if (typeof window === 'undefined') return { view: 'landing' };
     const raw = window.location.hash.replace(/^#\/?/, '');
     const [section, experimentId] = raw.split('/');
-    return { view: section === 'lab' ? 'app' : 'landing', experimentId: experimentId || undefined };
+    const view: RouteView =
+      section === 'lab' ? 'app' : section === 'instruments' ? 'instruments' : 'landing';
+    return { view, experimentId: experimentId || undefined };
   };
 
-  const [route, setRoute] = useState<{ view: 'landing' | 'app'; experimentId?: string }>(readRoute);
+  const [route, setRoute] = useState<{ view: RouteView; experimentId?: string }>(readRoute);
 
   useEffect(() => {
     const applyHash = () => {
@@ -177,6 +182,12 @@ export default function App() {
   const goHome = () => {
     window.history.pushState(null, '', window.location.pathname);
     setRoute({ view: 'landing' });
+    window.scrollTo({ top: 0, behavior: 'auto' });
+  };
+
+  const goToInstruments = () => {
+    window.location.hash = '#/instruments';
+    setRoute({ view: 'instruments' });
     window.scrollTo({ top: 0, behavior: 'auto' });
   };
 
@@ -396,9 +407,17 @@ export default function App() {
   };
 
   return (
-    route.view === 'landing' ? (
+    route.view === 'instruments' ? (
+      <InstrumentExplorerView
+        onHome={goHome}
+        onEnterLab={() => goToLab()}
+        isDark={isDark}
+        onToggleTheme={handleToggleTheme}
+      />
+    ) : route.view === 'landing' ? (
       <LandingView
         onEnterLab={goToLab}
+        onOpenInstruments={goToInstruments}
         isDark={isDark}
         themePreference={themePreference}
         onToggleTheme={handleToggleTheme}
