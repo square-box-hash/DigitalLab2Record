@@ -7,6 +7,13 @@ import { BeamBalanceSim } from './BeamBalanceSim';
 import { ParallelogramSim } from './ParallelogramSim';
 import { HelicalSpringSim } from './HelicalSpringSim';
 import { SimplePendulumSim } from './SimplePendulumSim';
+import {
+  InclinedPlaneSim,
+  YoungsModulusSim,
+  SpringOscillationSim,
+  BoylesLawSim,
+  CapillaryRiseSim,
+} from './ExtraSims';
 import { FlaskConical, Sparkles, CheckCircle2 } from 'lucide-react';
 
 interface SimulatorContainerProps {
@@ -23,6 +30,11 @@ const RIG_IDS = [
   'parallelogram-law',
   'helical-spring',
   'simple-pendulum',
+  'inclined-plane',
+  'youngs-modulus',
+  'spring-oscillation',
+  'boyles-law',
+  'surface-tension',
 ];
 
 export const SimulatorContainer: React.FC<SimulatorContainerProps> = ({
@@ -83,6 +95,49 @@ export const SimulatorContainer: React.FC<SimulatorContainerProps> = ({
         <SimplePendulumSim
           bobRadius={constants.bobRadius || 1.25}
           hookLength={constants.hookLength || 0.85}
+          onRecordRow={(row) => onLogSimulatedRow(row)}
+        />
+      )}
+
+      {experiment.id === 'inclined-plane' && (
+        <InclinedPlaneSim
+          g={constants.g || 9.8}
+          panMass={constants.panMass || 10}
+          rollerMass={constants.rollerMass || 100}
+          onRecordRow={(row) => onLogSimulatedRow(row)}
+        />
+      )}
+
+      {experiment.id === 'youngs-modulus' && (
+        <YoungsModulusSim
+          g={constants.g || 9.8}
+          wireLength={constants.wireLength || 2.0}
+          diameter={constants.wireDiameter || 0.5}
+          zeroReading={constants.zeroReading || 5.0}
+          onRecordRow={(row) => onLogSimulatedRow(row)}
+        />
+      )}
+
+      {experiment.id === 'spring-oscillation' && (
+        <SpringOscillationSim
+          oscillations={constants.oscillations || 20}
+          onRecordRow={(row) => onLogSimulatedRow(row)}
+        />
+      )}
+
+      {experiment.id === 'boyles-law' && (
+        <BoylesLawSim
+          atmPressure={constants.atmPressure || 76}
+          tubeArea={constants.tubeArea || 0.196}
+          onRecordRow={(row) => onLogSimulatedRow(row)}
+        />
+      )}
+
+      {experiment.id === 'surface-tension' && (
+        <CapillaryRiseSim
+          rho={constants.rho || 1000}
+          g={constants.g || 9.8}
+          temperature={constants.temperature || 20}
           onRecordRow={(row) => onLogSimulatedRow(row)}
         />
       )}

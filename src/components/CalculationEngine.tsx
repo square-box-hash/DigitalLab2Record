@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { CalculationResult } from '../types/experiment';
-import { CheckCircle2, ChevronDown, ChevronUp, Copy, Check, ArrowRight, Percent, Award, Sigma } from 'lucide-react';
+import { CheckCircle2, ChevronDown, Copy, Check, ArrowRight, Percent, Award, Sigma } from 'lucide-react';
 
 interface CalculationEngineProps {
   calculation: CalculationResult;
@@ -13,7 +13,6 @@ export const CalculationEngine: React.FC<CalculationEngineProps> = ({
   formulaLatex,
   title,
 }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
   const [copied, setCopied] = useState(false);
 
   const handleCopyResult = () => {
@@ -62,14 +61,6 @@ export const CalculationEngine: React.FC<CalculationEngineProps> = ({
             )}
           </button>
 
-          <button
-            onClick={() => setIsExpanded(!isExpanded)}
-            aria-expanded={isExpanded}
-            className="flex items-center gap-1.5 h-9 px-3 text-xs font-medium text-stone-600 dark:text-stone-300 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-lg hover:bg-stone-50 dark:hover:bg-stone-700 transition-colors"
-          >
-            <span>{isExpanded ? 'Hide working' : 'Show working'}</span>
-            {isExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
-          </button>
         </div>
       </div>
 
@@ -172,9 +163,30 @@ export const CalculationEngine: React.FC<CalculationEngineProps> = ({
         </div>
       )}
 
-      {/* Expandable Step-by-Step Breakdown */}
-      {isExpanded && (
-        <div className="p-4 sm:p-6 space-y-5">
+      {/* Step-by-step working. A native <details> rather than React state: it
+          cannot get out of sync with what is on screen, and opening it scrolls
+          the working into view, since it sits below the summary cards. */}
+      <details
+        className="group border-t border-stone-200 dark:border-stone-800"
+        onToggle={(event) => {
+          const el = event.currentTarget;
+          if (el.open) {
+            window.setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 60);
+          }
+        }}
+      >
+        <summary className="flex items-center justify-between gap-3 px-4 sm:px-5 py-3 cursor-pointer list-none select-none">
+          <span className="text-[12.5px] font-medium text-stone-700 dark:text-stone-300">
+            Step-by-step working &amp; result
+          </span>
+          <span className="inline-flex items-center gap-1.5 font-mono text-[10.5px] uppercase tracking-[0.1em] text-stone-500 dark:text-stone-500">
+            <span className="group-open:hidden">show</span>
+            <span className="hidden group-open:inline">hide</span>
+            <ChevronDown className="w-3.5 h-3.5 transition-transform group-open:rotate-180" />
+          </span>
+        </summary>
+
+        <div className="px-4 sm:px-6 pb-6 pt-1 space-y-5">
           {/* Percentage Error Highlight Banner */}
           {pct && (
             <div className={`p-4 rounded-xl border flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${
@@ -267,7 +279,7 @@ export const CalculationEngine: React.FC<CalculationEngineProps> = ({
             </p>
           </div>
         </div>
-      )}
+      </details>
     </div>
   );
 };
