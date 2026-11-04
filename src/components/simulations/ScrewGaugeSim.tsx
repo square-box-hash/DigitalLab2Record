@@ -245,7 +245,7 @@ export const ScrewGaugeSim: React.FC<ScrewGaugeSimProps> = ({
         </div>
 
         {/* Live Calculation Card */}
-        <div className="p-4 bg-slate-50 dark:bg-slate-800/80 rounded-xl border border-slate-200 dark:border-slate-700 text-xs sm:text-sm space-y-1.5 font-mono md:col-span-1 shadow-2xs">
+        <div className="text-xs sm:text-sm space-y-1.5 font-mono md:col-span-1">
           <div className="flex justify-between text-slate-600 dark:text-slate-400">
             <span>Pitch Scale (PSR):</span>
             <strong className="text-slate-900 dark:text-white font-bold">{psr} mm</strong>

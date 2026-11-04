@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { CalculationResult } from '../types/experiment';
-import { CheckCircle2, ChevronDown, Copy, Check, ArrowRight, Percent, Award, Sigma } from 'lucide-react';
+import { Check, ChevronDown, Copy } from 'lucide-react';
 
 interface CalculationEngineProps {
   calculation: CalculationResult;
@@ -8,166 +8,92 @@ interface CalculationEngineProps {
   title: string;
 }
 
-export const CalculationEngine: React.FC<CalculationEngineProps> = ({
-  calculation,
-  formulaLatex,
-  title,
-}) => {
+/**
+ * The result, quietly.
+ *
+ * One line of figures, one line of the result, and everything else — the
+ * substitutions, the error working, the percentage banner — folded away behind
+ * a disclosure. The record page still prints all of it.
+ */
+export const CalculationEngine: React.FC<CalculationEngineProps> = ({ calculation }) => {
   const [copied, setCopied] = useState(false);
+
+  const entries = calculation.errorAnalysis?.entries ?? [];
+  const cards = calculation.summaryCards ?? [];
+  const pct = calculation.percentageError;
+  const errorSteps = calculation.errorAnalysis?.steps ?? [];
 
   const handleCopyResult = () => {
     navigator.clipboard.writeText(calculation.finalResult);
     setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    setTimeout(() => setCopied(false), 1800);
   };
 
-  const pct = calculation.percentageError;
-
   return (
-    <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-xs overflow-hidden transition-colors">
-      {/* Header bar */}
-      <div className="p-4 sm:p-5 border-b border-stone-200 dark:border-stone-800 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="min-w-0">
-          <div className="flex flex-wrap items-center gap-2">
-            <h3 className="text-sm sm:text-[15px] font-semibold tracking-tight leading-snug">
-              Calculations
-            </h3>
-            <span className="shrink-0 whitespace-nowrap font-mono text-[10px] uppercase tracking-[0.1em] text-emerald-700 dark:text-emerald-400">
-              auto
-            </span>
-          </div>
-          <p className="text-[11.5px] text-stone-500 dark:text-stone-400 mt-0.5">
-            Formula, substitution, result — every line, in CBSE order.
-          </p>
+    <section className="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800">
+      {/* Header */}
+      <div className="px-4 sm:px-5 py-3 flex items-center justify-between gap-3">
+        <div className="flex items-baseline gap-2 min-w-0">
+          <h3 className="text-[13px] font-semibold tracking-tight text-stone-900 dark:text-stone-100">
+            Result
+          </h3>
+          <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-emerald-700 dark:text-emerald-400">
+            computed
+          </span>
         </div>
-
-        <div className="flex items-center gap-2 shrink-0 self-start sm:self-auto">
-          <button
-            onClick={handleCopyResult}
-            aria-label="Copy the final result"
-            className="flex items-center gap-1.5 h-9 px-3 text-xs font-medium text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors shadow-2xs"
-          >
-            {copied ? (
-              <>
-                <Check className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
-                <span className="text-emerald-700 dark:text-emerald-300 font-semibold">Copied!</span>
-              </>
-            ) : (
-              <>
-                <Copy className="w-3.5 h-3.5 text-slate-400" />
-                <span>Copy</span>
-                <span className="hidden sm:inline">Result</span>
-              </>
-            )}
-          </button>
-
-        </div>
+        <button
+          onClick={handleCopyResult}
+          aria-label="Copy the final result"
+          className="inline-flex items-center gap-1.5 h-8 px-2.5 rounded-lg text-[11.5px] font-medium text-stone-500 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
+        >
+          {copied ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
+          {copied ? 'Copied' : 'Copy'}
+        </button>
       </div>
 
-      {/* Summary KPI Cards */}
-      {calculation.summaryCards && calculation.summaryCards.length > 0 && (
-        <div className="p-4 sm:p-5 border-b border-stone-200 dark:border-stone-800 grid grid-cols-2 lg:grid-cols-4 gap-3">
-          {calculation.summaryCards.map((card, idx) => (
-            <div
-              key={idx}
-              className="p-3.5 rounded-xl bg-white dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 shadow-2xs flex flex-col justify-between h-full"
-            >
-              <div className="text-[11px] sm:text-xs font-medium text-slate-500 dark:text-slate-400 mb-1 leading-snug">
-                {card.label}
+      {/* Figures — the numbers, without boxes around them */}
+      <div className="px-4 sm:px-5 pb-4 flex flex-wrap gap-x-9 gap-y-4">
+        {entries.length > 0
+          ? entries.map((entry) => (
+              <div key={entry.symbol} className="min-w-0">
+                <div className="font-mono text-[10px] uppercase tracking-[0.1em] text-stone-400 dark:text-stone-500">
+                  {entry.quantity}
+                </div>
+                <div className="font-mono text-[17px] leading-tight font-medium text-stone-900 dark:text-stone-100 mt-0.5">
+                  {entry.mean}
+                  <span className="text-[11px] text-stone-400 dark:text-stone-500 ml-1">{entry.unit}</span>
+                </div>
+                <div className="font-mono text-[11px] text-stone-500 dark:text-stone-500 mt-0.5">
+                  ± {entry.meanAbsError} · {entry.percentageError}
+                </div>
               </div>
-              <div className="flex items-baseline space-x-1">
-                <span className="text-xl font-extrabold text-slate-900 dark:text-white font-mono tracking-tight">
+            ))
+          : cards.map((card) => (
+              <div key={card.label} className="min-w-0">
+                <div className="font-mono text-[10px] uppercase tracking-[0.1em] text-stone-400 dark:text-stone-500">
+                  {card.label}
+                </div>
+                <div className="font-mono text-[17px] leading-tight font-medium text-stone-900 dark:text-stone-100 mt-0.5">
                   {card.value}
-                </span>
-                {card.unit && (
-                  <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 font-mono">
-                    {card.unit}
-                  </span>
-                )}
-              </div>
-              {card.subtext && (
-                <div className="text-[11px] text-slate-400 dark:text-slate-500 mt-1 leading-snug">
-                  {card.subtext}
+                  {card.unit && <span className="text-[11px] text-stone-400 dark:text-stone-500 ml-1">{card.unit}</span>}
                 </div>
-              )}
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* Mean absolute error and percentage error */}
-      {calculation.errorAnalysis && (
-        <div className="p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 space-y-3">
-          <div className="flex items-start gap-2.5">
-            <div className="w-8 h-8 shrink-0 rounded-lg bg-amber-500/15 text-amber-700 dark:text-amber-400 flex items-center justify-center">
-              <Sigma className="w-4 h-4" />
-            </div>
-            <div>
-              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-200">
-                Error Analysis
-              </h4>
-              <p className="text-[11px] text-slate-500 dark:text-slate-400">
-                Mean absolute error and percentage error from {calculation.errorAnalysis.readings} readings
-              </p>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-2">
-            {calculation.errorAnalysis.entries.map((entry) => (
-              <div
-                key={entry.symbol}
-                className="p-3 rounded-xl bg-white dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80"
-              >
-                <div className="flex items-baseline justify-between gap-2">
-                  <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">
-                    {entry.quantity}
-                  </span>
-                  <span className="text-[10px] font-mono font-bold text-amber-700 dark:text-amber-400 bg-amber-500/10 px-1.5 py-0.5 rounded whitespace-nowrap">
-                    {entry.percentageError}
-                  </span>
-                </div>
-                <div className="mt-1 font-mono text-[13px] font-bold text-slate-900 dark:text-white break-words">
-                  {entry.notation}
-                </div>
-                {entry.basis && (
-                  <div className="mt-1 text-[10px] text-slate-400 dark:text-slate-500 leading-snug">
-                    {entry.basis}
+                {card.subtext && (
+                  <div className="text-[11px] text-stone-500 dark:text-stone-500 mt-0.5 max-w-[22ch] leading-snug">
+                    {card.subtext}
                   </div>
                 )}
               </div>
             ))}
-          </div>
+      </div>
 
-          <ol className="space-y-1.5">
-            {calculation.errorAnalysis.steps.map((step, idx) => (
-              <li
-                key={idx}
-                className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-2 text-[11px] rounded-lg bg-slate-50/70 dark:bg-slate-800/40 border border-slate-200/70 dark:border-slate-700/60 px-2.5 py-2"
-              >
-                <span className="font-bold text-slate-700 dark:text-slate-200 shrink-0">
-                  {idx + 1}. {step.label}
-                </span>
-                <span className="font-mono text-slate-500 dark:text-slate-400 break-words">
-                  {step.substitution}
-                </span>
-                <span className="font-mono font-bold text-slate-900 dark:text-white sm:ml-auto shrink-0">
-                  = {step.result}
-                </span>
-              </li>
-            ))}
-          </ol>
+      {/* The statement of the result */}
+      <p className="px-4 sm:px-5 pb-4 font-mono text-[11.5px] leading-relaxed text-stone-600 dark:text-stone-400">
+        {calculation.finalResult}
+      </p>
 
-          {calculation.errorAnalysis.note && (
-            <p className="text-[11px] text-slate-500 dark:text-slate-400">{calculation.errorAnalysis.note}</p>
-          )}
-        </div>
-      )}
-
-      {/* Step-by-step working. A native <details> rather than React state: it
-          cannot get out of sync with what is on screen, and opening it scrolls
-          the working into view, since it sits below the summary cards. */}
+      {/* Everything else, folded */}
       <details
-        className="group border-t border-stone-200 dark:border-stone-800"
+        className="group border-t border-stone-100 dark:border-stone-800"
         onToggle={(event) => {
           const el = event.currentTarget;
           if (el.open) {
@@ -176,110 +102,85 @@ export const CalculationEngine: React.FC<CalculationEngineProps> = ({
         }}
       >
         <summary className="flex items-center justify-between gap-3 px-4 sm:px-5 py-3 cursor-pointer list-none select-none">
-          <span className="text-[12.5px] font-medium text-stone-700 dark:text-stone-300">
-            Step-by-step working &amp; result
+          <span className="text-[12px] font-medium text-stone-600 dark:text-stone-300">
+            Working &amp; error analysis
           </span>
-          <span className="inline-flex items-center gap-1.5 font-mono text-[10.5px] uppercase tracking-[0.1em] text-stone-500 dark:text-stone-500">
+          <span className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.1em] text-stone-400 dark:text-stone-500">
             <span className="group-open:hidden">show</span>
             <span className="hidden group-open:inline">hide</span>
             <ChevronDown className="w-3.5 h-3.5 transition-transform group-open:rotate-180" />
           </span>
         </summary>
 
-        <div className="px-4 sm:px-6 pb-6 pt-1 space-y-5">
-          {/* Percentage Error Highlight Banner */}
+        <div className="px-4 sm:px-5 pb-5 pt-1 space-y-5">
           {pct && (
-            <div className={`p-4 rounded-xl border flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${
-              parseFloat(pct.errorPercent) <= 5.0
-                ? 'bg-emerald-50/70 dark:bg-emerald-950/40 border-emerald-200 dark:border-emerald-800 text-emerald-950 dark:text-emerald-200'
-                : 'bg-amber-50/70 dark:bg-amber-950/40 border-amber-200 dark:border-amber-800 text-amber-950 dark:text-amber-200'
-            }`}>
-              <div className="flex items-center space-x-3">
-                <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 ${
-                  parseFloat(pct.errorPercent) <= 5.0
-                    ? 'bg-emerald-600 text-white'
-                    : 'bg-amber-600 text-white'
-                }`}>
-                  <Percent className="w-5 h-5" />
-                </div>
-                <div>
-                  <h4 className="text-xs font-bold uppercase tracking-wider">
-                    Experimental Error Analysis
-                  </h4>
-                  <p className="text-xs text-slate-600 dark:text-slate-300 mt-0.5">
-                    Calculated: <strong className="font-mono text-slate-900 dark:text-white">{pct.calculated}</strong> vs Theoretical: <strong className="font-mono text-slate-900 dark:text-white">{pct.theoretical}</strong>
-                    {pct.standardRef && <span className="text-slate-500 dark:text-slate-400"> ({pct.standardRef})</span>}
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-center space-x-2 self-start sm:self-auto">
-                <span className={`text-base font-extrabold font-mono px-3 py-1 rounded-lg border ${
-                  parseFloat(pct.errorPercent) <= 5.0
-                    ? 'bg-emerald-100/80 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-200 border-emerald-300 dark:border-emerald-700'
-                    : 'bg-amber-100/80 dark:bg-amber-900/60 text-amber-800 dark:text-amber-200 border-amber-300 dark:border-amber-700'
-                }`}>
-                  {pct.errorPercent} Error
-                </span>
-                {parseFloat(pct.errorPercent) <= 5.0 && (
-                  <span className="text-xs font-semibold text-emerald-700 dark:text-emerald-300 bg-white/80 dark:bg-slate-900 px-2 py-1 rounded-md border border-emerald-200 dark:border-emerald-800">
-                    High Accuracy (≤5%)
-                  </span>
-                )}
-              </div>
+            <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1 font-mono text-[11.5px]">
+              <span className="text-stone-500 dark:text-stone-500">Percentage error</span>
+              <span className="font-semibold text-stone-900 dark:text-stone-100">{pct.errorPercent} %</span>
+              <span className="text-stone-400 dark:text-stone-500">
+                against {pct.theoretical}
+                {pct.standardRef ? ` (${pct.standardRef})` : ''}
+              </span>
             </div>
           )}
 
-          {/* Sequential Steps */}
-          <div className="space-y-3">
-            <h4 className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
-              Mathematical Derivation & Substitution Steps
-            </h4>
-
-            <div className="space-y-2.5">
+          {calculation.steps.length > 0 && (
+            <ol className="space-y-2">
               {calculation.steps.map((step, idx) => (
-                <div
-                  key={idx}
-                  className="p-3.5 rounded-xl border border-slate-200/90 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors flex flex-col md:flex-row md:items-center justify-between gap-3 text-xs"
-                >
-                  <div className="flex items-start space-x-3">
-                    <span className="w-6 h-6 rounded-md bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 font-bold font-mono flex items-center justify-center shrink-0 text-xs">
-                      {idx + 1}
-                    </span>
-                    <div className="space-y-1">
-                      <div className="font-bold text-slate-900 dark:text-white">{step.label}</div>
-                      <div className="font-mono text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-900 px-2 py-1 rounded border border-slate-200 dark:border-slate-700 inline-block text-[11px]">
-                        {step.formula}
-                      </div>
-                      <div className="text-slate-500 dark:text-slate-400 text-[11px] font-mono">
-                        Sub: {step.substitution}
-                      </div>
+                <li key={idx} className="grid grid-cols-[18px_1fr] gap-x-3 gap-y-0.5">
+                  <span className="font-mono text-[10px] text-stone-400 dark:text-stone-600 pt-0.5">{idx + 1}</span>
+                  <div className="min-w-0">
+                    <div className="flex flex-wrap items-baseline justify-between gap-x-3">
+                      <span className="text-[12px] font-medium text-stone-800 dark:text-stone-200">{step.label}</span>
+                      <span className="font-mono text-[12px] font-semibold text-stone-900 dark:text-stone-100">
+                        {step.result}
+                      </span>
+                    </div>
+                    <div className="font-mono text-[10.5px] text-stone-500 dark:text-stone-500 break-words">
+                      {step.formula}
+                    </div>
+                    <div className="font-mono text-[10.5px] text-stone-400 dark:text-stone-600 break-words">
+                      {step.substitution}
                     </div>
                   </div>
-
-                  <div className="flex items-center space-x-2 md:self-center pl-9 md:pl-0">
-                    <ArrowRight className="w-4 h-4 text-slate-300 dark:text-slate-600 hidden md:block" />
-                    <span className="font-mono font-bold text-slate-900 dark:text-white text-sm bg-white dark:bg-slate-900 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 shadow-2xs">
-                      = {step.result}
-                    </span>
-                  </div>
-                </div>
+                </li>
               ))}
-            </div>
-          </div>
+            </ol>
+          )}
 
-          {/* Final Result Card */}
-          <div className="p-4 rounded-xl bg-gradient-to-r from-emerald-500/10 via-emerald-500/5 to-transparent dark:from-emerald-950/40 dark:via-emerald-950/20 border border-emerald-300/80 dark:border-emerald-800">
-            <div className="flex items-center space-x-2 text-emerald-800 dark:text-emerald-300 text-xs font-bold uppercase tracking-wider mb-1">
-              <Award className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-              <span>Final CBSE Practical Statement</span>
+          {errorSteps.length > 0 && (
+            <div className="pt-3 border-t border-stone-100 dark:border-stone-800 space-y-2">
+              <div className="font-mono text-[10px] uppercase tracking-[0.12em] text-stone-400 dark:text-stone-500">
+                Error analysis
+              </div>
+              <ol className="space-y-2">
+                {errorSteps.map((step, idx) => (
+                  <li key={idx} className="grid grid-cols-[18px_1fr] gap-x-3">
+                    <span className="font-mono text-[10px] text-stone-400 dark:text-stone-600 pt-0.5">{idx + 1}</span>
+                    <div className="min-w-0">
+                      <div className="flex flex-wrap items-baseline justify-between gap-x-3">
+                        <span className="text-[12px] font-medium text-stone-800 dark:text-stone-200">{step.label}</span>
+                        <span className="font-mono text-[12px] font-semibold text-stone-900 dark:text-stone-100">
+                          {step.result}
+                        </span>
+                      </div>
+                      <div className="font-mono text-[10.5px] text-stone-400 dark:text-stone-600 break-words">
+                        {step.substitution}
+                      </div>
+                    </div>
+                  </li>
+                ))}
+              </ol>
             </div>
-            <p className="text-sm font-semibold text-slate-900 dark:text-white font-mono leading-relaxed">
-              {calculation.finalResult}
+          )}
+
+          {calculation.errorAnalysis?.note && (
+            <p className="text-[11px] text-stone-500 dark:text-stone-500 leading-relaxed">
+              {calculation.errorAnalysis.note}
             </p>
-          </div>
+          )}
         </div>
       </details>
-    </div>
+    </section>
   );
 };

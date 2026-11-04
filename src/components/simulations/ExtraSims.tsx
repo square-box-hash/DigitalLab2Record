@@ -45,14 +45,12 @@ const SimFrame: React.FC<SimFrameProps> = ({
     </div>
 
     <div className="w-full overflow-x-auto">
-      <div className="rounded-xl border border-stone-200 dark:border-stone-800 bg-stone-50 dark:bg-stone-950 p-2">
-        {svg}
-      </div>
+      <div className="py-1">{svg}</div>
     </div>
 
     <div className="grid grid-cols-1 md:grid-cols-[1fr_1fr_auto] gap-4 items-center">
       <div className="space-y-2">{controls}</div>
-      <div className="rounded-xl border border-stone-200 dark:border-stone-800 bg-stone-50 dark:bg-stone-950 p-3.5 space-y-1.5 font-mono text-[12px]">
+      <div className="space-y-1.5 font-mono text-[12px]">
         {readout}
       </div>
       <div>

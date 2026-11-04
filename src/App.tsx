@@ -19,7 +19,6 @@ import {
   TrendingUp,
   FlaskConical,
   ArrowRight,
-  Table2,
   Sparkles,
   BookOpen,
   Code2,
@@ -486,27 +485,18 @@ export default function App() {
                 onLogSimulatedRow={handleLogSimulatedRow}
               />
 
-              {/* Navigation Pill to Observations */}
-              <div className="p-4 bg-stone-100/80 dark:bg-stone-900/60 rounded-2xl border border-stone-200/80 dark:border-stone-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-colors">
-                <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 rounded-xl bg-stone-900 dark:bg-stone-100 text-amber-400 dark:text-stone-950 flex items-center justify-center shrink-0">
-                    <Table2 className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <h4 className="text-xs font-bold text-stone-900 dark:text-white font-sans">
-                      Observations Logged: {computedRows.length} Data Rows
-                    </h4>
-                    <p className="text-xs text-stone-500 dark:text-stone-400 font-sans">
-                      Readings taken from this rig are instantly propagated to the observation spreadsheet and graph.
-                    </p>
-                  </div>
-                </div>
+              {/* Slim link through to the observations */}
+              <div className="flex flex-wrap items-center justify-between gap-2 px-1">
+                <p className="text-[12px] text-stone-500 dark:text-stone-500 font-sans">
+                  <span className="font-mono text-stone-700 dark:text-stone-300">{computedRows.length}</span>{' '}
+                  readings logged — they feed the table, the graph and the record.
+                </p>
 
                 <button
                   onClick={() => setCurrentTab('workspace')}
-                  className="flex items-center space-x-1.5 px-4 py-2 bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900 rounded-xl text-xs font-bold hover:bg-stone-800 dark:hover:bg-white transition-all shadow-xs self-start sm:self-auto"
+                  className="inline-flex items-center gap-1.5 text-[12px] font-medium text-stone-700 dark:text-stone-300 hover:text-stone-900 dark:hover:text-stone-100 transition-colors"
                 >
-                  <span>View Observations & Proofs</span>
+                  <span>Open observations</span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </button>
               </div>
