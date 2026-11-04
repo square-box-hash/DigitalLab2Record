@@ -30,7 +30,7 @@ No sign-up. No server. Everything stays in your browser.
 
 ## 🧩 The problem
 
-Every Class XI student does the same seven practicals, and runs into the same seven walls:
+Every Class XI student does the same twelve practicals, and runs into the same walls:
 
 - **The arithmetic is fiddly and unforgiving.** Volume is `πR²H`, the spherometer needs `l²/6h + h/2`, the spring constant comes off a slope. One misplaced decimal and the whole row is wrong — and you find out after you've written it up.
 - **Zero error is easy to forget and easy to get backwards.** The calipers in the cupboard have been dropped a hundred times. The correction has to be applied to *every* reading, with the right sign, and by the third row nobody remembers whether to add or subtract.
@@ -123,7 +123,7 @@ If it can't be fixed, say so on the record. A labelled limitation — *"apparatu
 
 ---
 
-## 🔬 The seven practicals
+## 🔬 The twelve practicals
 
 | # | Practical | You measure | It works out |
 |:-:|---|---|---|
@@ -134,8 +134,13 @@ If it can't be fixed, say so on the record. A labelled limitation — *"apparatu
 | 05 | **Parallelogram Law** | Forces P, Q and the angle θ | Resultant weight, percentage error against a spring balance |
 | 06 | **Helical Spring** | Load, loading and unloading positions | Force constant `k` from the load–extension slope |
 | 07 | **Simple Pendulum** | Thread length, time for 20 oscillations | `g` from the L–T² slope, length of a second's pendulum |
+| 08 | **Inclined Plane** | Angle θ, the load that keeps the roller moving uniformly | `W` against `sin θ` — slope gives the roller's mass, intercept the rolling friction |
+| 09 | **Young's Modulus** | Micrometer readings against load, wire diameter | `Y = gL/(πr² × slope)` from the extension–load line |
+| 10 | **Spring by Oscillation** | Load and the time for 20 oscillations | Force constant `K = 4π²/slope` and the spring's effective mass from the intercept |
+| 11 | **Boyle's Law** | Air-column length and mercury-level difference | `PV` constancy, and `P` against `1/V` as a straight line |
+| 12 | **Surface Tension** | Capillary rise, bore diameter | `T = ρgrh/2`, with mean absolute error propagated from the rise |
 
-> **Sections:** 01–06 are Section A (mechanics, measurements, elasticity), 07 is Section B (oscillations).
+> **Sections:** 01–06 and 08–09 are Section A (mechanics, measurements, elasticity); 07 and 10–12 are Section B (oscillations and properties of matter).
 
 ---
 
@@ -175,7 +180,7 @@ The whole app is **configuration-driven**. Each practical is one object in `src/
 
 ```
 src/
-├── data/experiments.ts        ← all seven practicals live here
+├── data/experiments.ts        ← all twelve practicals live here
 ├── types/experiment.ts        ← ExperimentConfig & friends
 ├── utils/
 │   ├── math.ts                ← least-squares regression, rounding

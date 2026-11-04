@@ -1,8 +1,9 @@
 import { ExperimentConfig } from '../types/experiment';
 import { roundTo, calculateMean, computeLinearRegression, calculatePercentageError } from '../utils/math';
 import { buildMeanErrorAnalysis, analyseReadings } from '../utils/errorAnalysis';
+import { EXTRA_EXPERIMENTS } from './experimentsExtra';
 
-export const EXPERIMENTS: ExperimentConfig[] = [
+const CORE_EXPERIMENTS: ExperimentConfig[] = [
   // --------------------------------------------------------------------------
   // EXPERIMENT 1: VERNIER CALIPERS
   // --------------------------------------------------------------------------
@@ -1631,6 +1632,9 @@ export const EXPERIMENTS: ExperimentConfig[] = [
 ];
 
 /** Two-digit lab number for an experiment, used on the printed record sheet. */
+// Experiments E1–E7 above, plus E8–E12 from the same manual.
+export const EXPERIMENTS: ExperimentConfig[] = [...CORE_EXPERIMENTS, ...EXTRA_EXPERIMENTS];
+
 export const getExperimentNumber = (id: string): string => {
   const index = EXPERIMENTS.findIndex((exp) => exp.id === id);
   return index >= 0 ? String(index + 1).padStart(2, '0') : '—';
