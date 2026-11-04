@@ -15,6 +15,16 @@ interface SimulatorContainerProps {
   onLogSimulatedRow: (newRowValues: Record<string, number>) => void;
 }
 
+const RIG_IDS = [
+  'vernier-calipers',
+  'screw-gauge',
+  'spherometer',
+  'beam-balance',
+  'parallelogram-law',
+  'helical-spring',
+  'simple-pendulum',
+];
+
 export const SimulatorContainer: React.FC<SimulatorContainerProps> = ({
   experiment,
   constants,
@@ -75,6 +85,32 @@ export const SimulatorContainer: React.FC<SimulatorContainerProps> = ({
           hookLength={constants.hookLength || 0.85}
           onRecordRow={(row) => onLogSimulatedRow(row)}
         />
+      )}
+
+      {!RIG_IDS.includes(experiment.id) && (
+        <div className="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 p-5 sm:p-6 space-y-3">
+          <div className="flex items-center gap-2">
+            <FlaskConical className="w-4 h-4 text-stone-400" />
+            <h3 className="text-sm sm:text-[15px] font-semibold tracking-tight">
+              No virtual rig for this practical
+            </h3>
+          </div>
+          <p className="text-[13px] text-stone-600 dark:text-stone-400 max-w-[70ch] leading-relaxed">
+            {experiment.title.split(':')[0]} needs the real apparatus to take readings. The app still
+            builds the table, the arithmetic, the error analysis and the record — enter your
+            observations in the Observations tab, or log rows here as you take them.
+          </p>
+          <div className="flex flex-wrap gap-1.5 pt-1">
+            {experiment.apparatus.slice(0, 6).map((item) => (
+              <span
+                key={item}
+                className="inline-flex items-center h-6 px-2.5 rounded-full border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-950 text-[11px] text-stone-600 dark:text-stone-400"
+              >
+                {item}
+              </span>
+            ))}
+          </div>
+        </div>
       )}
     </div>
   );

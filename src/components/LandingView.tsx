@@ -58,7 +58,7 @@ const CHANGES: Array<{ what: string; before: string; after: string }> = [
 const FAQ: Array<{ q: string; a: string }> = [
   {
     q: 'What is DigitalLab2Record?',
-    a: 'A lab companion for the seven CBSE Class XI physics practicals. You enter the readings you took; it builds the observation table, the arithmetic, the error analysis, the graph and a printable record page.',
+    a: `A lab companion for the ${EXPERIMENTS.length} CBSE Class XI physics practicals. You enter the readings you took; it builds the observation table, the arithmetic, the error analysis, the graph and a printable record page.`,
   },
   {
     q: 'Does it replace the apparatus?',
@@ -163,7 +163,7 @@ export const LandingView: React.FC<LandingViewProps> = ({
         <div className="grid gap-10 lg:grid-cols-[1.12fr_0.88fr] lg:items-center lg:gap-12">
           <div>
             <span className="eyebrow text-[10px] sm:text-[10.5px] leading-relaxed">
-              CBSE Class XI · Physics practicals · 7 experiments
+              CBSE Class XI · Physics practicals · {EXPERIMENTS.length} experiments
             </span>
             <h1 className="mt-5 text-[clamp(34px,4.6vw,56px)] leading-[1.04] text-balance">
               The record writes itself.
@@ -188,7 +188,7 @@ export const LandingView: React.FC<LandingViewProps> = ({
                 href="#practicals"
                 className="inline-flex items-center gap-2 h-11 px-5 rounded-full border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-900 text-sm font-medium text-stone-800 dark:text-stone-200 hover:border-stone-400 dark:hover:border-stone-600 transition-colors"
               >
-                See the seven practicals
+                See every practical
               </a>
             </div>
 
@@ -264,7 +264,7 @@ export const LandingView: React.FC<LandingViewProps> = ({
         </div>
 
         <div className="mt-10 pt-6 border-t border-stone-200 dark:border-stone-800 flex flex-wrap gap-2">
-          {['React 19 + Vite 8', '7 practicals, Class XI', 'Mean absolute error, propagated', 'Graphs export as PNG', 'Print the record as PDF'].map((item) => (
+          {['React 19 + Vite 8', `${EXPERIMENTS.length} practicals, Class XI`, 'Mean absolute error, propagated', 'Graphs export as PNG', 'Print the record as PDF'].map((item) => (
             <span
               key={item}
               className="inline-flex items-center h-7 px-3 rounded-full border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900 text-[11.5px] text-stone-600 dark:text-stone-400"
@@ -285,7 +285,7 @@ export const LandingView: React.FC<LandingViewProps> = ({
                 A workspace built around the table.
               </h2>
               <p className="mt-3 max-w-[54ch] text-stone-600 dark:text-stone-400 text-[15px] leading-relaxed">
-                Seven practicals in the sidebar, the rig on the left, the observations and the
+                Every practical in the sidebar, the rig on the left, the observations and the
                 arithmetic on the right. Everything on one screen, nothing hidden behind a wizard.
               </p>
             </div>
@@ -435,7 +435,7 @@ export const LandingView: React.FC<LandingViewProps> = ({
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-10">
             <div>
               <span className="eyebrow">03 / 04 <span className="dot" /> The practicals</span>
-              <h2 className="mt-3 text-[clamp(28px,3.6vw,44px)] leading-tight">Seven experiments, start to result.</h2>
+              <h2 className="mt-3 text-[clamp(28px,3.6vw,44px)] leading-tight">Every experiment, start to result.</h2>
               <p className="mt-3 max-w-[54ch] text-stone-600 dark:text-stone-400 text-[15px]">
                 Pick one to open it straight in the workspace.
               </p>
