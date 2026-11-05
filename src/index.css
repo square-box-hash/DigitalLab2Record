@@ -224,6 +224,105 @@
   height: auto;
 }
 
+
+/* ---------------------------------------------------------------------------
+   Liquid glass — light mode only.
+
+   A soft ambient wash behind everything, then cards become translucent panels
+   with a blurred backdrop, a bright top edge and a deep soft shadow. Dark mode
+   is untouched: every rule here is scoped to html:not(.dark), and these rules
+   sit outside @layer so they win over the Tailwind utilities they soften.
+--------------------------------------------------------------------------- */
+
+html:not(.dark) body {
+  background-color: #f6f4f1;
+  background-image:
+    radial-gradient(820px 560px at 8% -8%, rgba(255, 208, 158, 0.55), transparent 62%),
+    radial-gradient(760px 520px at 96% 2%, rgba(176, 208, 255, 0.5), transparent 60%),
+    radial-gradient(720px 640px at 52% 108%, rgba(214, 197, 255, 0.42), transparent 62%);
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+}
+
+/* Softer corners, closer to the current Apple shapes. */
+html:not(.dark) {
+  --radius-lg: 12px;
+  --radius-xl: 14px;
+  --radius-2xl: 20px;
+  --radius-3xl: 26px;
+}
+
+/* Let the ambient wash through the app shells. */
+html:not(.dark) .min-h-screen.bg-stone-50 {
+  background-color: transparent;
+}
+
+/* Large panels: real glass. */
+html:not(.dark) .bg-white.rounded-2xl:not(.print-container),
+html:not(.dark) .bg-white.rounded-3xl:not(.print-container) {
+  background-color: rgba(255, 255, 255, 0.56);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  backdrop-filter: blur(24px) saturate(180%);
+  border-color: rgba(255, 255, 255, 0.7);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.92),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.35),
+    0 1px 1.5px rgba(16, 16, 20, 0.04),
+    0 22px 48px -30px rgba(16, 16, 20, 0.4);
+}
+
+/* Small chips, inputs and buttons: lighter glass, no heavy shadow. */
+html:not(.dark) .bg-white:not(.rounded-2xl):not(.rounded-3xl):not(.print-container) {
+  background-color: rgba(255, 255, 255, 0.62);
+  -webkit-backdrop-filter: blur(12px) saturate(160%);
+  backdrop-filter: blur(12px) saturate(160%);
+}
+
+/* Sticky bars and the phone tab bar: a thinner pane of the same glass. */
+html:not(.dark) [class*="bg-stone-50/95"],
+html:not(.dark) [class*="bg-stone-50/85"],
+html:not(.dark) [class*="bg-white/95"] {
+  background-color: rgba(255, 255, 255, 0.6);
+  -webkit-backdrop-filter: blur(22px) saturate(180%);
+  backdrop-filter: blur(22px) saturate(180%);
+}
+
+/* The sidebar and side panels sit a shade deeper than the cards. */
+html:not(.dark) [class*="bg-stone-100/60"] {
+  background-color: rgba(255, 255, 255, 0.35);
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
+  backdrop-filter: blur(18px) saturate(150%);
+}
+
+/* Paper is paper: the printable record keeps its opaque white. */
+html:not(.dark) .print-container {
+  background-color: #ffffff;
+  box-shadow: 0 1px 2px rgba(16, 16, 20, 0.05), 0 24px 60px -40px rgba(16, 16, 20, 0.35);
+}
+
+/* Browsers without backdrop-filter get plain translucent panels, which still
+   read correctly over the wash. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  html:not(.dark) .bg-white.rounded-2xl,
+  html:not(.dark) .bg-white.rounded-3xl {
+    background-color: rgba(255, 255, 255, 0.88);
+  }
+}
+
+@media print {
+  html:not(.dark) body {
+    background-image: none !important;
+    background-color: #ffffff !important;
+  }
+  html:not(.dark) .bg-white,
+  html:not(.dark) [class*="bg-stone-50"] {
+    background-color: #ffffff !important;
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+    box-shadow: none !important;
+  }
+}
+
 /* Scrollbars */
 ::-webkit-scrollbar {
   width: 8px;
