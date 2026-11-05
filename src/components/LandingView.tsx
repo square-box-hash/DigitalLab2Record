@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   ArrowRight,
   ArrowUpRight,
@@ -12,6 +12,8 @@ import {
   MessageSquareQuote,
   Check,
   Rotate3d,
+  Menu,
+  X,
 } from 'lucide-react';
 import { EXPERIMENTS } from '../data/experiments';
 import { formatNumber } from '../utils/math';
@@ -96,6 +98,15 @@ export const LandingView: React.FC<LandingViewProps> = ({
   onToggleTheme,
   themePreference = 'auto',
 }) => {
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const goTo = (hash: string) => {
+    setMenuOpen(false);
+    const el = document.querySelector(hash);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    else window.location.hash = hash;
+  };
+
   /*
     The hero showpiece is the app's own output, not typed-in numbers: the
     experiment's calculateRow / calculateResult run over its seeded readings, so
@@ -144,6 +155,14 @@ export const LandingView: React.FC<LandingViewProps> = ({
 
           <div className="flex items-center gap-2">
             <button
+              onClick={() => setMenuOpen((open) => !open)}
+              aria-expanded={menuOpen}
+              aria-label={menuOpen ? 'Close the menu' : 'Open the menu'}
+              className="lg:hidden w-9 h-9 grid place-items-center rounded-xl border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900 text-stone-600 dark:text-stone-300 hover:border-stone-300 dark:hover:border-stone-700 transition-colors"
+            >
+              {menuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
+            </button>
+            <button
               onClick={onToggleTheme}
               aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
               title={
@@ -165,6 +184,46 @@ export const LandingView: React.FC<LandingViewProps> = ({
             </button>
           </div>
         </div>
+
+        {/* Menu — the desktop links collapse into this below lg */}
+        {menuOpen && (
+          <div className="lg:hidden border-t border-stone-200 dark:border-stone-800 bg-stone-50 dark:bg-stone-950">
+            <nav className="max-w-[1180px] mx-auto px-5 sm:px-6 py-3 flex flex-col">
+              {[
+                { label: 'The interface', hash: '#interface' },
+                { label: 'What changes', hash: '#changes' },
+                { label: 'Practicals', hash: '#practicals' },
+                { label: 'Instrument room', action: onOpenInstruments },
+                { label: 'About', hash: '#about' },
+              ].map((item) => (
+                <button
+                  key={item.label}
+                  onClick={() => {
+                    if (item.action) {
+                      setMenuOpen(false);
+                      item.action();
+                    } else if (item.hash) {
+                      goTo(item.hash);
+                    }
+                  }}
+                  className="text-left py-2.5 text-[14px] text-stone-700 dark:text-stone-300 border-b border-stone-100 dark:border-stone-800/70 last:border-b-0"
+                >
+                  {item.label}
+                </button>
+              ))}
+              <button
+                onClick={() => {
+                  setMenuOpen(false);
+                  onEnterLab();
+                }}
+                className="mt-3 mb-1 inline-flex items-center justify-center gap-1.5 h-10 rounded-full bg-stone-900 dark:bg-stone-100 text-stone-50 dark:text-stone-900 text-[13.5px] font-medium"
+              >
+                Start experimenting
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            </nav>
+          </div>
+        )}
       </header>
 
       {/* Hero */}

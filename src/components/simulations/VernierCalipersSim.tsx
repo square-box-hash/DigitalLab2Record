@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Sparkles, Check, ZoomIn } from 'lucide-react';
 import { roundTo } from '../../utils/math';
+import { RigViewport } from '../ui/RigViewport';
 
 interface VernierCalipersSimProps {
   onRecordRow: (row: { msr: number; vsr: number }) => void;
@@ -104,7 +105,7 @@ export const VernierCalipersSim: React.FC<VernierCalipersSimProps> = ({ onRecord
         </div>
 
         {/* SVG Drawing - High Res & Large (ViewBox 740 x 230) */}
-        <div className="w-full overflow-x-auto">
+        <RigViewport>
           <svg viewBox="0 0 740 230" className="w-full min-w-[520px] sm:min-w-[650px] h-56 sm:h-64">
             <defs>
               <linearGradient id="metalGradLg" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -237,8 +238,7 @@ export const VernierCalipersSim: React.FC<VernierCalipersSimProps> = ({ onRecord
                 </g>
               );
             })()}
-          </svg>
-        </div>
+          </svg></RigViewport>
       </div>
 
       {/* Interactive Controls & Live Readings */}

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Sparkles, Check, ZoomIn } from 'lucide-react';
 import { roundTo } from '../../utils/math';
+import { RigViewport } from '../ui/RigViewport';
 
 interface SpherometerSimProps {
   onRecordRow: (row: { h1_psr: number; h1_csr: number; h2_psr: number; h2_csr: number }) => void;
@@ -108,7 +109,7 @@ export const SpherometerSim: React.FC<SpherometerSimProps> = ({
           </div>
         </div>
 
-        <div className="w-full overflow-x-auto">
+        <RigViewport>
           <svg viewBox="0 0 720 230" className="w-full min-w-[520px] sm:min-w-[650px] h-60 sm:h-68">
             <defs>
               <linearGradient id="brassGradLg" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -214,8 +215,7 @@ export const SpherometerSim: React.FC<SpherometerSimProps> = ({
             <text x="360" y="222" fill="#38bdf8" fontSize="11" fontWeight="bold" textAnchor="middle" fontFamily="monospace">
               Mean Leg Spacing l = {legDistance} cm
             </text>
-          </svg>
-        </div>
+          </svg></RigViewport>
       </div>
 
       {/* Controls & Breakdown */}

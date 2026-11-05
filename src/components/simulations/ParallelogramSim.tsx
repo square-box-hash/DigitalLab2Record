@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Sparkles, Check, ZoomIn, AlertTriangle } from 'lucide-react';
 import { roundTo } from '../../utils/math';
+import { RigViewport } from '../ui/RigViewport';
 
 interface ParallelogramSimProps {
   onRecordRow: (row: { p: number; q: number; theta: number }) => void;
@@ -166,7 +167,7 @@ export const ParallelogramSim: React.FC<ParallelogramSimProps> = ({
           </div>
         </div>
 
-        <div className="w-full overflow-x-auto">
+        <RigViewport>
           <svg viewBox="0 0 720 240" className="w-full min-w-[520px] sm:min-w-[650px] h-64 sm:h-72">
             <defs>
               <linearGradient id="boardGradLg" x1="0%" y1="0%" x2="0%" y2="100%">
@@ -312,8 +313,7 @@ export const ParallelogramSim: React.FC<ParallelogramSimProps> = ({
                 </text>
               </g>
             ))}
-          </svg>
-        </div>
+          </svg></RigViewport>
       </div>
 
       {/* Controls */}

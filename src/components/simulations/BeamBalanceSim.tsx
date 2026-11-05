@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Sparkles, Check, Power, ZoomIn } from 'lucide-react';
 import { roundTo } from '../../utils/math';
+import { RigViewport } from '../ui/RigViewport';
 
 interface BeamBalanceSimProps {
   onRecordRow: (row: {
@@ -147,7 +148,7 @@ export const BeamBalanceSim: React.FC<BeamBalanceSimProps> = ({
           </div>
         </div>
 
-        <div className="w-full overflow-x-auto">
+        <RigViewport>
           <svg viewBox="0 0 720 240" className="w-full min-w-[520px] sm:min-w-[650px] h-64 sm:h-72">
             <defs>
               <linearGradient id="beamMetalLg" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -234,8 +235,7 @@ export const BeamBalanceSim: React.FC<BeamBalanceSimProps> = ({
                 ))}
               </g>
             </g>
-          </svg>
-        </div>
+          </svg></RigViewport>
       </div>
 
       {/* Weight Box Tray */}

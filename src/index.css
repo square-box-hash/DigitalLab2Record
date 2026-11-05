@@ -214,6 +214,16 @@
   }
 }
 
+
+/* Apparatus drawings: fit the card at 100%, scroll when zoomed in. Width rather
+   than transform, so the layout grows with the drawing and nothing overlaps. */
+.rig-zoom svg {
+  width: calc(var(--rig-zoom, 1) * 100%);
+  min-width: 0;
+  max-width: none;
+  height: auto;
+}
+
 /* Scrollbars */
 ::-webkit-scrollbar {
   width: 8px;
