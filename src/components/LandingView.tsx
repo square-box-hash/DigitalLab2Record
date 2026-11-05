@@ -131,24 +131,21 @@ export const LandingView: React.FC<LandingViewProps> = ({
   return (
     <div className="min-h-screen bg-stone-50 dark:bg-stone-950 text-stone-900 dark:text-stone-100 transition-colors">
       {/* Top bar */}
-      <header className="sticky top-0 z-40 bg-stone-50/85 dark:bg-stone-950/85 backdrop-blur-md border-b border-stone-200 dark:border-stone-800">
+      <header className="sticky top-0 z-40 bg-[#07070b]/70 backdrop-blur-xl border-b border-white/10">
         <div className="max-w-[1180px] mx-auto px-5 sm:px-6 h-[62px] flex items-center justify-between gap-4">
           <div className="flex items-center gap-2.5 min-w-0">
-            <span className="w-[26px] h-[26px] shrink-0 rounded-lg bg-stone-900 dark:bg-stone-100 text-stone-50 dark:text-stone-900 grid place-items-center font-serif text-[15px] pb-0.5">
+            <span className="w-[26px] h-[26px] shrink-0 rounded-lg bg-white text-stone-900 grid place-items-center font-serif text-[15px] pb-0.5">
               D
             </span>
-            <span className="font-semibold tracking-tight text-[15px] truncate">DigitalLab2Record</span>
+            <span className="font-semibold tracking-tight text-[15px] truncate text-stone-50">DigitalLab2Record</span>
           </div>
 
-          <nav className="hidden lg:flex items-center gap-7 text-[13.5px] text-stone-600 dark:text-stone-400">
-            <a href="#interface" className="hover:text-stone-900 dark:hover:text-stone-100 transition-colors">The interface</a>
-            <a href="#changes" className="hover:text-stone-900 dark:hover:text-stone-100 transition-colors">What changes</a>
-            <a href="#practicals" className="hover:text-stone-900 dark:hover:text-stone-100 transition-colors">Practicals</a>
-            <a href="#about" className="hover:text-stone-900 dark:hover:text-stone-100 transition-colors">About</a>
-            <button
-              onClick={onOpenInstruments}
-              className="hover:text-stone-900 dark:hover:text-stone-100 transition-colors"
-            >
+          <nav className="hidden lg:flex items-center gap-7 text-[13.5px] text-stone-400">
+            <a href="#interface" className="hover:text-stone-50 transition-colors">The interface</a>
+            <a href="#changes" className="hover:text-stone-50 transition-colors">What changes</a>
+            <a href="#practicals" className="hover:text-stone-50 transition-colors">Practicals</a>
+            <a href="#about" className="hover:text-stone-50 transition-colors">About</a>
+            <button onClick={onOpenInstruments} className="hover:text-stone-50 transition-colors">
               Instrument room
             </button>
           </nav>
@@ -158,7 +155,7 @@ export const LandingView: React.FC<LandingViewProps> = ({
               onClick={() => setMenuOpen((open) => !open)}
               aria-expanded={menuOpen}
               aria-label={menuOpen ? 'Close the menu' : 'Open the menu'}
-              className="lg:hidden w-9 h-9 grid place-items-center rounded-xl border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900 text-stone-600 dark:text-stone-300 hover:border-stone-300 dark:hover:border-stone-700 transition-colors"
+              className="lg:hidden w-9 h-9 grid place-items-center rounded-xl border border-white/15 bg-white/[0.06] text-stone-200 hover:bg-white/[0.12] transition-colors"
             >
               {menuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
             </button>
@@ -170,13 +167,13 @@ export const LandingView: React.FC<LandingViewProps> = ({
                   ? `Following the clock — dark 7 pm to 6 am. Click to pin ${isDark ? 'light' : 'dark'}.`
                   : `Pinned to ${themePreference} — click to change the theme.`
               }
-              className="w-9 h-9 grid place-items-center rounded-xl border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900 text-stone-600 dark:text-stone-300 hover:border-stone-300 dark:hover:border-stone-700 transition-colors"
+              className="w-9 h-9 grid place-items-center rounded-xl border border-white/15 bg-white/[0.06] text-stone-200 hover:bg-white/[0.12] transition-colors"
             >
               {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
             </button>
             <button
               onClick={() => onEnterLab()}
-              className="inline-flex items-center gap-1.5 h-9 pl-3.5 pr-3 rounded-full bg-stone-900 dark:bg-stone-100 text-stone-50 dark:text-stone-900 text-[13.5px] font-medium whitespace-nowrap hover:bg-black dark:hover:bg-white transition-colors"
+              className="inline-flex items-center gap-1.5 h-9 pl-3.5 pr-3 rounded-full bg-stone-50 text-stone-900 text-[13.5px] font-medium whitespace-nowrap hover:bg-white transition-colors"
             >
               <span className="hidden sm:inline">Open the lab</span>
               <span className="sm:hidden">Lab</span>
@@ -187,7 +184,7 @@ export const LandingView: React.FC<LandingViewProps> = ({
 
         {/* Menu — the desktop links collapse into this below lg */}
         {menuOpen && (
-          <div className="lg:hidden border-t border-stone-200 dark:border-stone-800 bg-stone-50 dark:bg-stone-950">
+          <div className="lg:hidden border-t border-white/10 bg-[#07070b]/90 backdrop-blur-xl">
             <nav className="max-w-[1180px] mx-auto px-5 sm:px-6 py-3 flex flex-col">
               {[
                 { label: 'The interface', hash: '#interface' },
@@ -206,7 +203,7 @@ export const LandingView: React.FC<LandingViewProps> = ({
                       goTo(item.hash);
                     }
                   }}
-                  className="text-left py-2.5 text-[14px] text-stone-700 dark:text-stone-300 border-b border-stone-100 dark:border-stone-800/70 last:border-b-0"
+                  className="text-left py-2.5 text-[14px] text-stone-300 border-b border-white/[0.07] last:border-b-0"
                 >
                   {item.label}
                 </button>
@@ -216,7 +213,7 @@ export const LandingView: React.FC<LandingViewProps> = ({
                   setMenuOpen(false);
                   onEnterLab();
                 }}
-                className="mt-3 mb-1 inline-flex items-center justify-center gap-1.5 h-10 rounded-full bg-stone-900 dark:bg-stone-100 text-stone-50 dark:text-stone-900 text-[13.5px] font-medium"
+                className="mt-3 mb-1 inline-flex items-center justify-center gap-1.5 h-10 rounded-full bg-stone-50 text-stone-900 text-[13.5px] font-medium"
               >
                 Start experimenting
                 <ArrowRight className="w-4 h-4" />
@@ -226,120 +223,133 @@ export const LandingView: React.FC<LandingViewProps> = ({
         )}
       </header>
 
-      {/* Hero */}
-      <section className="max-w-[1180px] mx-auto px-5 sm:px-6 pt-14 sm:pt-20 pb-14">
-        <div className="grid gap-10 lg:grid-cols-[1.12fr_0.88fr] lg:items-center lg:gap-12">
-          <div>
-            <span className="eyebrow text-[10px] sm:text-[10.5px] leading-relaxed">
-              CBSE Class XI · Physics practicals · {EXPERIMENTS.length} experiments
-            </span>
-            <h1 className="mt-5 text-[clamp(34px,4.6vw,56px)] leading-[1.04] text-balance">
-              The record writes itself.
-              <br />
-              <em className="italic">The physics stays yours.</em>
-            </h1>
-            <p className="mt-6 max-w-[52ch] text-stone-600 dark:text-stone-400 text-[16px] leading-relaxed">
-              DigitalLab2Record takes the readings you actually took, does the arithmetic honestly,
-              and hands you an A4 page in CBSE format — with every substitution shown, so you can
-              defend each line in a viva.
-            </p>
-
-            <div className="mt-8 flex flex-wrap items-center gap-2.5">
-              <button
-                onClick={() => onEnterLab()}
-                className="inline-flex items-center gap-2 h-11 px-5 rounded-full bg-stone-900 dark:bg-stone-100 text-stone-50 dark:text-stone-900 text-sm font-medium hover:bg-black dark:hover:bg-white transition-colors"
-              >
-                Start experimenting
-                <ArrowRight className="w-4 h-4" />
-              </button>
-              <a
-                href="#practicals"
-                className="inline-flex items-center gap-2 h-11 px-5 rounded-full border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-900 text-sm font-medium text-stone-800 dark:text-stone-200 hover:border-stone-400 dark:hover:border-stone-600 transition-colors"
-              >
-                See every practical
-              </a>
-            </div>
-
-            <div className="mt-7 flex flex-wrap items-center gap-x-2.5 gap-y-1 font-mono text-[11.5px] text-stone-500 dark:text-stone-500">
-              <span>No account</span>
-              <span className="w-[3px] h-[3px] rounded-full bg-stone-400 inline-block" />
-              <span>Nothing leaves your browser</span>
-              <span className="w-[3px] h-[3px] rounded-full bg-stone-400 inline-block" />
-              <span>Autosaves as you type</span>
-            </div>
-          </div>
-
-          {/* The showpiece: real output from the Vernier practical */}
-          <div className="rounded-2xl border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900 overflow-hidden shadow-[0_1px_2px_rgba(16,16,20,.04),0_24px_60px_-32px_rgba(16,16,20,.18)]">
-            <div className="flex items-center justify-between gap-2 px-4 h-11 border-b border-stone-200 dark:border-stone-800">
-              <span className="inline-flex items-center gap-2 min-w-0">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 shrink-0" />
-                <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-emerald-700 dark:text-emerald-400">Live</span>
-                <span className="text-[11.5px] text-stone-500 dark:text-stone-400 truncate">the real interface</span>
-              </span>
-              <button
-                onClick={() => onEnterLab(vernierExperiment.id)}
-                className="font-mono text-[10.5px] text-stone-500 dark:text-stone-500 hover:text-stone-900 dark:hover:text-stone-100 transition-colors shrink-0"
-              >
-                open →
-              </button>
-            </div>
-
-            <div className="p-4">
-              <div className="flex items-start justify-between gap-2">
-                <div className="min-w-0">
-                  <div className="font-mono text-[9.5px] uppercase tracking-[0.12em] text-stone-400 dark:text-stone-600">
-                    Experiment 01 · Section A
-                  </div>
-                  <div className="mt-1 text-[19px] leading-tight">Vernier Calipers</div>
-                </div>
-                <span className="shrink-0 rounded-full border border-stone-200 dark:border-stone-700 px-2 py-0.5 font-mono text-[10px] text-stone-500 dark:text-stone-400">
-                  e = {formatNumber(VERNIER_ZERO_ERROR, 2).replace('-', '−')} cm
-                </span>
-              </div>
-
-              <div className="mt-3 overflow-x-auto rounded-lg border border-stone-200 dark:border-stone-800">
-                <table className="w-full min-w-[280px] text-[11px]">
-                  <thead>
-                    <tr className="bg-stone-50 dark:bg-stone-950/40 text-stone-500 dark:text-stone-400">
-                      {['Obs', 'MSR', 'n', 'Corrected D'].map((h) => (
-                        <th key={h} className="text-left font-medium px-2.5 py-1.5 border-b border-stone-200 dark:border-stone-800 whitespace-nowrap">{h}</th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody className="font-mono">
-                    {vernierRows.map((row, i) => (
-                      <tr key={i}>
-                        <td className="px-2.5 py-1.5 border-b border-stone-100 dark:border-stone-800/70 text-stone-500 dark:text-stone-500">{i + 1}</td>
-                        <td className="px-2.5 py-1.5 border-b border-stone-100 dark:border-stone-800/70">{formatNumber(row.msr, 1)}</td>
-                        <td className="px-2.5 py-1.5 border-b border-stone-100 dark:border-stone-800/70">{formatNumber(row.vsr, 0)}</td>
-                        <td className="px-2.5 py-1.5 border-b border-stone-100 dark:border-stone-800/70 text-emerald-700 dark:text-emerald-400">{formatNumber(row.corrected, 2)}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-
-              <div className="mt-3 flex flex-wrap items-center justify-between gap-2 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-900 px-3 py-2 text-[11.5px] text-emerald-900 dark:text-emerald-300">
-                <span className="min-w-0">
-                  <span className="block font-mono text-[9px] uppercase tracking-[0.12em] opacity-70">Mean ± mean absolute error</span>
-                  <span className="font-mono">{vernierUncertainty?.notation ?? '—'}</span>
-                </span>
-                <span className="font-mono shrink-0">{vernierUncertainty?.percentageError ?? ''}</span>
-              </div>
-            </div>
-          </div>
+      {/* Hero — a dark, frosted stage that fades into the page below it */}
+      <section className="relative isolate overflow-hidden">
+        <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
+          <div className="absolute inset-0 bg-[#06060a]" />
+          {/* the wide glow across the top */}
+          <div className="absolute -top-[26rem] left-1/2 h-[44rem] w-[72rem] -translate-x-1/2 rounded-full bg-white/[0.14] blur-[140px]" />
+          {/* lighter and darker patches, so the glass has something to refract */}
+          <div className="absolute top-[6rem] -left-[10rem] h-[26rem] w-[26rem] rounded-full bg-indigo-500/[0.18] blur-[130px]" />
+          <div className="absolute top-[1rem] -right-[8rem] h-[24rem] w-[24rem] rounded-full bg-amber-400/[0.10] blur-[130px]" />
+          <div className="absolute inset-0 bg-[radial-gradient(120%_85%_at_50%_0%,transparent_42%,rgba(0,0,0,0.75)_100%)]" />
+          <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-b from-transparent to-stone-50 dark:to-stone-950" />
         </div>
 
-        <div className="mt-10 pt-6 border-t border-stone-200 dark:border-stone-800 flex flex-wrap gap-2">
-          {['React 19 + Vite 8', `${EXPERIMENTS.length} practicals, Class XI`, 'Mean absolute error, propagated', 'Graphs export as PNG', 'Print the record as PDF'].map((item) => (
-            <span
-              key={item}
-              className="inline-flex items-center h-7 px-3 rounded-full border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900 text-[11.5px] text-stone-600 dark:text-stone-400"
-            >
-              {item}
-            </span>
-          ))}
+        <div className="max-w-[1180px] mx-auto px-5 sm:px-6 pt-16 sm:pt-24 pb-20">
+          <div className="grid gap-10 lg:grid-cols-[1.12fr_0.88fr] lg:items-center lg:gap-12">
+            <div>
+              <span className="eyebrow text-[10px] sm:text-[10.5px] leading-relaxed text-stone-400">
+                CBSE Class XI · Physics practicals · {EXPERIMENTS.length} experiments
+              </span>
+              <h1 className="mt-5 text-[clamp(34px,4.6vw,56px)] leading-[1.04] text-balance text-stone-50">
+                The record writes itself.
+                <br />
+                <em className="italic">The physics stays yours.</em>
+              </h1>
+              <p className="mt-6 max-w-[52ch] text-stone-300 text-[16px] leading-relaxed">
+                DigitalLab2Record takes the readings you actually took, does the arithmetic honestly,
+                and hands you an A4 page in CBSE format — with every substitution shown, so you can
+                defend each line in a viva.
+              </p>
+
+              <div className="mt-8 flex flex-wrap items-center gap-2.5">
+                <button
+                  onClick={() => onEnterLab()}
+                  className="inline-flex items-center gap-2 h-11 px-5 rounded-full bg-stone-50 text-stone-900 text-sm font-medium hover:bg-white transition-colors"
+                >
+                  Start experimenting
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+                <a
+                  href="#practicals"
+                  className="inline-flex items-center gap-2 h-11 px-5 rounded-full border border-white/20 bg-white/[0.06] backdrop-blur-md text-sm font-medium text-stone-100 hover:bg-white/[0.12] transition-colors"
+                >
+                  See every practical
+                </a>
+              </div>
+
+              <div className="mt-7 flex flex-wrap items-center gap-x-2.5 gap-y-1 font-mono text-[11.5px] text-stone-400">
+                <span>No account</span>
+                <span className="w-[3px] h-[3px] rounded-full bg-stone-500 inline-block" />
+                <span>Nothing leaves your browser</span>
+                <span className="w-[3px] h-[3px] rounded-full bg-stone-500 inline-block" />
+                <span>Autosaves as you type</span>
+              </div>
+            </div>
+
+            {/* The showpiece: real output from the Vernier practical, on frosted glass */}
+            <div className="rounded-2xl border border-white/[0.14] bg-white/[0.07] backdrop-blur-2xl overflow-hidden shadow-[0_40px_100px_-50px_rgba(0,0,0,0.95)]">
+              <div className="flex items-center justify-between gap-2 px-4 h-11 border-b border-white/10">
+                <span className="inline-flex items-center gap-2 min-w-0">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0" />
+                  <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-emerald-300">Live</span>
+                  <span className="text-[11.5px] text-stone-400 truncate">the real interface</span>
+                </span>
+                <button
+                  onClick={() => onEnterLab(vernierExperiment.id)}
+                  className="font-mono text-[10.5px] text-stone-400 hover:text-stone-50 transition-colors shrink-0"
+                >
+                  open →
+                </button>
+              </div>
+
+              <div className="p-4">
+                <div className="flex items-start justify-between gap-2">
+                  <div className="min-w-0">
+                    <div className="font-mono text-[9.5px] uppercase tracking-[0.12em] text-stone-500">
+                      Experiment 01 · Section A
+                    </div>
+                    <div className="mt-1 text-[19px] leading-tight text-stone-50">Vernier Calipers</div>
+                  </div>
+                  <span className="shrink-0 rounded-full border border-white/15 px-2 py-0.5 font-mono text-[10px] text-stone-400">
+                    e = {formatNumber(VERNIER_ZERO_ERROR, 2).replace('-', '−')} cm
+                  </span>
+                </div>
+
+                <div className="mt-3 overflow-x-auto rounded-lg border border-white/10">
+                  <table className="w-full min-w-[280px] text-[11px]">
+                    <thead>
+                      <tr className="text-stone-500">
+                        {['Obs', 'MSR', 'n', 'Corrected D'].map((h) => (
+                          <th key={h} className="text-left font-medium px-2.5 py-1.5 border-b border-white/10 whitespace-nowrap">{h}</th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody className="font-mono">
+                      {vernierRows.map((row, i) => (
+                        <tr key={i}>
+                          <td className="px-2.5 py-1.5 border-b border-white/[0.06] text-stone-500">{i + 1}</td>
+                          <td className="px-2.5 py-1.5 border-b border-white/[0.06] text-stone-300">{formatNumber(row.msr, 1)}</td>
+                          <td className="px-2.5 py-1.5 border-b border-white/[0.06] text-stone-300">{formatNumber(row.vsr, 0)}</td>
+                          <td className="px-2.5 py-1.5 border-b border-white/[0.06] text-emerald-300">{formatNumber(row.corrected, 2)}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                <div className="mt-3 flex flex-wrap items-center justify-between gap-2 rounded-lg bg-emerald-400/10 border border-emerald-400/25 px-3 py-2 text-[11.5px] text-emerald-200">
+                  <span className="min-w-0">
+                    <span className="block font-mono text-[9px] uppercase tracking-[0.12em] opacity-70">Mean ± mean absolute error</span>
+                    <span className="font-mono">{vernierUncertainty?.notation ?? '—'}</span>
+                  </span>
+                  <span className="font-mono shrink-0">{vernierUncertainty?.percentageError ?? ''}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-12 pt-6 border-t border-white/10 flex flex-wrap gap-2">
+            {['React 19 + Vite 8', `${EXPERIMENTS.length} practicals, Class XI`, 'Mean absolute error, propagated', 'Graphs export as PNG', 'Print the record as PDF'].map((item) => (
+              <span
+                key={item}
+                className="inline-flex items-center h-7 px-3 rounded-full border border-white/12 bg-white/[0.05] backdrop-blur-md text-[11.5px] text-stone-300"
+              >
+                {item}
+              </span>
+            ))}
+          </div>
         </div>
       </section>
 
