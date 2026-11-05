@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Sparkles, Check, RotateCw, ZoomIn } from 'lucide-react';
 import { roundTo } from '../../utils/math';
+import { RigViewport } from '../ui/RigViewport';
 
 interface ScrewGaugeSimProps {
   onRecordRow: (row: { psr: number; csr: number }) => void;
@@ -73,7 +74,7 @@ export const ScrewGaugeSim: React.FC<ScrewGaugeSimProps> = ({
           </div>
         </div>
 
-        <div className="w-full overflow-x-auto">
+        <RigViewport>
           <svg viewBox="0 0 720 220" className="w-full min-w-[520px] sm:min-w-[650px] h-56 sm:h-64">
             <defs>
               <linearGradient id="frameGradLg" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -211,8 +212,7 @@ export const ScrewGaugeSim: React.FC<ScrewGaugeSimProps> = ({
                 </g>
               );
             })()}
-          </svg>
-        </div>
+          </svg></RigViewport>
       </div>
 
       {/* Controls */}

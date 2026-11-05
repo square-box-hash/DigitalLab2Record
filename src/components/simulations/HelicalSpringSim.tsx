@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Sparkles, Check, Plus, Minus, ZoomIn } from 'lucide-react';
 import { roundTo } from '../../utils/math';
+import { RigViewport } from '../ui/RigViewport';
 
 interface HelicalSpringSimProps {
   onRecordRow: (row: { load: number; readLoading: number; readUnloading: number }) => void;
@@ -107,7 +108,7 @@ export const HelicalSpringSim: React.FC<HelicalSpringSimProps> = ({
           </div>
         </div>
 
-        <div className="w-full overflow-x-auto">
+        <RigViewport>
           <svg viewBox="0 0 720 260" className="w-full min-w-[520px] sm:min-w-[650px] h-72 sm:h-80">
             <defs>
               <linearGradient id="springMetalLg" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -210,8 +211,7 @@ export const HelicalSpringSim: React.FC<HelicalSpringSimProps> = ({
                 </g>
               );
             })()}
-          </svg>
-        </div>
+          </svg></RigViewport>
       </div>
 
       {/* Slotted Weights Control Tray */}

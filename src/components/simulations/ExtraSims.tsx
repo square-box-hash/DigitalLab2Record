@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Check, Sparkles } from 'lucide-react';
 import { roundTo } from '../../utils/math';
+import { RigViewport } from '../ui/RigViewport';
 
 /* -------------------------------------------------------------------------- */
 /*  Shared frame                                                              */
@@ -44,9 +45,7 @@ const SimFrame: React.FC<SimFrameProps> = ({
       </div>
     </div>
 
-    <div className="w-full overflow-x-auto">
-      <div className="py-1">{svg}</div>
-    </div>
+    <RigViewport>{svg}</RigViewport>
 
     <div className="grid grid-cols-1 md:grid-cols-[1fr_1fr_auto] gap-4 items-center">
       <div className="space-y-2">{controls}</div>
