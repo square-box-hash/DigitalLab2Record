@@ -323,6 +323,96 @@ html:not(.dark) .print-container {
   }
 }
 
+
+/* ---------------------------------------------------------------------------
+   Liquid glass — dark mode.
+
+   Same idea as the light theme, inverted: a near-black room with a wide soft
+   glow behind everything, and panels that are barely there — a few percent
+   white, a hairline of light along the top edge, and a deep shadow to lift them
+   off the background. The restraint is the point; at these opacities the border
+   and the top highlight are doing most of the work.
+--------------------------------------------------------------------------- */
+
+html.dark body {
+  background-color: #050508;
+  background-image:
+    radial-gradient(1400px 820px at 50% -18%, rgba(255, 255, 255, 0.11), transparent 62%),
+    radial-gradient(1000px 700px at 12% 112%, rgba(126, 148, 255, 0.10), transparent 60%),
+    radial-gradient(900px 620px at 88% 6%, rgba(255, 196, 140, 0.055), transparent 58%);
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+}
+
+html.dark {
+  --radius-lg: 12px;
+  --radius-xl: 14px;
+  --radius-2xl: 20px;
+  --radius-3xl: 26px;
+}
+
+/* Let the room show through the shells. */
+html.dark .min-h-screen.bg-stone-950 {
+  background-color: transparent;
+}
+
+/* Large panels: barely-there glass. */
+html.dark .bg-stone-900.rounded-2xl:not(.print-container),
+html.dark .bg-stone-900.rounded-3xl:not(.print-container) {
+  background-color: rgba(255, 255, 255, 0.03);
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.012));
+  -webkit-backdrop-filter: blur(26px) saturate(150%);
+  backdrop-filter: blur(26px) saturate(150%);
+  border-color: rgba(255, 255, 255, 0.10);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.09),
+    0 1px 1px rgba(0, 0, 0, 0.4),
+    0 28px 60px -36px rgba(0, 0, 0, 0.9);
+}
+
+/* Small chips, inputs and buttons. */
+html.dark .bg-stone-900:not(.rounded-2xl):not(.rounded-3xl):not(.print-container) {
+  background-color: rgba(255, 255, 255, 0.055);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  backdrop-filter: blur(14px) saturate(140%);
+}
+
+/* Sticky bars and the phone tab bar: thinner panes of the same glass. */
+html.dark [class*="bg-stone-950/95"],
+html.dark [class*="bg-stone-950/85"] {
+  background-color: rgba(10, 10, 14, 0.62);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  backdrop-filter: blur(24px) saturate(160%);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+/* The sidebar sits a shade deeper than the cards it frames. */
+html.dark aside[class*="bg-stone-950"] {
+  background-color: rgba(255, 255, 255, 0.022);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  backdrop-filter: blur(20px) saturate(140%);
+  border-color: rgba(255, 255, 255, 0.07);
+}
+
+/* Rigs sit on a slightly darker plate so the drawing reads against the glass. */
+html.dark [class*="bg-stone-950"].rounded-xl {
+  background-color: rgba(0, 0, 0, 0.32);
+  border-color: rgba(255, 255, 255, 0.07);
+}
+
+/* Paper is paper, in either theme. */
+html.dark .print-container {
+  background-color: #ffffff;
+  color: #111114;
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  html.dark .bg-stone-900.rounded-2xl,
+  html.dark .bg-stone-900.rounded-3xl {
+    background-color: rgba(28, 28, 34, 0.92);
+  }
+}
+
 /* Scrollbars */
 ::-webkit-scrollbar {
   width: 8px;
