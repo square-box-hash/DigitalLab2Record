@@ -9,7 +9,7 @@
 [![Open the Lab](https://img.shields.io/badge/OPEN%20THE%20LAB-digitallab2record.vercel.app-f59e0b?style=for-the-badge&logo=vercel&logoColor=black)](https://digitallab2record.vercel.app/)
 
 ![CBSE Class XI](https://img.shields.io/badge/CBSE-Class%20XI-1e293b?style=flat-square)
-![Experiments](https://img.shields.io/badge/Practicals-7-10b981?style=flat-square)
+![Experiments](https://img.shields.io/badge/Practicals-12-10b981?style=flat-square)
 ![React](https://img.shields.io/badge/React-19-6366f1?style=flat-square&logo=react&logoColor=white)
 ![Vite](https://img.shields.io/badge/Vite-8-8b5cf6?style=flat-square&logo=vite&logoColor=white)
 ![Saves in your browser](https://img.shields.io/badge/Saves%20in%20your%20browser-yes-0ea5e9?style=flat-square)
@@ -24,6 +24,8 @@ You're in the physics lab. The vernier calipers are in your hand, the readings a
 
 **DigitalLab2Record** replaces the rough sheet. Pick the practical, take your readings, and it produces the whole thing in CBSE format: the observation table with derived columns, the step-by-step arithmetic, the mean absolute error, the graph with its slope triangulation, the viva questions — and an A4 record page you can print or paste straight into your activity file.
 
+There is also a landing page that explains the thing, a **3D instrument room** where you can turn the real apparatus around in your hand before you meet it, and a printable record at the end of every practical.
+
 No sign-up. No server. Everything stays in your browser.
 
 ---
@@ -34,9 +36,9 @@ Every Class XI student does the same twelve practicals, and runs into the same w
 
 - **The arithmetic is fiddly and unforgiving.** Volume is `πR²H`, the spherometer needs `l²/6h + h/2`, the spring constant comes off a slope. One misplaced decimal and the whole row is wrong — and you find out after you've written it up.
 - **Zero error is easy to forget and easy to get backwards.** The calipers in the cupboard have been dropped a hundred times. The correction has to be applied to *every* reading, with the right sign, and by the third row nobody remembers whether to add or subtract.
-- **Graphs are a second job.** Pick a scale, plot seven points, draw a best-fit line, then argue with yourself about whether it should pass through the origin.
+- **Graphs are a second job.** Pick a scale, plot the points, draw a best-fit line, then argue with yourself about whether it should pass through the origin.
 - **Error analysis is tedious.** Mean absolute error is easy to define and miserable to compute for five readings across three derived quantities.
-- **The record is the same page seven times.** Aim, apparatus, theory, observations, calculation, result, precautions, sources of error. Written out by hand, again, usually the night before submission.
+- **The record is the same page every time.** Aim, apparatus, theory, observations, calculation, result, precautions, sources of error. Written out by hand, again, usually the night before submission.
 - **The rough sheet goes missing.** And so does the memory of which reading belonged to which side of the cylinder.
 - **Viva arrives.** "Why is the hanger 50 gf?" "What happens if you cut the spring in half?" Nobody remembers.
 
@@ -80,13 +82,15 @@ A note for teachers: if a record was produced with this, the observations should
 
 | | |
 |---|---|
-| 🎛️ **A working virtual rig** | Every practical has an interactive apparatus — slide the vernier jaw, add milligram weights, release the pendulum. Log a reading with one tap instead of typing it. |
+| 🎛️ **A working virtual rig** | All twelve practicals have an interactive apparatus — slide the vernier jaw, add milligram weights, raise the open limb of the Boyle's apparatus. Log a reading with one tap instead of typing it. Every drawing fits the card, with a zoom control for when you need to read a single division. |
 | 📊 **Arithmetic you can defend** | Formula → substitution → result, step by step, exactly how an examiner wants to see it. No black boxes. |
-| 📐 **Error analysis that's real** | Mean absolute error and percentage error for the four measurement practicals, propagated properly (the spherometer's `R` goes through `dR/dh`, not a hand-wave). Results written as `D = (2.148 ± 0.006) cm`, with the percentage worked out from the printed figures. |
+| 📐 **Error analysis that's real** | Mean absolute error and percentage error on five of them, propagated properly — the spherometer's `R` goes through `dR/dh` rather than a hand-wave, and the beam balance derives its uncertainty from pointer precision over measured sensitivity. Results written as `D = (2.148 ± 0.006) cm`, with the percentage worked out from the printed figures so the arithmetic on the page adds up. |
 | 📈 **Graphs you can hand in** | Least-squares fit forced through the origin, the Δy/Δx triangle drawn on the line, and a **Download PNG** button that gives you the plot on a clean white sheet. |
 | 💾 **Nothing gets lost** | Readings autosave to your browser about half a second after you stop typing. Refresh, close the tab, lose signal — it's still there. |
 | 📄 **A record, not a screenshot** | A4 page in CBSE order: aim, apparatus, theory, observations, calculations, error analysis, result, precautions, sources of error. Print it or save it as PDF. |
 | 🗣️ **Viva without panic** | Curated examiner questions per practical, with a self-test mode that hides the answers. |
+| 🔭 **The apparatus in 3D** | A separate instrument room with rotatable models of the calipers, screw gauge, spherometer and pendulum, embedded from Sketchfab with credit to the makers. |
+| 🌗 **A theme that knows the time** | Light through the working day, dark from 7 pm to 6 am, with the toggle still available when you disagree. Light mode uses a translucent, blurred surface over a soft wash; the printable record stays opaque, because paper is paper. |
 
 ---
 
@@ -180,7 +184,9 @@ The whole app is **configuration-driven**. Each practical is one object in `src/
 
 ```
 src/
-├── data/experiments.ts        ← all twelve practicals live here
+├── data/
+│   ├── experiments.ts         ← E1–E7 (core measurements, pendulum)
+│   └── experimentsExtra.ts    ← E8–E12 (inclined plane → surface tension)
 ├── types/experiment.ts        ← ExperimentConfig & friends
 ├── utils/
 │   ├── math.ts                ← least-squares regression, rounding
@@ -188,18 +194,32 @@ src/
 │   ├── chartExport.ts         ← SVG → white-sheet PNG
 │   └── export.ts              ← CSV writer
 └── components/
+    ├── LandingView            ← the page at /
+    ├── InstrumentExplorerView ← the 3D instrument room at #/instruments
     ├── Header / MobileTabBar / Sidebar
     ├── ObservationTable / InstrumentSetupCard
     ├── CalculationEngine / RegressionGraph
     ├── CbseRecordView / TheoryView / VivaVoceAccordion
+    ├── ui/                    ← NumberInput, RigViewport (zoom + fit)
     └── simulations/           ← one interactive rig per practical
 ```
 
-### Adding an eighth practical
+### Routes
 
-1. Add an object to `EXPERIMENTS` in `src/data/experiments.ts`.
-2. Give it `constants`, `columns`, `initialRows`, `calculateRow`, `calculateResult`, plus theory, precautions and viva questions.
-3. That's it — the table, calculator, graph, record page and export all pick it up. Add a simulator in `components/simulations/` if you want a virtual rig too.
+| URL | What you get |
+|---|---|
+| `/` | The landing page |
+| `#/lab` | The workspace |
+| `#/lab/<experiment-id>` | The workspace with that practical open |
+| `#/instruments` | The 3D instrument room |
+
+Hash routing rather than a router library: it costs nothing, works on any static host, and the back button behaves.
+
+### Adding another practical
+
+1. Add an object to `CORE_EXPERIMENTS` in `src/data/experiments.ts`, or to `EXTRA_EXPERIMENTS` in `experimentsExtra.ts` — they are concatenated into `EXPERIMENTS`.
+2. Give it `constants`, `columns`, `initialRows`, `calculateRow`, `calculateResult`, plus theory, precautions and viva questions. Add a `graphConfig` if it plots something, and call `buildMeanErrorAnalysis` if it has repeated readings.
+3. That's it — the table, calculator, graph, record page, CSV export and the landing page's practical list all pick it up. Add a rig in `components/simulations/` and one branch in `SimulatorContainer` if you want a virtual apparatus too.
 
 ---
 
@@ -207,9 +227,13 @@ src/
 
 Honest about what's missing:
 
-- The spherometer takes the leg distance as one number instead of three pricked distances (AB, BC, CA), so `l` has no measurable spread to propagate.
+- The spherometer takes the leg distance as one number instead of three pricked distances (AB, BC, CA), so `l` has no measurable spread to propagate. The same is true of the Vernier cylinder height and the Searle's wire diameter.
 - The record page has no diagram section, and doesn't yet print the graph — download the PNG and paste it.
+- The spring and pendulum results come from a graph slope, and the slope carries no uncertainty yet.
+- There are no automated tests. The arithmetic is the product, so this is the most valuable thing missing: a single file asserting the twelve seeded results would protect every change.
+- English only. A tool aimed at Indian classrooms should not be.
 - Class XII practicals aren't in here yet; the config makes them a data exercise, not a code one.
+- Only four instruments have good open 3D models. A beam balance, a Gravesand's board and a Boyle's apparatus would each be one more object in `INSTRUMENTS`.
 
 PRs and issues are welcome — especially from anyone who has actually sat through a CBSE practical exam.
 
@@ -217,7 +241,7 @@ PRs and issues are welcome — especially from anyone who has actually sat throu
 
 ## 👤 Author
 
-Built by a student — **[square-box-hash](https://github.com/square-box-hash)** — because writing the same observation table seven times is not physics.
+Built by a student — **[square-box-hash](https://github.com/square-box-hash)** — because writing the same observation table twelve times is not physics.
 
 [Repository](https://github.com/square-box-hash/DigitalLab2Record) · [Live app](https://digitallab2record.vercel.app/) · [Report an issue](https://github.com/square-box-hash/DigitalLab2Record/issues)
 
