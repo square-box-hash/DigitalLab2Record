@@ -594,7 +594,7 @@ export const LandingView: React.FC<LandingViewProps> = ({
             <div>
               <h3 className="text-[19px] leading-snug">Ready when your readings are.</h3>
               <p className="mt-1 text-[13px] text-stone-600 dark:text-stone-400">
-                Seven practicals, no account, nothing uploaded.
+                {EXPERIMENTS.length} practicals, no account, nothing uploaded.
               </p>
             </div>
             <button
