@@ -357,8 +357,8 @@ html.dark .min-h-screen.bg-stone-950 {
 }
 
 /* Large panels: barely-there glass. */
-html.dark .bg-stone-900.rounded-2xl:not(.print-container),
-html.dark .bg-stone-900.rounded-3xl:not(.print-container) {
+html.dark .bg-stone-900.rounded-2xl:not(.print-container):not([class*="dark:bg-stone-100"]),
+html.dark .bg-stone-900.rounded-3xl:not(.print-container):not([class*="dark:bg-stone-100"]) {
   background-color: rgba(255, 255, 255, 0.03);
   background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.012));
   -webkit-backdrop-filter: blur(26px) saturate(150%);
@@ -371,7 +371,7 @@ html.dark .bg-stone-900.rounded-3xl:not(.print-container) {
 }
 
 /* Small chips, inputs and buttons. */
-html.dark .bg-stone-900:not(.rounded-2xl):not(.rounded-3xl):not(.print-container) {
+html.dark .bg-stone-900:not(.rounded-2xl):not(.rounded-3xl):not(.print-container):not([class*="dark:bg-stone-100"]) {
   background-color: rgba(255, 255, 255, 0.055);
   -webkit-backdrop-filter: blur(14px) saturate(140%);
   backdrop-filter: blur(14px) saturate(140%);
