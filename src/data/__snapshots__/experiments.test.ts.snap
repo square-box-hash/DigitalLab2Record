@@ -757,11 +757,26 @@ exports[`spring-oscillation > produces the seeded numbers last reviewed 1`] = `
 exports[`surface-tension > produces the seeded numbers last reviewed 1`] = `
 {
   "derivedRows": [
-    {},
-    {},
-    {},
-    {},
-    {},
+    {
+      "rise_m": 0.0742,
+      "tension": 0.07272,
+    },
+    {
+      "rise_m": 0.0745,
+      "tension": 0.07301,
+    },
+    {
+      "rise_m": 0.0743,
+      "tension": 0.07281,
+    },
+    {
+      "rise_m": 0.0744,
+      "tension": 0.07291,
+    },
+    {
+      "rise_m": 0.0743,
+      "tension": 0.07281,
+    },
   ],
   "errorEntries": [
     {

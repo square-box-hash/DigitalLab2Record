@@ -709,6 +709,8 @@ export const EXTRA_EXPERIMENTS: ExperimentConfig[] = [
     columns: [
       { id: 'obs', label: 'S. No.', unit: '#', showMean: false },
       { id: 'rise', label: 'Capillary rise (h)', unit: 'cm', decimalPlaces: 2, placeholder: '7.43' },
+      { id: 'rise_m', label: 'Rise in metres (h)', unit: 'm', isDerived: true, decimalPlaces: 5 },
+      { id: 'tension', label: 'Surface tension (T = ρgrh/2)', unit: 'N/m', isDerived: true, decimalPlaces: 5 },
     ],
     initialRows: [
       { obs: 1, rise: 7.42 },
@@ -717,7 +719,16 @@ export const EXTRA_EXPERIMENTS: ExperimentConfig[] = [
       { obs: 4, rise: 7.44 },
       { obs: 5, rise: 7.43 },
     ],
-    calculateRow: (row) => ({ ...row }),
+    calculateRow: (row, constants) => {
+      const rho = Number(constants.rho) || 1000;
+      const g = Number(constants.g) || 9.8;
+      const rM = (Number(constants.tubeDiameter) || 0.4) / 2000; // bore diameter in mm → radius in m
+      const rise = Number(row.rise) || 0;
+      const riseM = rise / 100; // cm → m
+      const tension = roundTo((rho * g * rM * riseM) / 2, 5);
+
+      return { ...row, rise_m: roundTo(riseM, 5), tension };
+    },
     calculateResult: (rows, constants) => {
       const rho = Number(constants.rho) || 1000;
       const g = Number(constants.g) || 9.8;
