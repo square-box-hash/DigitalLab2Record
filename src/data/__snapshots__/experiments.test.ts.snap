@@ -1,0 +1,1017 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`beam-balance > produces the seeded numbers last reviewed 1`] = `
+{
+  "derivedRows": [
+    {
+      "deflection": -1.3,
+      "restingPoint": 8.7,
+      "totalMass_g": 24.3,
+    },
+    {
+      "deflection": -0.55,
+      "restingPoint": 9.45,
+      "totalMass_g": 24.34,
+    },
+    {
+      "deflection": 0.3,
+      "restingPoint": 10.3,
+      "totalMass_g": 24.38,
+    },
+    {
+      "deflection": 0.7,
+      "restingPoint": 10.7,
+      "totalMass_g": 24.4,
+    },
+  ],
+  "errorEntries": [
+    {
+      "basis": "Δm = (pointer reading precision) / (balance sensitivity)",
+      "mean": "24.366",
+      "meanAbsError": "0.005",
+      "notation": "m = (24.366 ± 0.005) g",
+      "percentageError": "0.02 %",
+      "quantity": "Determined mass",
+      "symbol": "m",
+      "unit": "g",
+    },
+  ],
+  "finalResult": "Determined Mass m = (24.366 ± 0.005) g (0.024366 kg)",
+  "percentageError": null,
+  "stepResults": [
+    [
+      "Zero Resting Point (R₀)",
+      "10.00 div",
+    ],
+    [
+      "Loaded Resting Point (R) from turning points",
+      "R = 8.70 div (d = -1.30 div)",
+    ],
+    [
+      "Deflection from the zero point",
+      "-1.30 div",
+    ],
+    [
+      "Interpolation for the unknown mass",
+      "24.366 g",
+    ],
+  ],
+  "summaryCards": [
+    {
+      "label": "Determined Mass",
+      "unit": "g",
+      "value": "24.366",
+    },
+    {
+      "label": "Zero Resting Point (R₀)",
+      "unit": "div",
+      "value": "10.00",
+    },
+    {
+      "label": "Bracketing Readings",
+      "subtext": "24.340 g to 24.380 g",
+      "unit": "rows",
+      "value": "2",
+    },
+    {
+      "label": "Balance Precision",
+      "unit": "mg",
+      "value": "±1",
+    },
+  ],
+}
+`;
+
+exports[`boyles-law > produces the seeded numbers last reviewed 1`] = `
+{
+  "derivedRows": [
+    {
+      "invV": 0.2551,
+      "pressure": 76,
+      "pv": 297.92,
+      "volume": 3.92,
+    },
+    {
+      "invV": 0.243,
+      "pressure": 72.5,
+      "pv": 298.41,
+      "volume": 4.116,
+    },
+    {
+      "invV": 0.2319,
+      "pressure": 69.1,
+      "pv": 297.96,
+      "volume": 4.312,
+    },
+    {
+      "invV": 0.2218,
+      "pressure": 65.9,
+      "pv": 297.08,
+      "volume": 4.508,
+    },
+    {
+      "invV": 0.2126,
+      "pressure": 62.8,
+      "pv": 295.41,
+      "volume": 4.704,
+    },
+  ],
+  "errorEntries": null,
+  "finalResult": "PV = 297.4 cm Hg·cm³, constant to within 1.0 % — the volume of a fixed mass of air at constant temperature is inversely proportional to its pressure",
+  "percentageError": null,
+  "stepResults": [
+    [
+      "Pressure of the enclosed air",
+      "76.0 cm Hg for the first reading",
+    ],
+    [
+      "Volume of the enclosed air",
+      "3.920 cm³ for the first reading",
+    ],
+    [
+      "Test of Boyle’s law",
+      "Mean PV = 297.36, spread 1.01 %",
+    ],
+    [
+      "Slope of the P vs 1/V line",
+      "297.46 cm Hg·cm³",
+    ],
+  ],
+  "summaryCards": [
+    {
+      "label": "Mean PV",
+      "unit": "cm Hg·cm³",
+      "value": "297.4",
+    },
+    {
+      "label": "Spread in PV",
+      "subtext": "A measure of how constant PV really is",
+      "unit": "%",
+      "value": "1.01",
+    },
+    {
+      "label": "Slope (P vs 1/V)",
+      "unit": "cm Hg·cm³",
+      "value": "297.5",
+    },
+    {
+      "label": "Fit quality (R²)",
+      "value": "0.9975",
+    },
+  ],
+}
+`;
+
+exports[`helical-spring > produces the seeded numbers last reviewed 1`] = `
+{
+  "derivedRows": [
+    {
+      "extension": 2,
+      "k_indiv": 24.5,
+      "meanPosition": 16.5,
+    },
+    {
+      "extension": 4.1,
+      "k_indiv": 23.9,
+      "meanPosition": 18.6,
+    },
+    {
+      "extension": 6.15,
+      "k_indiv": 23.9,
+      "meanPosition": 20.65,
+    },
+    {
+      "extension": 8.25,
+      "k_indiv": 23.8,
+      "meanPosition": 22.75,
+    },
+    {
+      "extension": 10.35,
+      "k_indiv": 23.7,
+      "meanPosition": 24.85,
+    },
+    {
+      "extension": 12.45,
+      "k_indiv": 23.6,
+      "meanPosition": 26.95,
+    },
+  ],
+  "errorEntries": null,
+  "finalResult": "Force Constant k = 23.7 N/m (From Graph Slope) | Arithmetic Mean k̄ = 23.9 N/m",
+  "percentageError": null,
+  "stepResults": [
+    [
+      "Extension calculation",
+      "Proportional elongation",
+    ],
+    [
+      "Graph Slope (ΔLoad / ΔExtension)",
+      "24.19 g/cm",
+    ],
+    [
+      "Force Constant from Graph (k)",
+      "23.7 N/m",
+    ],
+    [
+      "Arithmetic Mean Verification",
+      "23.9 N/m",
+    ],
+  ],
+  "summaryCards": [
+    {
+      "label": "Spring Constant (k)",
+      "unit": "N/m",
+      "value": "23.7",
+    },
+    {
+      "label": "Graph Slope",
+      "unit": "g/cm",
+      "value": "24.19",
+    },
+    {
+      "label": "Arithmetic Mean",
+      "unit": "N/m",
+      "value": "23.9",
+    },
+    {
+      "label": "Linear Fit R²",
+      "unit": "",
+      "value": "0.9999",
+    },
+  ],
+}
+`;
+
+exports[`inclined-plane > produces the seeded numbers last reviewed 1`] = `
+{
+  "derivedRows": [
+    {
+      "force": 0.233,
+      "sinTheta": 0.2588,
+    },
+    {
+      "force": 0.316,
+      "sinTheta": 0.342,
+    },
+    {
+      "force": 0.394,
+      "sinTheta": 0.4226,
+    },
+    {
+      "force": 0.47,
+      "sinTheta": 0.5,
+    },
+    {
+      "force": 0.542,
+      "sinTheta": 0.5736,
+    },
+    {
+      "force": 0.61,
+      "sinTheta": 0.6428,
+    },
+  ],
+  "errorEntries": null,
+  "finalResult": "W = 0.980 sin θ − 0.020 N — the downward force along the plane is proportional to sin θ, with rolling friction ≈ 0.020 N",
+  "percentageError": null,
+  "stepResults": [
+    [
+      "Tension in the string",
+      "0.233 N",
+    ],
+    [
+      "Balancing forces along the plane",
+      "W ∝ sin θ if friction is small",
+    ],
+    [
+      "Slope of the W vs sin θ line",
+      "0.980 N",
+    ],
+    [
+      "Mass of the roller from the slope",
+      "100.0 g (set value 100 g)",
+    ],
+  ],
+  "summaryCards": [
+    {
+      "label": "Slope (M₁g)",
+      "unit": "N",
+      "value": "0.980",
+    },
+    {
+      "label": "Roller mass from slope",
+      "subtext": "Slope differs from set value by 0.03 %",
+      "unit": "g",
+      "value": "100.0",
+    },
+    {
+      "label": "Rolling friction",
+      "subtext": "Magnitude of the intercept",
+      "unit": "N",
+      "value": "0.020",
+    },
+    {
+      "label": "Fit quality (R²)",
+      "value": "1.0000",
+    },
+  ],
+}
+`;
+
+exports[`parallelogram-law > produces the seeded numbers last reviewed 1`] = `
+{
+  "derivedRows": [
+    {
+      "diff": 0.2,
+      "errorPct": 0.13,
+      "resultant": 149.8,
+    },
+    {
+      "diff": 0.1,
+      "errorPct": 0.07,
+      "resultant": 150.1,
+    },
+    {
+      "diff": 0,
+      "errorPct": 0,
+      "resultant": 150,
+    },
+    {
+      "diff": 8.1,
+      "errorPct": 5.4,
+      "resultant": 158.1,
+    },
+  ],
+  "errorEntries": null,
+  "finalResult": "Determined Weight = 152.0 gf (1.490 N) | Standard Weight = 150 gf (1.470 N) | Error = 1.33%",
+  "percentageError": {
+    "calculated": 152,
+    "errorPercent": "1.33%",
+    "standardRef": "Direct spring balance measurement",
+    "theoretical": 150,
+  },
+  "stepResults": [
+    [
+      "Parallelogram Resultant Formula",
+      "Individual vector diagonals calculated",
+    ],
+    [
+      "Mean Unknown Weight (R̄)",
+      "152.0 gf (1.490 N)",
+    ],
+    [
+      "Percentage Error Comparison",
+      "1.33%",
+    ],
+  ],
+  "summaryCards": [
+    {
+      "label": "Experimental Weight",
+      "unit": "gf",
+      "value": "152.0",
+    },
+    {
+      "label": "Weight in Newtons",
+      "unit": "N",
+      "value": "1.490",
+    },
+    {
+      "label": "Actual Weight",
+      "unit": "gf",
+      "value": "150",
+    },
+    {
+      "label": "Percentage Error",
+      "value": "1.33%",
+    },
+  ],
+}
+`;
+
+exports[`screw-gauge > produces the seeded numbers last reviewed 1`] = `
+{
+  "derivedRows": [
+    {
+      "corrected": 0.82,
+      "observed": 0.82,
+    },
+    {
+      "corrected": 0.83,
+      "observed": 0.83,
+    },
+    {
+      "corrected": 0.81,
+      "observed": 0.81,
+    },
+    {
+      "corrected": 0.82,
+      "observed": 0.82,
+    },
+    {
+      "corrected": 0.84,
+      "observed": 0.84,
+    },
+  ],
+  "errorEntries": [
+    {
+      "basis": "Mean of 5 readings",
+      "mean": "0.824",
+      "meanAbsError": "0.009",
+      "notation": "d = (0.824 ± 0.009) mm",
+      "percentageError": "1.09 %",
+      "quantity": "Mean corrected diameter",
+      "symbol": "d",
+      "unit": "mm",
+    },
+    {
+      "basis": "A = πd²/4 ∝ d², so ΔA/A = 2 Δd/d",
+      "mean": "0.5281",
+      "meanAbsError": "0.0115",
+      "notation": "A = (0.5281 ± 0.0115) mm²",
+      "percentageError": "2.18 %",
+      "quantity": "Cross-sectional area",
+      "symbol": "A",
+      "unit": "mm²",
+    },
+  ],
+  "finalResult": "Mean Diameter d = 0.82 mm | Radius r = 0.410 mm | Cross-sectional Area A = 0.5281 mm²",
+  "percentageError": null,
+  "stepResults": [
+    [
+      "Least Count calculation",
+      "0.01 mm (10 µm)",
+    ],
+    [
+      "Mean Corrected Diameter (d)",
+      "0.82 mm (0.082 cm)",
+    ],
+    [
+      "Radius of Wire (r)",
+      "0.410 mm",
+    ],
+    [
+      "Cross-sectional Area (A)",
+      "0.5281 mm² (5.281e-7 m²)",
+    ],
+  ],
+  "summaryCards": [
+    {
+      "label": "Mean Diameter",
+      "unit": "mm",
+      "value": "0.82",
+    },
+    {
+      "label": "Mean Radius",
+      "unit": "mm",
+      "value": "0.410",
+    },
+    {
+      "label": "Cross-sectional Area",
+      "unit": "mm²",
+      "value": "0.5281",
+    },
+    {
+      "label": "SI Area",
+      "unit": "m²",
+      "value": "5.281e-7",
+    },
+  ],
+}
+`;
+
+exports[`simple-pendulum > produces the seeded numbers last reviewed 1`] = `
+{
+  "derivedRows": [
+    {
+      "effLength_cm": 70,
+      "effLength_m": 0.7,
+      "l_over_t2": 0.248,
+      "meanTime": 33.6,
+      "period": 1.68,
+      "tSquared": 2.822,
+    },
+    {
+      "effLength_cm": 80,
+      "effLength_m": 0.8,
+      "l_over_t2": 0.248,
+      "meanTime": 35.9,
+      "period": 1.795,
+      "tSquared": 3.222,
+    },
+    {
+      "effLength_cm": 90,
+      "effLength_m": 0.9,
+      "l_over_t2": 0.248,
+      "meanTime": 38.1,
+      "period": 1.905,
+      "tSquared": 3.629,
+    },
+    {
+      "effLength_cm": 100,
+      "effLength_m": 1,
+      "l_over_t2": 0.249,
+      "meanTime": 40.1,
+      "period": 2.005,
+      "tSquared": 4.02,
+    },
+    {
+      "effLength_cm": 110,
+      "effLength_m": 1.1,
+      "l_over_t2": 0.248,
+      "meanTime": 42.1,
+      "period": 2.105,
+      "tSquared": 4.431,
+    },
+    {
+      "effLength_cm": 120,
+      "effLength_m": 1.2,
+      "l_over_t2": 0.248,
+      "meanTime": 44,
+      "period": 2.2,
+      "tSquared": 4.84,
+    },
+  ],
+  "errorEntries": null,
+  "finalResult": "Acceleration due to gravity g = 9.80 m/s² | Standard g = 9.8 m/s² | Percentage Error = 0.00% | Length of Second's Pendulum = 99.3 cm",
+  "percentageError": {
+    "calculated": 9.8,
+    "errorPercent": "0.00%",
+    "standardRef": "Standard acceleration due to gravity (9.80 m/s²)",
+    "theoretical": 9.8,
+  },
+  "stepResults": [
+    [
+      "Effective Length Calculation",
+      "L converted to meters (m)",
+    ],
+    [
+      "Time Period",
+      "T (s) and T² (s²)",
+    ],
+    [
+      "L vs T² Graph Slope",
+      "4.0288 s²/m",
+    ],
+    [
+      "Acceleration due to Gravity (g)",
+      "9.80 m/s²",
+    ],
+    [
+      "Length of Second’s Pendulum (T = 2 s)",
+      "0.993 m (99.3 cm)",
+    ],
+  ],
+  "summaryCards": [
+    {
+      "label": "Calculated g",
+      "unit": "m/s²",
+      "value": "9.80",
+    },
+    {
+      "label": "Standard g",
+      "unit": "m/s²",
+      "value": "9.80",
+    },
+    {
+      "label": "Percentage Error",
+      "value": "0.00%",
+    },
+    {
+      "label": "Second’s Pendulum Length",
+      "unit": "cm",
+      "value": "99.3",
+    },
+    {
+      "label": "Graph Slope (T²/L)",
+      "unit": "s²/m",
+      "value": "4.0288",
+    },
+  ],
+}
+`;
+
+exports[`spherometer > produces the seeded numbers last reviewed 1`] = `
+{
+  "derivedRows": [
+    {
+      "sagitta_cm": 0.033,
+      "sagitta_mm": 0.33,
+    },
+    {
+      "sagitta_cm": 0.034,
+      "sagitta_mm": 0.34,
+    },
+    {
+      "sagitta_cm": 0.033,
+      "sagitta_mm": 0.33,
+    },
+    {
+      "sagitta_cm": 0.032,
+      "sagitta_mm": 0.32,
+    },
+  ],
+  "errorEntries": [
+    {
+      "basis": "Mean of 4 readings",
+      "mean": "0.0330",
+      "meanAbsError": "0.0005",
+      "notation": "h = (0.0330 ± 0.0005) cm",
+      "percentageError": "1.52 %",
+      "quantity": "Mean sagitta",
+      "symbol": "h",
+      "unit": "cm",
+    },
+    {
+      "basis": "ΔR = |dR/dh| · Δh, with R = l²/6h + h/2",
+      "mean": "91.24",
+      "meanAbsError": "1.38",
+      "notation": "R = (91.24 ± 1.38) cm",
+      "percentageError": "1.51 %",
+      "quantity": "Radius of curvature",
+      "symbol": "R",
+      "unit": "cm",
+    },
+  ],
+  "finalResult": "Radius of Curvature R = 91.24 cm (Sagitta h = 0.033 cm, Leg Distance l = 4.25 cm)",
+  "percentageError": null,
+  "stepResults": [
+    [
+      "Least Count calculation",
+      "0.001 cm",
+    ],
+    [
+      "Mean Sagitta (h)",
+      "0.033 cm (0.33 mm)",
+    ],
+    [
+      "First term (l² / 6h)",
+      "91.22 cm",
+    ],
+    [
+      "Second term (h / 2)",
+      "0.017 cm",
+    ],
+    [
+      "Radius of Curvature (R)",
+      "91.24 cm",
+    ],
+  ],
+  "summaryCards": [
+    {
+      "label": "Mean Sagitta (h)",
+      "unit": "cm",
+      "value": "0.033",
+    },
+    {
+      "label": "Leg Spacing (l)",
+      "unit": "cm",
+      "value": "4.25",
+    },
+    {
+      "label": "Curvature Radius (R)",
+      "unit": "cm",
+      "value": "91.24",
+    },
+    {
+      "label": "Focal Length (f = R/2)",
+      "unit": "cm",
+      "value": "45.62",
+    },
+  ],
+}
+`;
+
+exports[`spring-oscillation > produces the seeded numbers last reviewed 1`] = `
+{
+  "derivedRows": [
+    {
+      "period": 0.5735,
+      "tSquared": 0.3289,
+    },
+    {
+      "period": 0.6785,
+      "tSquared": 0.4604,
+    },
+    {
+      "period": 0.7695,
+      "tSquared": 0.5921,
+    },
+    {
+      "period": 0.851,
+      "tSquared": 0.7242,
+    },
+    {
+      "period": 0.9245,
+      "tSquared": 0.8547,
+    },
+  ],
+  "errorEntries": null,
+  "finalResult": "Force constant K = 3.00 N/m · effective mass of the spring m₀ = 5.0 g",
+  "percentageError": null,
+  "stepResults": [
+    [
+      "Period of oscillation",
+      "0.5735 s",
+    ],
+    [
+      "Square of the period",
+      "Slope = 4π²/K, intercept = 4π²m₀/K",
+    ],
+    [
+      "Slope of the T² – m line",
+      "13.154 s²/kg",
+    ],
+    [
+      "Force constant",
+      "3.00 N/m",
+    ],
+    [
+      "Effective mass of the spring",
+      "5.0 g",
+    ],
+  ],
+  "summaryCards": [
+    {
+      "label": "Force constant",
+      "unit": "N/m",
+      "value": "3.00",
+    },
+    {
+      "label": "Effective mass m₀",
+      "subtext": "Intercept ÷ slope",
+      "unit": "g",
+      "value": "5.0",
+    },
+    {
+      "label": "Slope (T²/m)",
+      "unit": "s²/kg",
+      "value": "13.154",
+    },
+    {
+      "label": "Fit quality (R²)",
+      "value": "1.0000",
+    },
+  ],
+}
+`;
+
+exports[`surface-tension > produces the seeded numbers last reviewed 1`] = `
+{
+  "derivedRows": [
+    {},
+    {},
+    {},
+    {},
+    {},
+  ],
+  "errorEntries": [
+    {
+      "basis": "Mean of 5 readings",
+      "mean": "7.434",
+      "meanAbsError": "0.009",
+      "notation": "h = (7.434 ± 0.009) cm",
+      "percentageError": "0.12 %",
+      "quantity": "Capillary rise",
+      "symbol": "h",
+      "unit": "cm",
+    },
+    {
+      "basis": "T ∝ h, so ΔT/T = Δh/h",
+      "mean": "0.07285",
+      "meanAbsError": "0.00009",
+      "notation": "T = (0.07285 ± 0.00009) N/m",
+      "percentageError": "0.12 %",
+      "quantity": "Surface tension",
+      "symbol": "T",
+      "unit": "N/m",
+    },
+  ],
+  "finalResult": "Surface tension of water at 20 °C = 0.0728 N/m (standard value ≈ 0.0728 N/m)",
+  "percentageError": {
+    "calculated": 0.07285,
+    "errorPercent": "0.07%",
+    "standardRef": "Water at 20 °C",
+    "theoretical": 0.0728,
+  },
+  "stepResults": [
+    [
+      "Mean capillary rise",
+      "7.434 cm",
+    ],
+    [
+      "Radius of the capillary bore",
+      "0.2000 mm = 2.00e-4 m",
+    ],
+    [
+      "Surface tension",
+      "0.07285 N/m",
+    ],
+    [
+      "Comparison with the standard value",
+      "0.07%",
+    ],
+  ],
+  "summaryCards": [
+    {
+      "label": "Surface tension",
+      "unit": "N/m",
+      "value": "0.0728",
+    },
+    {
+      "label": "Mean rise",
+      "unit": "cm",
+      "value": "7.434",
+    },
+    {
+      "label": "Bore radius",
+      "unit": "mm",
+      "value": "0.2000",
+    },
+    {
+      "label": "Against standard",
+      "subtext": "Reference 0.0728 N/m at 20 °C",
+      "value": "0.07%",
+    },
+  ],
+}
+`;
+
+exports[`vernier-calipers > produces the seeded numbers last reviewed 1`] = `
+{
+  "derivedRows": [
+    {
+      "corrected": 2.14,
+      "measured": 2.14,
+    },
+    {
+      "corrected": 2.15,
+      "measured": 2.15,
+    },
+    {
+      "corrected": 2.14,
+      "measured": 2.14,
+    },
+    {
+      "corrected": 2.16,
+      "measured": 2.16,
+    },
+    {
+      "corrected": 2.15,
+      "measured": 2.15,
+    },
+  ],
+  "errorEntries": [
+    {
+      "basis": "Mean of 5 readings",
+      "mean": "2.148",
+      "meanAbsError": "0.006",
+      "notation": "D = (2.148 ± 0.006) cm",
+      "percentageError": "0.28 %",
+      "quantity": "Mean corrected diameter",
+      "symbol": "D",
+      "unit": "cm",
+    },
+    {
+      "basis": "A = πR² ∝ D², so ΔA/A = 2 ΔD/D",
+      "mean": "3.631",
+      "meanAbsError": "0.020",
+      "notation": "A = (3.631 ± 0.020) cm²",
+      "percentageError": "0.56 %",
+      "quantity": "Cross-sectional area",
+      "symbol": "A",
+      "unit": "cm²",
+    },
+    {
+      "basis": "V = πR²H ∝ D², so ΔV/V = 2 ΔD/D",
+      "mean": "17.608",
+      "meanAbsError": "0.099",
+      "notation": "V = (17.608 ± 0.099) cm³",
+      "percentageError": "0.56 %",
+      "quantity": "Cylinder volume",
+      "symbol": "V",
+      "unit": "cm³",
+    },
+  ],
+  "finalResult": "Diameter D = 2.15 cm | Radius R = 1.075 cm | Volume V = 17.608 cm³ (1.761e-5 m³)",
+  "percentageError": null,
+  "stepResults": [
+    [
+      "Least Count calculation",
+      "0.01 cm",
+    ],
+    [
+      "Mean Corrected Diameter (D)",
+      "2.15 cm",
+    ],
+    [
+      "Radius (R)",
+      "1.075 cm",
+    ],
+    [
+      "Cross-sectional Area (A)",
+      "3.631 cm²",
+    ],
+    [
+      "Cylinder Volume (V)",
+      "17.608 cm³",
+    ],
+  ],
+  "summaryCards": [
+    {
+      "label": "Mean Diameter",
+      "unit": "cm",
+      "value": "2.15",
+    },
+    {
+      "label": "Mean Radius",
+      "unit": "cm",
+      "value": "1.075",
+    },
+    {
+      "label": "Cross-sectional Area",
+      "unit": "cm²",
+      "value": "3.631",
+    },
+    {
+      "label": "Calculated Volume",
+      "subtext": "Sphere equiv: 5.204 cm³",
+      "unit": "cm³",
+      "value": "17.608",
+    },
+  ],
+}
+`;
+
+exports[`youngs-modulus > produces the seeded numbers last reviewed 1`] = `
+{
+  "derivedRows": [
+    {
+      "extension": 0.25,
+    },
+    {
+      "extension": 0.5,
+    },
+    {
+      "extension": 0.75,
+    },
+    {
+      "extension": 1,
+    },
+    {
+      "extension": 1.25,
+    },
+    {
+      "extension": 1.49,
+    },
+  ],
+  "errorEntries": null,
+  "finalResult": "Young's modulus Y = 2.002e+11 N/m² (2.00 × 10¹¹ N/m²)",
+  "percentageError": {
+    "calculated": 200172415792,
+    "errorPercent": "0.09%",
+    "standardRef": "Steel: 2.0 × 10¹¹ N/m²",
+    "theoretical": 200000000000,
+  },
+  "stepResults": [
+    [
+      "Extension for each load",
+      "l ranges from 0.25 mm to 1.49 mm",
+    ],
+    [
+      "Slope of the extension–load line",
+      "0.4987 mm/kg",
+    ],
+    [
+      "Cross-sectional area of the wire",
+      "1.963e-7 m²",
+    ],
+    [
+      "Young's modulus",
+      "2.002e+11 N/m²",
+    ],
+  ],
+  "summaryCards": [
+    {
+      "label": "Young's modulus",
+      "unit": "N/m²",
+      "value": "2.00e+11",
+    },
+    {
+      "label": "Slope (l/M)",
+      "unit": "mm/kg",
+      "value": "0.4987",
+    },
+    {
+      "label": "Wire area",
+      "subtext": "d = 0.500 mm",
+      "unit": "m²",
+      "value": "1.96e-7",
+    },
+    {
+      "label": "Against steel",
+      "subtext": "Reference 2.0 × 10¹¹ N/m²",
+      "unit": "×10¹¹ N/m²",
+      "value": "2.00",
+    },
+  ],
+}
+`;

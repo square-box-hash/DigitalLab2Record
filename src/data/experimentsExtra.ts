@@ -777,7 +777,7 @@ export const EXTRA_EXPERIMENTS: ExperimentConfig[] = [
             label: 'Comparison with the standard value',
             formula: 'Percentage error = |T − T₀| / T₀ × 100',
             substitution: `T₀ at ${temperature} °C ≈ ${standardT.toFixed(4)} N/m`,
-            result: `${calculatePercentageError(T, standardT).errorPercent} %`,
+            result: `${calculatePercentageError(T, standardT).errorPercent}`,
           },
         ],
         finalResult: `Surface tension of water at ${temperature} °C = ${T.toFixed(4)} N/m (standard value ≈ ${standardT.toFixed(4)} N/m)`,
@@ -791,7 +791,7 @@ export const EXTRA_EXPERIMENTS: ExperimentConfig[] = [
           { label: 'Surface tension', value: T.toFixed(4), unit: 'N/m' },
           { label: 'Mean rise', value: meanH.toFixed(3), unit: 'cm' },
           { label: 'Bore radius', value: (rM * 1000).toFixed(4), unit: 'mm' },
-          { label: 'Against standard', value: calculatePercentageError(T, standardT).errorPercent, unit: '%', subtext: `Reference ${standardT.toFixed(4)} N/m at ${temperature} °C` },
+          { label: 'Against standard', value: calculatePercentageError(T, standardT).errorPercent, subtext: `Reference ${standardT.toFixed(4)} N/m at ${temperature} °C` },
         ],
         errorAnalysis,
       };
