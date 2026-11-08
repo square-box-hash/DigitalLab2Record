@@ -59,20 +59,22 @@ export const MeteorShower: React.FC<MeteorShowerProps> = ({ isDark }) => {
     const spawn = () => {
       // 30–52° below the horizontal, always travelling leftwards, so the streaks
       // feel like one shower rather than random scratches.
-      const angle = ((30 + Math.random() * 22) * Math.PI) / 180;
-      const speed = 460 + Math.random() * 520;
+      const angle = ((28 + Math.random() * 26) * Math.PI) / 180;
+      const speed = 460 + Math.random() * 560;
       const narrow = width < 640;
+      // One in eight is a fireball: brighter, longer, slower to fade.
+      const fireball = Math.random() < 0.12;
 
       meteors.push({
-        x: width * (0.35 + Math.random() * 0.85),
-        y: -40 - Math.random() * 160,
+        x: width * (0.3 + Math.random() * 0.95),
+        y: -40 - Math.random() * 200,
         vx: -Math.cos(angle) * speed,
         vy: Math.sin(angle) * speed,
         age: 0,
-        life: 0.85 + Math.random() * 0.85,
-        length: (narrow ? 60 : 90) + Math.random() * (narrow ? 90 : 160),
-        width: 0.9 + Math.random() * 1.2,
-        alpha: 0.55 + Math.random() * 0.4,
+        life: (fireball ? 1.25 : 0.8) + Math.random() * 0.85,
+        length: ((narrow ? 70 : 120) + Math.random() * (narrow ? 110 : 200)) * (fireball ? 1.7 : 1),
+        width: (0.9 + Math.random() * 1.3) * (fireball ? 1.9 : 1),
+        alpha: (fireball ? 0.8 : 0.5) + Math.random() * 0.35,
       });
     };
 
@@ -137,10 +139,11 @@ export const MeteorShower: React.FC<MeteorShowerProps> = ({ isDark }) => {
 
       if (now > nextSpawnAt) {
         spawn();
-        // Occasionally a second streak a beat later, so the shower is not
-        // metronomic.
-        if (Math.random() < 0.45) window.setTimeout(spawn, 240);
-        nextSpawnAt = now + (width < 640 ? 2200 : 1150) + Math.random() * 1900;
+        // Bursts: a second streak a beat later, and sometimes a third, so it
+        // reads as a shower rather than a metronome.
+        if (Math.random() < 0.62) window.setTimeout(spawn, 90 + Math.random() * 220);
+        if (Math.random() < 0.28) window.setTimeout(spawn, 260 + Math.random() * 420);
+        nextSpawnAt = now + (width < 640 ? 900 : 260) + Math.random() * (width < 640 ? 1500 : 620);
       }
 
       draw(delta);

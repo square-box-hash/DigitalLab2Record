@@ -142,14 +142,24 @@ export const LandingView: React.FC<LandingViewProps> = ({
       */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 -z-20 bg-[linear-gradient(180deg,#fbfaf8_0%,#f6f4f1_26%,#fbfaf8_52%,#f5f3ef_76%,#fbfaf8_100%)] dark:bg-[linear-gradient(180deg,#0b0b0a_0%,#0f0f0e_14%,#141312_30%,#0f0f0e_48%,#161513_66%,#101010_84%,#0b0b0a_100%)]"
+        className="pointer-events-none absolute inset-0 -z-30 bg-[linear-gradient(180deg,#fbfaf8_0%,#f6f4f1_26%,#fbfaf8_52%,#f5f3ef_76%,#fbfaf8_100%)] dark:bg-[linear-gradient(180deg,#0b0b0a_0%,#0f0f0e_14%,#141312_30%,#0f0f0e_48%,#161513_66%,#101010_84%,#0b0b0a_100%)]"
       />
 
-      {/* A slow breath in the shade, so the background is never quite static. */}
-      <div
-        aria-hidden="true"
-        className="shade-drift pointer-events-none fixed inset-0 -z-20 bg-[radial-gradient(70%_50%_at_50%_6%,rgba(255,255,255,0.65),transparent_72%)] dark:bg-[radial-gradient(70%_50%_at_50%_6%,rgba(126,140,190,0.13),transparent_72%)]"
-      />
+      {/*
+        Three colour washes, drifting at different speeds so the shade is never
+        one flat neutral. The hues are the ones the page already speaks in: the
+        indigo of the interface card, the emerald of a computed value, the ochre
+        of the warning. Kept to soft radial gradients rather than blurred boxes
+        — a gradient costs nothing to composite, a 120px blur costs plenty on a
+        phone.
+      */}
+      <div aria-hidden="true" className="hue hue--indigo" />
+      <div aria-hidden="true" className="hue hue--teal" />
+      <div aria-hidden="true" className="hue hue--ochre" />
+
+      {/* A whisper of grain over the washes. Eight-bit gradients band on a
+          near-black page, and a little noise is the cheapest cure there is. */}
+      <div aria-hidden="true" className="grain pointer-events-none fixed inset-0 -z-[15]" />
 
       <MeteorShower isDark={isDark} />
 
@@ -249,14 +259,20 @@ export const LandingView: React.FC<LandingViewProps> = ({
       {/* Hero — a dark, frosted stage that fades into the page below it */}
       <section className="relative isolate overflow-hidden">
         <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
-          <div className="absolute inset-0 bg-[#06060a]" />
+          {/* Opaque in light mode, where the dark stage is the whole point. In
+              dark mode it steps aside so the page's own shade and colour washes
+              run straight through the hero instead of stopping at its edge. */}
+          <div className="absolute inset-0 bg-[#06060a] dark:bg-transparent" />
           {/* the wide glow across the top */}
           <div className="absolute -top-[26rem] left-1/2 h-[44rem] w-[72rem] -translate-x-1/2 rounded-full bg-white/[0.14] blur-[140px]" />
           {/* lighter and darker patches, so the glass has something to refract */}
           <div className="absolute top-[6rem] -left-[10rem] h-[26rem] w-[26rem] rounded-full bg-indigo-500/[0.18] blur-[130px]" />
           <div className="absolute top-[1rem] -right-[8rem] h-[24rem] w-[24rem] rounded-full bg-amber-400/[0.10] blur-[130px]" />
-          <div className="absolute inset-0 bg-[radial-gradient(120%_85%_at_50%_0%,transparent_42%,rgba(0,0,0,0.75)_100%)]" />
-          <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-b from-transparent to-stone-50 dark:to-stone-950" />
+          {/* Vignette for the light-mode stage. In dark mode it is switched off: it
+              is clipped by the section's overflow, so it used to end in a hard
+              line exactly where the hero ends. */}
+          <div className="absolute inset-0 bg-[radial-gradient(120%_85%_at_50%_0%,transparent_42%,rgba(0,0,0,0.75)_100%)] dark:bg-none" />
+          <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-b from-transparent to-stone-50 dark:to-transparent" />
         </div>
 
         <div className="max-w-[1180px] mx-auto px-5 sm:px-6 pt-16 sm:pt-24 pb-20">
