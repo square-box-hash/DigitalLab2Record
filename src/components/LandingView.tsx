@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { EXPERIMENTS } from '../data/experiments';
 import { formatNumber } from '../utils/math';
+import { MeteorShower } from './MeteorShower';
 
 interface LandingViewProps {
   onEnterLab: (experimentId?: string) => void;
@@ -129,7 +130,29 @@ export const LandingView: React.FC<LandingViewProps> = ({
   const vernierUncertainty = vernierResult.errorAnalysis?.entries[0];
 
   return (
-    <div className="min-h-screen bg-stone-50 dark:bg-stone-950 text-stone-900 dark:text-stone-100 transition-colors">
+    <div className="relative min-h-screen text-stone-900 dark:text-stone-100 transition-colors">
+      {/*
+        One continuous shade for the whole page.
+
+        Sections used to carry their own fills (bg-stone-900/40 on top of
+        stone-950), which left a visible step at every boundary — the page
+        changed colour in bands rather than in light. The fill now lives here as
+        a single gradient over the full document height, so scrolling moves
+        through the shade instead of jumping between two of them.
+      */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 -z-20 bg-[linear-gradient(180deg,#fbfaf8_0%,#f6f4f1_26%,#fbfaf8_52%,#f5f3ef_76%,#fbfaf8_100%)] dark:bg-[linear-gradient(180deg,#0b0b0a_0%,#0f0f0e_14%,#141312_30%,#0f0f0e_48%,#161513_66%,#101010_84%,#0b0b0a_100%)]"
+      />
+
+      {/* A slow breath in the shade, so the background is never quite static. */}
+      <div
+        aria-hidden="true"
+        className="shade-drift pointer-events-none fixed inset-0 -z-20 bg-[radial-gradient(70%_50%_at_50%_6%,rgba(255,255,255,0.65),transparent_72%)] dark:bg-[radial-gradient(70%_50%_at_50%_6%,rgba(126,140,190,0.13),transparent_72%)]"
+      />
+
+      <MeteorShower isDark={isDark} />
+
       {/* Top bar */}
       <header className="sticky top-0 z-40 bg-[#07070b]/70 backdrop-blur-xl border-b border-white/10">
         <div className="max-w-[1180px] mx-auto px-5 sm:px-6 h-[62px] flex items-center justify-between gap-4">
@@ -354,7 +377,7 @@ export const LandingView: React.FC<LandingViewProps> = ({
       </section>
 
       {/* Interface preview */}
-      <section id="interface" className="border-t border-stone-200 dark:border-stone-800">
+      <section id="interface" className="border-t border-stone-200 dark:border-transparent">
         <div className="max-w-[1180px] mx-auto px-5 sm:px-6 py-16 sm:py-24">
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-10">
             <div>
@@ -454,7 +477,7 @@ export const LandingView: React.FC<LandingViewProps> = ({
       </section>
 
       {/* Capabilities */}
-      <section className="border-t border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900/40">
+      <section className="border-t border-stone-200 dark:border-transparent">
         <div className="max-w-[1180px] mx-auto px-5 sm:px-6 py-16 sm:py-20">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-stone-200 dark:bg-stone-800 rounded-2xl overflow-hidden border border-stone-200 dark:border-stone-800">
             {CAPABILITIES.map(({ icon: Icon, title, body }) => (
@@ -469,7 +492,7 @@ export const LandingView: React.FC<LandingViewProps> = ({
       </section>
 
       {/* What changes */}
-      <section id="changes" className="border-t border-stone-200 dark:border-stone-800">
+      <section id="changes" className="border-t border-stone-200 dark:border-transparent">
         <div className="max-w-[1180px] mx-auto px-5 sm:px-6 py-16 sm:py-24">
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-10">
             <div>
@@ -508,7 +531,7 @@ export const LandingView: React.FC<LandingViewProps> = ({
       </section>
 
       {/* Practicals */}
-      <section id="practicals" className="border-t border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900/40">
+      <section id="practicals" className="border-t border-stone-200 dark:border-transparent">
         <div className="max-w-[1180px] mx-auto px-5 sm:px-6 py-16 sm:py-24">
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-10">
             <div>
@@ -568,7 +591,7 @@ export const LandingView: React.FC<LandingViewProps> = ({
       </section>
 
       {/* About */}
-      <section id="about" className="border-t border-stone-200 dark:border-stone-800">
+      <section id="about" className="border-t border-stone-200 dark:border-transparent">
         <div className="max-w-[1180px] mx-auto px-5 sm:px-6 py-16 sm:py-24">
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-10">
             <div>
@@ -578,7 +601,7 @@ export const LandingView: React.FC<LandingViewProps> = ({
             <span className="font-mono text-[11px] text-stone-400 dark:text-stone-600">Fig. 04</span>
           </div>
 
-          <div className="border-t border-stone-200 dark:border-stone-800">
+          <div className="border-t border-stone-200 dark:border-transparent">
             {FAQ.map((item, i) => (
               <div key={item.q} className="grid grid-cols-[42px_1fr] gap-4 py-5 border-b border-stone-200 dark:border-stone-800">
                 <span className="font-mono text-[11px] text-stone-400 dark:text-stone-600 pt-1">{String(i + 1).padStart(2, '0')}</span>
@@ -609,7 +632,7 @@ export const LandingView: React.FC<LandingViewProps> = ({
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-stone-200 dark:border-stone-800">
+      <footer className="border-t border-stone-200 dark:border-transparent">
         <div className="max-w-[1180px] mx-auto px-5 sm:px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2.5">
             <span className="w-[22px] h-[22px] rounded-md bg-stone-900 dark:bg-stone-100 text-stone-50 dark:text-stone-900 grid place-items-center font-serif text-[13px] pb-0.5">D</span>
