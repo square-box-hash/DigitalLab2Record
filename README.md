@@ -89,7 +89,7 @@ A note for teachers: if a record was produced with this, the observations should
 | 💾 **Nothing gets lost** | Readings autosave to your browser about half a second after you stop typing. Refresh, close the tab, lose signal — it's still there. |
 | 📄 **A record, not a screenshot** | A4 page in CBSE order: aim, apparatus, theory, observations, calculations, error analysis, result, precautions, sources of error. Print it or save it as PDF. |
 | 🗣️ **Viva without panic** | Curated examiner questions per practical, with a self-test mode that hides the answers. |
-| 🔭 **The apparatus in 3D** | A separate instrument room with rotatable models of the calipers, screw gauge, spherometer and pendulum, embedded from Sketchfab with credit to the makers. |
+| 🔭 **The apparatus in 3D** | A separate instrument room with rotatable models of the calipers, screw gauge, spherometer and pendulum, embedded from Sketchfab with credit to the makers. The screw gauge is served from this repo, so the room draws its own cursor there — an open hand to grab it, a fist while you turn it, a pinch while you zoom. |
 | 🌗 **A theme that knows the time** | Light through the working day, dark from 7 pm to 6 am, with the toggle still available when you disagree. Light mode uses a translucent, blurred surface over a soft wash; the printable record stays opaque, because paper is paper. |
 
 ---
