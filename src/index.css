@@ -434,3 +434,33 @@ html.dark .print-container {
 .dark ::-webkit-scrollbar-thumb:hover {
   background: #46433d;
 }
+
+/*
+  The landing page's shade breathes rather than sits still.
+  ---------------------------------------------------------------------------
+  A very slow drift on the soft radial wash behind the content: 52 seconds for a
+  full cycle, a couple of percent of travel, no visible loop point. Turned off
+  entirely for anyone who has asked for reduced motion.
+*/
+@keyframes shade-drift {
+  0%,
+  100% {
+    transform: translate3d(-1.5%, 0, 0) scale(1);
+    opacity: 0.85;
+  }
+  50% {
+    transform: translate3d(1.5%, -1.2%, 0) scale(1.05);
+    opacity: 1;
+  }
+}
+
+.shade-drift {
+  animation: shade-drift 52s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shade-drift {
+    animation: none;
+  }
+}
