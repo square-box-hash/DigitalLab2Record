@@ -26,10 +26,16 @@ export const VivaVoceAccordion: React.FC<VivaVoceAccordionProps> = ({
 
   const categories = ['All', 'Core Theory', 'Apparatus & Errors', 'Precautions', 'Calculations'];
 
-  const filteredQuestions = questions.filter((q) => {
-    if (selectedCategory === 'All') return true;
-    return q.category === selectedCategory;
-  });
+  // Pair every question with its index in the unfiltered bank. Expanding and
+  // revealing are keyed by that index, so switching the category pill can no
+  // longer hand a revealed answer to whichever question moves into the slot.
+  const filteredQuestions = questions
+    .map((item, originalIndex) => ({ item, originalIndex }))
+    .filter(({ item }) => selectedCategory === 'All' || item.category === selectedCategory);
+
+  const allVisibleOpen = filteredQuestions.every(({ originalIndex }) =>
+    openIndices.includes(originalIndex)
+  );
 
   const toggleAccordion = (idx: number) => {
     setOpenIndices((prev) =>
@@ -38,10 +44,17 @@ export const VivaVoceAccordion: React.FC<VivaVoceAccordionProps> = ({
   };
 
   const toggleAll = () => {
-    if (openIndices.length === filteredQuestions.length) {
-      setOpenIndices([]);
+    if (allVisibleOpen) {
+      // Close only what is on screen; keep rows open in the other categories.
+      const visible = new Set(filteredQuestions.map(({ originalIndex }) => originalIndex));
+      setOpenIndices((prev) => prev.filter((i) => !visible.has(i)));
     } else {
-      setOpenIndices(filteredQuestions.map((_, i) => i));
+      setOpenIndices((prev) => [
+        ...prev,
+        ...filteredQuestions
+          .map(({ originalIndex }) => originalIndex)
+          .filter((i) => !prev.includes(i)),
+      ]);
     }
   };
 
@@ -93,7 +106,7 @@ export const VivaVoceAccordion: React.FC<VivaVoceAccordionProps> = ({
             onClick={toggleAll}
             className="px-3 py-1.5 text-xs font-medium text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 rounded-xl transition-colors"
           >
-            {openIndices.length === filteredQuestions.length ? 'Collapse All' : 'Expand All'}
+            {allVisibleOpen ? 'Collapse All' : 'Expand All'}
           </button>
         </div>
       </div>
@@ -121,19 +134,19 @@ export const VivaVoceAccordion: React.FC<VivaVoceAccordionProps> = ({
 
       {/* Accordion List */}
       <div className="p-4 sm:p-6 divide-y divide-slate-100 dark:divide-slate-800">
-        {filteredQuestions.map((item, idx) => {
-          const isOpen = openIndices.includes(idx);
-          const isRevealed = revealedQuizAnswers[idx];
+        {filteredQuestions.map(({ item, originalIndex }) => {
+          const isOpen = openIndices.includes(originalIndex);
+          const isRevealed = revealedQuizAnswers[originalIndex];
 
           return (
-            <div key={idx} className="py-3 first:pt-0 last:pb-0">
+            <div key={originalIndex} className="py-3 first:pt-0 last:pb-0">
               <button
-                onClick={() => toggleAccordion(idx)}
+                onClick={() => toggleAccordion(originalIndex)}
                 className="w-full text-left flex items-start justify-between py-2 group"
               >
                 <div className="flex items-start space-x-3 pr-4">
                   <span className="w-6 h-6 rounded-lg bg-indigo-50 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 border border-indigo-100 dark:border-indigo-800 font-bold font-mono text-xs flex items-center justify-center shrink-0 mt-0.5">
-                    {idx + 1}
+                    {originalIndex + 1}
                   </span>
                   <div className="space-y-1">
                     <span className="text-sm font-bold text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
@@ -162,7 +175,7 @@ export const VivaVoceAccordion: React.FC<VivaVoceAccordionProps> = ({
                         Answer hidden for recall practice. Formulate your response first!
                       </p>
                       <button
-                        onClick={() => toggleQuizAnswer(idx)}
+                        onClick={() => toggleQuizAnswer(originalIndex)}
                         className="inline-flex items-center space-x-1.5 px-3 py-1.5 bg-amber-600 text-white rounded-lg text-xs font-semibold hover:bg-amber-700 transition-colors shadow-2xs"
                       >
                         <Eye className="w-3.5 h-3.5" />
@@ -178,7 +191,7 @@ export const VivaVoceAccordion: React.FC<VivaVoceAccordionProps> = ({
                         </span>
                         {quizMode && (
                           <button
-                            onClick={() => toggleQuizAnswer(idx)}
+                            onClick={() => toggleQuizAnswer(originalIndex)}
                             className="text-[11px] text-amber-700 dark:text-amber-400 hover:underline font-medium"
                           >
                             Hide Answer
