@@ -161,6 +161,7 @@ npm run dev        # → http://localhost:3000
 ```bash
 npm run build      # static build into dist/
 npm run lint       # tsc --noEmit
+npm test           # pins the twelve seeded results
 ```
 
 Deploy it anywhere that serves static files — Vercel, Netlify, GitHub Pages, Cloud Run.
@@ -230,7 +231,6 @@ Honest about what's missing:
 - The spherometer takes the leg distance as one number instead of three pricked distances (AB, BC, CA), so `l` has no measurable spread to propagate. The same is true of the Vernier cylinder height and the Searle's wire diameter.
 - The record page has no diagram section, and doesn't yet print the graph — download the PNG and paste it.
 - The spring and pendulum results come from a graph slope, and the slope carries no uncertainty yet.
-- There are no automated tests. The arithmetic is the product, so this is the most valuable thing missing: a single file asserting the twelve seeded results would protect every change.
 - English only. A tool aimed at Indian classrooms should not be.
 - Class XII practicals aren't in here yet; the config makes them a data exercise, not a code one.
 - Only four instruments have good open 3D models. A beam balance, a Gravesand's board and a Boyle's apparatus would each be one more object in `INSTRUMENTS`.
@@ -238,6 +238,10 @@ Honest about what's missing:
 PRs and issues are welcome — especially from anyone who has actually sat through a CBSE practical exam.
 
 ---
+
+## 📄 Licence
+
+MIT — see [LICENSE](LICENSE). Use it, fork it, hand it to your juniors. The NCERT references and any third-party 3D models credited in the instrument room keep their own terms.
 
 ## 👤 Author
 
