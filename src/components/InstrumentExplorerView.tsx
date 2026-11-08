@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ArrowLeft, ArrowRight, Box, ExternalLink, Moon, Rotate3d, Sun } from 'lucide-react';
+import { ModelViewer3D } from './ModelViewer3D';
 
 interface InstrumentExplorerViewProps {
   onHome: () => void;
@@ -15,6 +16,13 @@ interface InstrumentModel {
   readIt: string[];
   /** Sketchfab model UID */
   uid: string;
+  /**
+   * A .glb we host ourselves. When present the card renders it with our own
+   * three.js viewer, which is what makes the custom hand cursor possible —
+   * inside the Sketchfab iframe the cursor and the gestures belong to them.
+   * Falls back to the embed if the file is missing.
+   */
+  modelUrl?: string;
   modelTitle: string;
   author: string;
   authorUrl: string;
@@ -53,6 +61,7 @@ const INSTRUMENTS: InstrumentModel[] = [
       'One full turn of the thimble advances the spindle by one pitch.',
     ],
     uid: 'ca68f5092e1646d58533a0fc0b38fa55',
+    modelUrl: '/models/screw-gauge.glb',
     modelTitle: 'Screw gauge',
     author: 'VeeRuby Technologies',
     authorUrl: 'https://sketchfab.com/veerubyinc',
@@ -98,6 +107,8 @@ const InstrumentCard: React.FC<{ instrument: InstrumentModel; isDark: boolean }>
   isDark,
 }) => {
   const [loaded, setLoaded] = useState(false);
+  const [useEmbed, setUseEmbed] = useState(false);
+  const selfHosted = Boolean(instrument.modelUrl) && !useEmbed;
   const embedUrl =
     `https://sketchfab.com/models/${instrument.uid}/embed` +
     `?autospin=0.3&autostart=1&preload=1&ui_infos=1&ui_watermark_link=1&ui_theme=${isDark ? 'dark' : 'light'}`;
@@ -105,7 +116,13 @@ const InstrumentCard: React.FC<{ instrument: InstrumentModel; isDark: boolean }>
   return (
     <article className="rounded-2xl border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900 overflow-hidden flex flex-col">
       <div className="relative aspect-[4/3] bg-stone-100 dark:bg-stone-950">
-        {loaded ? (
+        {loaded && selfHosted ? (
+          <ModelViewer3D
+            modelUrl={instrument.modelUrl as string}
+            label={instrument.name}
+            onFail={() => setUseEmbed(true)}
+          />
+        ) : loaded ? (
           <iframe
             title={`${instrument.name} in 3D`}
             src={embedUrl}
@@ -168,6 +185,9 @@ const InstrumentCard: React.FC<{ instrument: InstrumentModel; isDark: boolean }>
             >
               {instrument.author}
             </a>
+            {selfHosted && (
+              <span className="text-stone-400 dark:text-stone-600"> · CC BY 4.0, compressed for the web</span>
+            )}
           </span>
           <a
             href={`https://sketchfab.com/3d-models/${instrument.uid}`}
