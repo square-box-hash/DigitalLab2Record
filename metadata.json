@@ -1,6 +1,0 @@
-{
-  "name": "DigitalLab2Record",
-  "description": "Interactive Class 11 CBSE Physics lab companion: log real readings, get the observation table, step-by-step calculations, mean absolute error, best-fit graphs you can download, a viva bank and a printable record page in CBSE format.",
-  "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
-}
