@@ -807,7 +807,7 @@ exports[`surface-tension > produces the seeded numbers last reviewed 1`] = `
     ],
     [
       "Comparison with the standard value",
-      "0.07% %",
+      "0.07%",
     ],
   ],
   "summaryCards": [
@@ -829,7 +829,6 @@ exports[`surface-tension > produces the seeded numbers last reviewed 1`] = `
     {
       "label": "Against standard",
       "subtext": "Reference 0.0728 N/m at 20 °C",
-      "unit": "%",
       "value": "0.07%",
     },
   ],
