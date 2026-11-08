@@ -436,31 +436,120 @@ html.dark .print-container {
 }
 
 /*
-  The landing page's shade breathes rather than sits still.
+  The landing page's colour washes
   ---------------------------------------------------------------------------
-  A very slow drift on the soft radial wash behind the content: 52 seconds for a
-  full cycle, a couple of percent of travel, no visible loop point. Turned off
-  entirely for anyone who has asked for reduced motion.
+  Three soft radial hues behind the content, each drifting on its own long
+  cycle so they never line up and never visibly loop. Radial gradients rather
+  than blurred elements: the softness is baked into the gradient, so the
+  compositor has nothing expensive to do.
+
+  Light mode keeps the same hues at roughly half strength — enough to warm the
+  paper, not enough to look tinted.
 */
-@keyframes shade-drift {
-  0%,
-  100% {
-    transform: translate3d(-1.5%, 0, 0) scale(1);
-    opacity: 0.85;
-  }
-  50% {
-    transform: translate3d(1.5%, -1.2%, 0) scale(1.05);
-    opacity: 1;
-  }
+.hue {
+  position: fixed;
+  z-index: -20;
+  pointer-events: none;
+  border-radius: 50%;
+  will-change: transform;
 }
 
-.shade-drift {
-  animation: shade-drift 52s ease-in-out infinite;
-  will-change: transform, opacity;
+.hue--indigo {
+  left: -14vw;
+  top: -18vh;
+  width: 82vw;
+  height: 78vh;
+  background: radial-gradient(
+    closest-side,
+    rgba(104, 124, 198, 0.3),
+    rgba(104, 124, 198, 0.09) 58%,
+    transparent 78%
+  );
+  animation: hue-drift 47s ease-in-out infinite;
+}
+
+.hue--teal {
+  right: -16vw;
+  top: 20vh;
+  width: 68vw;
+  height: 64vh;
+  background: radial-gradient(
+    closest-side,
+    rgba(38, 158, 126, 0.24),
+    rgba(38, 158, 126, 0.07) 58%,
+    transparent 78%
+  );
+  animation: hue-drift 61s ease-in-out infinite reverse;
+}
+
+.hue--ochre {
+  left: 8vw;
+  bottom: -20vh;
+  width: 76vw;
+  height: 70vh;
+  background: radial-gradient(
+    closest-side,
+    rgba(198, 148, 84, 0.22),
+    rgba(198, 148, 84, 0.06) 58%,
+    transparent 78%
+  );
+  animation: hue-drift 73s ease-in-out infinite;
+}
+
+:root:not(.dark) .hue--indigo {
+  background: radial-gradient(
+    closest-side,
+    rgba(104, 124, 198, 0.17),
+    rgba(104, 124, 198, 0.05) 58%,
+    transparent 78%
+  );
+}
+:root:not(.dark) .hue--teal {
+  background: radial-gradient(
+    closest-side,
+    rgba(38, 158, 126, 0.14),
+    rgba(38, 158, 126, 0.04) 58%,
+    transparent 78%
+  );
+}
+:root:not(.dark) .hue--ochre {
+  background: radial-gradient(
+    closest-side,
+    rgba(198, 148, 84, 0.13),
+    rgba(198, 148, 84, 0.04) 58%,
+    transparent 78%
+  );
+}
+
+@keyframes hue-drift {
+  0%,
+  100% {
+    transform: translate3d(-2.5%, 1.5%, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(2.5%, -2.5%, 0) scale(1.09);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .shade-drift {
+  .hue {
     animation: none;
   }
+}
+
+/*
+  Film grain
+  ---------------------------------------------------------------------------
+  A 160px tile of fractal noise as an inline data URI — no request, no image
+  file. Its only job is to break up the banding that smooth gradients show on a
+  near-black page; at four percent it is felt more than seen.
+*/
+.grain {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  opacity: 0.045;
+}
+
+.dark .grain {
+  opacity: 0.06;
 }
